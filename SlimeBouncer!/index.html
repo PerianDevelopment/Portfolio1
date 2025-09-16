@@ -202,7 +202,7 @@
       meta.appendChild(mk('My contribution', project.contribution || ''));
       meta.appendChild(mk('Platform', project.platform || ''));
       meta.appendChild(mk('Engine & Tools', project.engineTools || project.engine_tools || ''));
-      if (project.link) meta.appendChild(mk('Link', `<a class="reset" href="${project.link}" target="_blank" rel="noopener">${project.linkText || project.link}</a>`));
+      if (project.link) meta.appendChild(mk('Link', `<a class="reset" href="${project.link}">${project.linkText || project.link}</a>`));
 
       details.appendChild(meta);
       container.appendChild(details);
