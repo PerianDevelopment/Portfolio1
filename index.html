@@ -10,192 +10,93 @@
   <style>
     :root {
       --bg: #222222;
-      --muted: #bdbdbd;
       --text: #eaeaea;
+      --muted: #bdbdbd;
       --brand: #FF382E;
-      --card-shadow: 0 6px 18px rgba(0,0,0,0.6);
-      --radius: 12px;
-      --transition: 240ms cubic-bezier(.2,.9,.2,1);
-      --max-width: 1100px;
     }
 
     *{box-sizing:border-box}
-    html,body{height:100%}
-    body{
-      margin:0;
-      min-height:100%;
-      background:var(--bg);
-      color:var(--text);
-      font-family: "Poppins", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
-      -webkit-font-smoothing:antialiased;
-      -moz-osx-font-smoothing:grayscale;
-      line-height:1.45;
-    }
+    body{margin:0;font-family:"Poppins",sans-serif;background:var(--bg);color:var(--text)}
 
-    .container{max-width:var(--max-width);margin:32px auto;padding:24px;}
+    .container{max-width:1000px;margin:32px auto;padding:24px}
 
-    /* Banner */
-    .banner{
-      display:flex;align-items:center;gap:20px;
-      background: linear-gradient(90deg, var(--brand), color-mix(in srgb, var(--brand) 85%, black 15%));
-      padding:30px;border-radius:16px;box-shadow:0 8px 30px rgba(0,0,0,0.55);color:#fff;
-    }
-    .banner .icon{width:110px;height:110px;flex:0 0 110px;display:flex;align-items:center;justify-content:center;transition:transform var(--transition);}
-    .banner .icon img{max-width:100%;max-height:100%;display:block;filter:drop-shadow(0 6px 18px rgba(0,0,0,0.45));}
-    .banner h1{margin:0;font-size:clamp(28px,4.5vw,54px);font-weight:900;letter-spacing:-0.02em;text-shadow:0 6px 20px rgba(0,0,0,0.35);}
-    .banner-sub{margin-top:8px;color:rgba(255,255,255,0.92);font-weight:500;}
-    .banner:hover .icon{transform:translateX(-6px) rotate(-4deg) scale(1.02);}
+    .banner{display:flex;align-items:center;gap:20px;background:linear-gradient(90deg,var(--brand),color-mix(in srgb,var(--brand) 85%,black 15%));padding:30px;border-radius:16px;color:#fff}
+    .banner img{width:100px;height:100px}
+    .banner h1{margin:0;font-size:2.5rem;font-weight:900}
+    .banner-sub{margin-top:6px;color:rgba(255,255,255,0.9)}
 
-    /* About */
-    .about{margin:28px 0;padding:20px;background:linear-gradient(180deg,rgba(255,255,255,0.02),rgba(0,0,0,0.03));border-radius:12px;border:1px solid rgba(255,255,255,0.02);box-shadow:var(--card-shadow);}
-    .about p{margin:0;color:var(--muted);font-size:16px;}
+    .about{margin:28px 0;padding:20px;background:rgba(255,255,255,0.02);border-radius:12px}
+    .about h2{margin-top:0}
+    .about p{margin:0;color:var(--muted)}
 
-    .divider{height:1px;background:linear-gradient(90deg,transparent,rgba(255,255,255,0.04),transparent);margin:18px 0 22px 0;border-radius:4px;}
-
-    .projects-header{display:flex;flex-direction:column;align-items:flex-start;gap:12px;margin:0 0 8px 0;}
-    .section-header{font-size:18px;font-weight:700;display:flex;align-items:center;gap:12px;}
-    .section-header .dot{width:10px;height:10px;background:var(--brand);border-radius:50%;box-shadow:0 6px 20px rgba(255,56,46,0.16);}
-
-    /* Text project links */
-    .game-links{display:flex;gap:16px;flex-wrap:wrap;align-items:center;}
-    .game-link{color:var(--text);font-weight:700;text-decoration:none;position:relative;padding:4px 2px;transition:color var(--transition), transform var(--transition);}
-    .game-link::after{content:"";position:absolute;left:0;right:0;bottom:0;height:2px;background:var(--brand);transform:scaleX(0);transform-origin:left center;transition:transform var(--transition);}
-    .game-link:hover{color:white;transform:translateY(-2px);}
-    .game-link:hover::after{transform:scaleX(1);}
-
-    /* Projects grid */
-    .projects{display:grid;grid-template-columns:repeat(2,1fr);gap:20px;}
-    @media (max-width:880px){.projects{grid-template-columns:1fr;}}
-    @media (max-width:520px){.banner{flex-direction:column;align-items:flex-start;gap:12px;padding:18px;}.banner .icon{width:86px;height:86px;flex:0 0 86px;}}
-
-    .project{background:linear-gradient(180deg,rgba(255,255,255,0.01),rgba(0,0,0,0.05));border-radius:var(--radius);padding:14px;border:1px solid rgba(255,255,255,0.025);box-shadow:var(--card-shadow);transition:transform var(--transition), box-shadow var(--transition);display:flex;flex-direction:column;gap:10px;}
-    .project:hover{transform:translateY(-8px);box-shadow:0 16px 38px rgba(0,0,0,0.7);}
-    .project-head{display:flex;justify-content:space-between;align-items:center;}
-    .project-title{font-weight:800;letter-spacing:-0.01em;margin:0;font-size:18px;color:var(--text);}
-    .project-year{font-size:13px;color:var(--muted);background:rgba(255,255,255,0.02);padding:6px 10px;border-radius:999px;border:1px solid rgba(255,255,255,0.02);}
-
-    .cover-link{display:block;border-radius:10px;overflow:hidden;text-decoration:none;}
-    .cover{width:100%;aspect-ratio:4/3;border-radius:10px;overflow:hidden;position:relative;background-size:cover;background-position:center;box-shadow:inset 0 -30px 60px rgba(0,0,0,0.25);transition:transform var(--transition);}
-    .project:hover .cover{transform:scale(1.02);}
-    .cover-title{position:absolute;left:12px;bottom:12px;z-index:2;font-weight:800;font-size:18px;color:#fff;text-shadow:0 6px 18px rgba(0,0,0,0.6);}
-    .cover::after{content:"";position:absolute;left:0;right:0;bottom:0;height:34%;background:linear-gradient(180deg,rgba(0,0,0,0),rgba(0,0,0,0.6));}
-
-    .meta{display:grid;grid-template-columns:1fr 1fr;gap:8px 16px;}
-    .meta-item{font-size:13px;}
-    .meta-item .label{display:block;color:var(--muted);font-weight:600;font-size:12px;}
-    .meta-item .value{color:var(--text);font-weight:500;margin-top:4px;font-size:13px;}
-
-    a.reset{color:var(--brand);text-decoration:none;}
-    a.reset:hover{text-decoration:underline;}
-
-    .foot{margin-top:28px;color:var(--muted);font-size:13px;text-align:center;}
+    .projects{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:20px}
+    .project{background:rgba(255,255,255,0.03);border-radius:12px;padding:12px}
+    .project img{width:100%;border-radius:8px}
+    .project h3{margin:10px 0 4px;font-size:18px}
+    .project p{margin:0;font-size:14px;color:var(--muted)}
   </style>
 </head>
 <body>
-  <div class="container" role="main">
-
-    <!-- Banner -->
+  <div class="container">
     <header class="banner">
-      <div class="icon"><img src="icon_transparent.png" alt="PerianDev icon" /></div>
-      <div style="flex:1;">
-        <h1>PerianDev</h1>
-        <div class="banner-sub">Indie games & experiments — playable, polished, irreverent.</div>
+      <img id="brand-icon" alt="Brand Icon" />
+      <div>
+        <h1 id="brand-name">Brand</h1>
+        <div class="banner-sub" id="brand-tagline">Loading tagline…</div>
       </div>
     </header>
 
-    <!-- About -->
     <section class="about">
-      <h2 style="margin:0 0 8px;font-size:16px;font-weight:700;color:var(--text)">About</h2>
-      <p>
-        Perian is a programmer, indie game developer, software engineer and passionate gamer based in Germany.
-        This site focuses on the projects and playable experiences created under the PerianDev brand.
-      </p>
+      <h2>About</h2>
+      <p id="brand-bio">Loading bio…</p>
     </section>
 
-    <!-- Divider -->
-    <div class="divider"></div>
-
-    <!-- Projects header -->
-    <div class="projects-header">
-      <div class="section-header">
-        <div class="dot"></div>
-        <div>Projects</div>
-      </div>
-
-      <nav aria-label="Project quick links">
-        <div class="game-links" id="project-links">
-          <!-- Text project links will be injected here -->
-        </div>
-      </nav>
-    </div>
-
-    <!-- Divider -->
-    <div class="divider"></div>
-
-    <!-- Projects grid -->
-    <section class="projects" id="projects-container">
-      <!-- Project boxes will be injected here -->
+    <h2>Games</h2>
+    <section class="projects" id="games-container">
+      <!-- Games will load here -->
     </section>
-
-    <!-- Footer -->
-    <div class="foot">Made with ♥ by PerianDev</div>
   </div>
 
   <script>
-  async function loadProjects() {
-    try {
-      const response = await fetch('projects.json');
-      const projects = await response.json();
+    async function loadBrandData() {
+      try {
+        const res = await fetch("https://periandevelopment.github.io/Socials/social.json");
+        const data = await res.json();
 
-      const linksContainer = document.getElementById('project-links');
-      const projectsContainer = document.getElementById('projects-container');
+        // Apply brand colors
+        document.documentElement.style.setProperty("--bg", data.colors.background_hex);
+        document.documentElement.style.setProperty("--text", data.colors.text_hex);
+        document.documentElement.style.setProperty("--brand", data.colors.primary_hex);
 
-      linksContainer.innerHTML = "";
-      projectsContainer.innerHTML = "";
+        // Fill identity
+        document.getElementById("brand-icon").src = data.icons.icon_transparent;
+        document.getElementById("brand-name").textContent = data.identity.display_name;
+        document.getElementById("brand-tagline").textContent = data.identity.tagline;
+        document.getElementById("brand-bio").textContent = data.identity.bio;
 
-      projects.forEach(p => {
-        // text link
-        const linkEl = document.createElement('a');
-        linkEl.className = 'game-link';
-        linkEl.href = p.link;
-        linkEl.target = '_blank';
-        linkEl.rel = 'noopener';
-        linkEl.textContent = p.title;
-        linksContainer.appendChild(linkEl);
-
-        // project card
-        const projectHTML = `
-          <article class="project" id="${p.id}">
-            <div class="project-head">
-              <h3 class="project-title">${p.title}</h3>
-              <div class="project-year">${p.year}</div>
-            </div>
-            <a class="cover-link" href="${p.link}" target="_blank" rel="noopener">
-              <div class="cover" style="background-image:url('${p.cover}')">
-                <div class="cover-title">${p.title}</div>
-              </div>
+        // Render games
+        const gamesContainer = document.getElementById("games-container");
+        gamesContainer.innerHTML = "";
+        data.games.forEach(game => {
+          const gameEl = document.createElement("article");
+          gameEl.className = "project";
+          gameEl.innerHTML = `
+            <a href="${game.website}" target="_blank" rel="noopener">
+              <img src="${game.icon_url}" alt="${game.name} cover">
             </a>
-            <div class="meta">
-              <div class="meta-item">
-                <span class="label">Link</span>
-                <span class="value"><a class="reset" href="${p.link}" target="_blank" rel="noopener">${p.linkText}</a></span>
-              </div>
-              <div class="meta-item"><span class="label">Studio</span><span class="value">${p.studio}</span></div>
-              <div class="meta-item"><span class="label">Team size</span><span class="value">${p.teamSize}</span></div>
-              <div class="meta-item"><span class="label">My contribution</span><span class="value">${p.contribution}</span></div>
-              <div class="meta-item"><span class="label">Platform</span><span class="value">${p.platform}</span></div>
-              <div class="meta-item"><span class="label">Engine & Tools</span><span class="value">${p.engineTools}</span></div>
-            </div>
-          </article>`;
-        projectsContainer.insertAdjacentHTML('beforeend', projectHTML);
-      });
+            <h3>${game.name}</h3>
+            <p>${game.description}</p>
+            <p><strong>Platform:</strong> ${game.platform}</p>
+          `;
+          gamesContainer.appendChild(gameEl);
+        });
 
-    } catch (err) {
-      console.error("Failed to load projects.json", err);
+      } catch (err) {
+        console.error("Error loading brand JSON:", err);
+      }
     }
-  }
 
-  loadProjects();
+    loadBrandData();
   </script>
 </body>
 </html>
