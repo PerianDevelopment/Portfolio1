@@ -1,0 +1,184 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>PerianDev — Project</title>
+
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;700;900&display=swap" rel="stylesheet">
+
+  <style>
+    :root{
+      --bg: #222222;
+      --muted: #bdbdbd;
+      --text: #eaeaea;
+      --brand: #FF382E;
+      --card-shadow: 0 6px 18px rgba(0,0,0,0.6);
+      --radius: 12px;
+      --transition: 240ms cubic-bezier(.2,.9,.2,1);
+      --max-width: 1100px;
+    }
+
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0;
+      min-height:100%;
+      background:var(--bg);
+      color:var(--text);
+      font-family:"Poppins",system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial;
+      -webkit-font-smoothing:antialiased;
+      -moz-osx-font-smoothing:grayscale;
+      line-height:1.45;
+    }
+
+    .container{max-width:var(--max-width);margin:32px auto;padding:24px;}
+    .divider{height:1px;background:linear-gradient(90deg,transparent,rgba(255,255,255,0.04),transparent);margin:24px 0;border-radius:4px;}
+
+    /* Banner */
+    .banner{display:flex;align-items:center;gap:20px;background:linear-gradient(90deg,var(--brand),color-mix(in srgb,var(--brand) 85%,black 15%));padding:30px;border-radius:16px;box-shadow:0 8px 30px rgba(0,0,0,0.55);color:#fff;}
+    .banner .icon{width:110px;height:110px;flex:0 0 110px;display:flex;align-items:center;justify-content:center;transition:transform var(--transition);}
+    .banner .icon img{max-width:100%;max-height:100%;display:block;filter:drop-shadow(0 6px 18px rgba(0,0,0,0.45));}
+    .banner h1{margin:0;font-size:clamp(28px,4.5vw,54px);font-weight:900;letter-spacing:-0.02em;text-shadow:0 6px 20px rgba(0,0,0,0.35);}
+    .banner-sub{margin-top:8px;color:rgba(255,255,255,0.92);font-weight:500;}
+    .banner:hover .icon{transform:translateX(-6px) rotate(-4deg) scale(1.02);}
+
+    /* Browser nav */
+    .projects-header{display:flex;flex-direction:column;gap:12px;margin-top:28px;}
+    .section-header{font-size:18px;font-weight:700;display:flex;align-items:center;gap:12px;}
+    .section-header .dot{width:10px;height:10px;background:var(--brand);border-radius:50%;box-shadow:0 6px 20px rgba(255,56,46,0.16);}
+    .game-links{display:flex;gap:16px;flex-wrap:wrap;align-items:center;}
+    .game-link{color:var(--text);font-weight:700;text-decoration:none;position:relative;padding:4px 2px;transition:color var(--transition), transform var(--transition);}
+    .game-link::after{content:"";position:absolute;left:0;right:0;bottom:0;height:2px;background:var(--brand);transform:scaleX(0);transform-origin:left center;transition:transform var(--transition);}
+    .game-link:hover{color:white;transform:translateY(-2px);}
+    .game-link:hover::after{transform:scaleX(1);}
+
+    /* Game info */
+    .game-info{display:flex;gap:32px;align-items:flex-start;flex-wrap:wrap;}
+    .game-info h2{margin:0 0 12px;font-size:26px;font-weight:800;}
+    .game-cover{flex:0 0 280px;max-width:100%;border-radius:12px;overflow:hidden;box-shadow:var(--card-shadow);}
+    .game-cover img{width:100%;display:block;}
+    .game-meta{flex:1;display:grid;grid-template-columns:1fr 1fr;gap:12px 24px;}
+    .meta-item .label{color:var(--muted);font-size:12px;font-weight:600;display:block;}
+    .meta-item .value{margin-top:4px;font-size:14px;font-weight:500;color:var(--text);}
+    a.reset{color:var(--brand);text-decoration:none;}
+    a.reset:hover{text-decoration:underline;}
+
+    /* Project page sections */
+    .project-section h3{margin:0 0 12px;font-size:20px;font-weight:700;}
+    .project-section p{margin:0 0 12px;font-size:15px;line-height:1.6;}
+    .project-section ul{margin:0;padding-left:20px;}
+    .project-section ul li{margin:6px 0;font-size:15px;}
+    .project-section img{width:100%;border-radius:12px;box-shadow:var(--card-shadow);margin-top:12px;}
+    .foot{margin-top:28px;color:var(--muted);font-size:13px;text-align:center;}
+  </style>
+</head>
+<body>
+  <div class="container">
+
+    <!-- Header -->
+    <header class="banner">
+      <div class="icon"><img id="brand-icon" src="icon_transparent.png" alt="PerianDev icon" /></div>
+      <div style="flex:1;">
+        <h1 id="brand-name">PerianDev</h1>
+        <div class="banner-sub" id="brand-tagline">Indie games & experiments — playable, polished, irreverent.</div>
+      </div>
+    </header>
+
+    <!-- Browser Section -->
+    <div class="projects-header">
+      <div class="section-header">
+        <div class="dot"></div>
+        <a href="https://periandevelopment.github.io/Portfolio1" class="game-link">PerianDev Portfolio</a>
+      </div>
+      <nav aria-label="Project quick links">
+        <div class="game-links" id="project-links"></div>
+      </nav>
+    </div>
+
+    <div class="divider"></div>
+
+    <!-- Game Info -->
+    <section class="game-info" id="game-info"></section>
+
+    <div class="divider"></div>
+
+    <!-- Project Page Content -->
+    <section class="project-page">
+
+      <div class="project-section">
+        <h3>Overview</h3>
+        <p>This is a sample overview for the project. It’s a narrative-driven action-platformer with roguelike elements, developed as part of the PerianDev experiments. The game explores innovative mechanics, fluid movement, and fast-paced combat.</p>
+        <img src="banner_2x1.png" alt="Overview banner" />
+      </div>
+
+      <div class="divider"></div>
+
+      <div class="project-section">
+        <h3>Summary of Contributions</h3>
+        <ul>
+          <li>Designed and implemented the combat system</li>
+          <li>Built the procedural level generator</li>
+          <li>Created custom shaders for stylized effects</li>
+          <li>Integrated sound design and adaptive music system</li>
+          <li>Optimized gameplay for mobile and desktop platforms</li>
+        </ul>
+        <img src="banner_2x1.png" alt="Contributions banner" />
+      </div>
+
+      <div class="divider"></div>
+
+      <div class="project-section">
+        <h3>Future Plans</h3>
+        <p>This section describes the roadmap: online multiplayer, additional bosses, and community-driven mod support. Placeholder text for now—replace with your actual project details later.</p>
+        <img src="banner_2x1.png" alt="Future plans banner" />
+      </div>
+
+    </section>
+
+    <div class="foot" id="site-footer">Made with ♥ by PerianDev</div>
+  </div>
+
+  <script>
+    async function fetchJson(url){const r=await fetch(url);if(!r.ok)throw new Error("Failed to fetch "+url);return r.json();}
+    async function applyBrandingFromRemote(){
+      try{
+        const social=await fetchJson('https://periandevelopment.github.io/Socials/social.json');
+        const colors=social.colors||{},icons=social.icons||{},identity=social.identity||{};
+        if(colors.primary_hex)document.documentElement.style.setProperty('--brand',colors.primary_hex);
+        if(colors.background_hex)document.documentElement.style.setProperty('--bg',colors.background_hex);
+        if(colors.text_hex)document.documentElement.style.setProperty('--text',colors.text_hex);
+        const iconImg=document.getElementById('brand-icon');
+        if(icons.icon_transparent)iconImg.src=icons.icon_transparent;else if(icons.icon)iconImg.src=icons.icon;
+        if(identity.display_name)document.getElementById('brand-name').textContent=identity.display_name;
+        if(identity.tagline)document.getElementById('brand-tagline').textContent=identity.tagline;
+        if(identity.display_name)document.getElementById('site-footer').textContent=`Made with ♥ by ${identity.display_name}`;
+      }catch(e){console.warn("Branding load failed",e);}
+    }
+    function renderProjects(projects){
+      const links=document.getElementById('project-links');links.innerHTML='';
+      const gameInfo=document.getElementById('game-info');gameInfo.innerHTML='';
+      projects.forEach(p=>{
+        const a=document.createElement('a');a.className='game-link';a.href=p.link||'#';a.textContent=p.title||p.name;links.appendChild(a);
+      });
+      // Just show the first project (you can filter/select by id later)
+      if(projects.length){
+        const p=projects[0];
+        const title=document.createElement('h2');title.textContent=p.title||p.name;
+        const cover=document.createElement('div');cover.className='game-cover';cover.innerHTML=`<img src="${p.cover||'banner_2x1.png'}" alt="${p.title} cover"/>`;
+        const meta=document.createElement('div');meta.className='game-meta';
+        const mk=(l,v)=>{const d=document.createElement('div');d.className='meta-item';d.innerHTML=`<span class="label">${l}</span><span class="value">${v}</span>`;return d;};
+        meta.appendChild(mk('Year',p.year||'')); 
+        meta.appendChild(mk('Studio',p.studio||'')); 
+        meta.appendChild(mk('Team size',p.teamSize||'')); 
+        meta.appendChild(mk('Platform',p.platform||'')); 
+        meta.appendChild(mk('Engine & Tools',p.engineTools||'')); 
+        meta.appendChild(mk('Link',`<a class="reset" href="${p.link||'#'}" target="_blank">${p.linkText||'Visit'}</a>`)); 
+        gameInfo.appendChild(title);gameInfo.appendChild(cover);gameInfo.appendChild(meta);
+      }
+    }
+    async function init(){await applyBrandingFromRemote();try{const projects=await fetchJson('projects.json');renderProjects(projects);}catch(e){console.error(e);}}
+    init();
+  </script>
+</body>
+</html>
