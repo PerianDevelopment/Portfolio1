@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title id="page-title">PerianDev — Games Portfolio</title>
 
-  <!-- Favicon uses local icon.png -->
+  <!-- favicon immediate local -->
   <link rel="icon" href="icon.png" type="image/png">
 
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;700;900&display=swap" rel="stylesheet">
@@ -49,7 +49,7 @@
     .banner-sub{margin-top:8px;color:rgba(255,255,255,0.92);font-weight:500;}
     .banner:hover .icon{transform:translateX(-6px) rotate(-4deg) scale(1.02);}
 
-    /* About (normal text color) */
+    /* About */
     .about{margin:28px 0;padding:20px;background:linear-gradient(180deg,rgba(255,255,255,0.02),rgba(0,0,0,0.03));border-radius:12px;border:1px solid rgba(255,255,255,0.02);box-shadow:var(--card-shadow);}
     .about p{margin:0;color:var(--text);font-size:16px;}
 
@@ -100,7 +100,6 @@
 
     <!-- Banner -->
     <header class="banner">
-      <!-- local icon.png used immediately -->
       <div class="icon"><img id="brand-icon" src="icon.png" alt="brand icon" /></div>
       <div style="flex:1;">
         <h1 id="brand-name">PerianDev</h1>
@@ -140,13 +139,17 @@
   </div>
 
   <script>
-    // Utility: try to fetch JSON from current folder up to parent levels
+    // --- Configuration / constants ---
+    const SOCIAL_JSON_URL = 'https://periandevelopment.github.io/Socials/social.json';
+    const SOCIAL_HOST = (new URL(SOCIAL_JSON_URL)).origin; // https://periandevelopment.github.io
+
+    // Helper: try to fetch JSON from current folder up to parent levels
     async function fetchJsonFromParents(name, maxDepth = 8) {
       const candidates = [];
       for (let i = 0; i <= maxDepth; i++) {
         candidates.push(i === 0 ? name : `${'../'.repeat(i)}${name}`);
       }
-      candidates.push('/' + name); // absolute root fallback
+      candidates.push('/' + name); // root fallback
 
       for (const path of candidates) {
         try {
@@ -155,13 +158,13 @@
           const json = await res.json();
           return { json, url: res.url };
         } catch (e) {
-          // continue
+          // try next
         }
       }
       throw new Error(`Could not fetch ${name} from any parent path`);
     }
 
-    // Fetch absolute JSON
+    // simple absolute fetch
     async function fetchJsonAbsolute(url) {
       const res = await fetch(url, { cache: 'no-cache' });
       if (!res.ok) throw new Error(`Failed to fetch ${url}: ${res.status}`);
@@ -169,7 +172,7 @@
       return { json, url: res.url };
     }
 
-    // Resolve relative path relative to base (base must end with '/')
+    // resolve relative (non-absolute/non-root) against base (which must end with '/')
     function resolveUrl(possibleUrl, base) {
       if (!possibleUrl) return possibleUrl;
       if (/^https?:\/\//i.test(possibleUrl) || possibleUrl.startsWith('/')) return possibleUrl;
@@ -177,15 +180,18 @@
       return base + possibleUrl;
     }
 
-    // Compute site-root prefix (first path segment) so fallbacks resolve correctly on GitHub Pages
-    const siteOrigin = window.location.origin;
-    const pathParts = window.location.pathname.split('/').filter(Boolean);
-    const sitePrefix = pathParts.length > 0 ? `/${pathParts[0]}/` : '/'; // e.g. "/Portfolio1/"
+    // derive sitePrefix (first path segment) for GitHub Pages where repo is at /<repo>/
+    function getSitePrefixFromLocation() {
+      const parts = window.location.pathname.split('/').filter(Boolean);
+      return parts.length > 0 ? `/${parts[0]}/` : '/';
+    }
 
-    // Render projects with robust cover resolution (and <img> fallback)
-    function renderProjects(projects, projectsBase, remoteBanner, siteFallbackImage) {
-      // final fallback: siteFallbackImage (resolved to absolute earlier) else siteOrigin + sitePrefix + 'fallback.png'
-      const finalFallback = siteFallbackImage || (siteOrigin + sitePrefix + 'fallback.png');
+    // Render projects (robust cover resolution + <img> to ensure visible images)
+    function renderProjects(projects, projectsBase, remoteBannerUrl, siteFallbackAbsolute) {
+      // final fallback: prefer siteFallbackAbsolute, else attempt to compute root-fallback based on current site prefix
+      const sitePrefix = getSitePrefixFromLocation();
+      const rootFallback = window.location.origin + sitePrefix + 'fallback.png';
+      const finalFallback = siteFallbackAbsolute || rootFallback;
 
       const linksContainer = document.getElementById('project-links');
       const projectsContainer = document.getElementById('projects-container');
@@ -227,25 +233,30 @@
         const cover = document.createElement('div');
         cover.className = 'cover';
 
-        // compute coverUrl (project cover -> icon_url -> remoteBanner -> siteFallbackImage -> finalFallback)
+        // determine cover URL priority:
+        // p.cover -> p.icon_url -> remoteBannerUrl -> siteFallbackAbsolute -> rootFallback
         let coverUrl = p.cover || p.icon_url || null;
 
+        // if relative and projectsBase known, resolve relative against projectsBase
         if (coverUrl && !/^https?:\/\//i.test(coverUrl) && !coverUrl.startsWith('/')) {
           if (projectsBase) coverUrl = projectsBase + coverUrl;
-          else coverUrl = siteOrigin + sitePrefix + coverUrl;
+          else {
+            // fallback: resolve against current origin + sitePrefix
+            const sitePrefix = getSitePrefixFromLocation();
+            coverUrl = window.location.origin + sitePrefix + coverUrl;
+          }
         }
 
-        if (!coverUrl && remoteBanner) coverUrl = remoteBanner;
-        if (!coverUrl && siteFallbackImage) coverUrl = siteFallbackImage;
+        if (!coverUrl && remoteBannerUrl) coverUrl = remoteBannerUrl;
+        if (!coverUrl && siteFallbackAbsolute) coverUrl = siteFallbackAbsolute;
         if (!coverUrl) coverUrl = finalFallback;
 
-        // create <img> so it always displays
-        const imgEl = document.createElement('img');
-        imgEl.src = coverUrl;
-        imgEl.alt = (p.title || p.name || '') + ' cover';
-        cover.appendChild(imgEl);
+        // insert <img> to guarantee visible image (and allow devtools network debugging)
+        const img = document.createElement('img');
+        img.src = coverUrl;
+        img.alt = (p.title || p.name || '') + ' cover';
+        cover.appendChild(img);
 
-        // overlay title
         const ctitle = document.createElement('div');
         ctitle.className = 'cover-title';
         ctitle.textContent = p.title || p.name || '';
@@ -278,27 +289,39 @@
       });
     }
 
-    // Main init: load website.json (parents), load social.json (remote), load projects.json (current or parents), then render
+    // --- startup flow:
+    // 1) look for website.json (search parents). If found and it contains `repo`, compute absolute fallback = SOCIAL_HOST + '/' + repo + '/' + fallbackImage
+    //    otherwise resolve fallbackImage relative to website.json location.
+    // 2) load remote social.json for colors/icon/banner.
+    // 3) load projects.json (current folder or parents) and render using resolved fallback.
+
     (async function init() {
-      // website.json
-      let siteFallbackImage = null;
+      // 1) website.json
+      let siteFallbackAbsolute = null;
       try {
-        const res = await fetchJsonFromParents('website.json', 8);
-        const siteJson = res.json;
-        const siteBase = res.url.replace(/website\.json$/i,'');
+        const { json: siteJson, url: websiteJsonUrl } = await fetchJsonFromParents('website.json', 8);
+        // If siteJson has repo, use SOCIAL_HOST + repo to build an absolute base
+        if (siteJson.repo) {
+          const repo = siteJson.repo.replace(/^\/|\/$/g, ''); // trim slashes
+          const fallbackName = siteJson.fallbackImage || 'fallback.png';
+          siteFallbackAbsolute = `${SOCIAL_HOST}/${repo}/${fallbackName}`;
+        } else if (siteJson.fallbackImage) {
+          // resolve relative to where website.json was found
+          const websiteBase = websiteJsonUrl.replace(/website\.json$/i, '');
+          siteFallbackAbsolute = resolveUrl(siteJson.fallbackImage, websiteBase);
+        }
         if (siteJson.footerText) {
           document.getElementById('site-footer').textContent = siteJson.footerText;
           document.getElementById('site-footer').dataset.locked = '1';
         }
-        siteFallbackImage = siteJson.fallbackImage ? resolveUrl(siteJson.fallbackImage, siteBase) : null;
-      } catch (_) {
-        // no website.json found — continue; finalFallback uses siteOrigin + sitePrefix
+      } catch (err) {
+        // no website.json found — fine, we'll fallback to origin + sitePrefix + 'fallback.png'
       }
 
-      // social.json remote branding
+      // 2) remote social.json branding (prefer icon_transparent)
       let remoteBanner = null;
       try {
-        const { json: socialJson } = await fetchJsonAbsolute('https://periandevelopment.github.io/Socials/social.json');
+        const { json: socialJson } = await fetchJsonAbsolute(SOCIAL_JSON_URL);
         const colors = socialJson.colors || {};
         const icons = socialJson.icons || {};
         const banners = socialJson.banners || {};
@@ -313,9 +336,9 @@
           document.querySelector('.banner').style.background = `linear-gradient(90deg, ${g})`;
         }
 
-        const iconImg = document.getElementById('brand-icon');
-        if (icons.icon_transparent) iconImg.src = icons.icon_transparent;
-        else if (icons.icon) iconImg.src = icons.icon;
+        const iconEl = document.getElementById('brand-icon');
+        if (icons.icon_transparent) iconEl.src = icons.icon_transparent;
+        else if (icons.icon) iconEl.src = icons.icon;
 
         if (identity.display_name) document.getElementById('brand-name').textContent = identity.display_name;
         if (identity.tagline) document.getElementById('brand-tagline').textContent = identity.tagline;
@@ -323,24 +346,27 @@
 
         remoteBanner = banners['2x1'] || null;
       } catch (err) {
-        console.warn('social.json load failed', err);
+        console.warn('Failed to load social.json (branding).', err);
       }
 
-      // projects.json
+      // 3) projects.json
       try {
         let projectsData, projectsBase;
+        // try current folder
         try {
-          const res = await fetch('projects.json', { cache:'no-cache' });
-          if (!res.ok) throw new Error('not found in current folder');
+          const res = await fetch('projects.json', { cache: 'no-cache' });
+          if (!res.ok) throw new Error('projects.json not in current folder');
           projectsData = await res.json();
-          projectsBase = res.url.replace(/projects\.json$/i,'');
+          projectsBase = res.url.replace(/projects\.json$/i, '');
         } catch (_) {
+          // fallback: search parents
           const res2 = await fetchJsonFromParents('projects.json', 8);
           projectsData = res2.json;
-          projectsBase = res2.url.replace(/projects\.json$/i,'');
+          projectsBase = res2.url.replace(/projects\.json$/i, '');
         }
 
-        renderProjects(projectsData, projectsBase, remoteBanner, siteFallbackImage);
+        // Render with resolved siteFallbackAbsolute (may be null) and remoteBanner
+        renderProjects(projectsData, projectsBase, remoteBanner, siteFallbackAbsolute);
       } catch (err) {
         console.error('Failed to load projects.json', err);
         document.getElementById('projects-container').innerHTML = '<div style="color:var(--muted)">Failed to load projects. Check projects.json.</div>';
