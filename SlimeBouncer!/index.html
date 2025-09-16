@@ -3,8 +3,9 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>PerianDev — Project Page</title>
+  <title id="page-title">PerianDev — Project Page</title>
 
+  <link rel="icon" href="/icon.png" type="image/png">
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;700;900&display=swap" rel="stylesheet">
 
   <style>
@@ -34,23 +35,33 @@
 
     .container{max-width:var(--max-width);margin:32px auto;padding:24px;}
 
-    .divider{height:1px;background:linear-gradient(90deg,transparent,rgba(255,255,255,0.04),transparent);margin:18px 0 22px 0;border-radius:4px;}
+    .banner{
+      display:flex;align-items:center;gap:20px;
+      background: linear-gradient(90deg, var(--brand), color-mix(in srgb, var(--brand) 85%, black 15%));
+      padding:20px;border-radius:12px;box-shadow:0 8px 30px rgba(0,0,0,0.55);color:#fff;margin-bottom:18px;
+    }
+    .banner .icon{width:72px;height:72px;flex:0 0 72px;display:flex;align-items:center;justify-content:center;transition:transform var(--transition);}
+    .banner .icon img{max-width:100%;max-height:100%;display:block;filter:drop-shadow(0 6px 18px rgba(0,0,0,0.45));}
+    .banner h1{margin:0;font-size:20px;font-weight:900;letter-spacing:-0.02em;}
+    .banner-sub{margin-top:6px;color:rgba(255,255,255,0.92);font-weight:500;font-size:14px;}
 
-    .projects-header{display:flex;flex-direction:column;align-items:flex-start;gap:12px;margin:0 0 8px 0;}
+    .divider{height:1px;background:linear-gradient(90deg,transparent,rgba(255,255,255,0.04),transparent);margin:18px 0;border-radius:4px;}
 
-    .portfolio-title{font-size:32px;font-weight:900;margin-bottom:12px;color:var(--text);}
+    .portfolio-title{font-size:22px;font-weight:900;margin-bottom:12px;color:var(--text);}
     .portfolio-title a{color:var(--text);text-decoration:none;}
 
-    .game-links{display:flex;gap:16px;flex-wrap:wrap;align-items:center;}
+    .game-links{display:flex;gap:16px;flex-wrap:wrap;align-items:center;margin-bottom:12px;}
     .game-link{color:var(--text);font-weight:700;text-decoration:none;position:relative;padding:4px 2px;transition:color var(--transition), transform var(--transition);}
     .game-link::after{content:"";position:absolute;left:0;right:0;bottom:0;height:2px;background:var(--brand);transform:scaleX(0);transform-origin:left center;transition:transform var(--transition);}
     .game-link:hover{color:white;transform:translateY(-2px);}
     .game-link:hover::after{transform:scaleX(1);}
 
     .game-info{display:flex;flex-direction:column;gap:16px;}
-    .game-info h2{margin:0;font-size:28px;font-weight:800;}
+    .game-info h2{margin:0;font-size:28px;font-weight:800;color:var(--text);}
 
     .game-details{display:flex;gap:24px;align-items:flex-start;}
+    @media (max-width:880px){.game-details{flex-direction:column;}}
+
     .game-cover{flex:0 0 50%;}
     .game-cover img{
       width:100%;
@@ -89,7 +100,16 @@
 </head>
 <body>
   <div class="container" role="main">
-    <div class="portfolio-title"><a href="https://periandevelopment.github.io/Portfolio1">Portfolio</a></div>
+
+    <header class="banner">
+      <div class="icon"><img id="brand-icon" src="/icon.png" alt="brand icon" /></div>
+      <div>
+        <h1 id="brand-name">PerianDev</h1>
+        <div id="brand-tagline" class="banner-sub">Indie games & experiments — playable, polished, irreverent.</div>
+      </div>
+    </header>
+
+    <div class="portfolio-title"><a id="repo-root-link" href="#">Portfolio</a></div>
 
     <nav aria-label="Project quick links">
       <div class="game-links" id="project-links"></div>
@@ -103,8 +123,8 @@
 
     <section class="project-section">
       <h3>Overview</h3>
-      <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla accumsan, metus ultrices eleifend gravida, nulla nunc varius lectus.</p>
-      <img src="banner_2x1.png" alt="Project banner" loading="lazy">
+      <p id="overview-text">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla accumsan, metus ultrices eleifend gravida, nulla nunc varius lectus.</p>
+      <img id="overview-banner" src="" alt="Project banner" loading="lazy">
     </section>
 
     <div class="divider"></div>
@@ -117,54 +137,79 @@
         <li>Created animations and effects</li>
         <li>Optimized performance</li>
       </ul>
-      <img src="banner_2x1.png" alt="Contributions banner" loading="lazy">
+      <img id="contrib-banner" src="" alt="Contributions banner" loading="lazy">
     </section>
 
     <div class="foot" id="site-footer">Made with ♥ by PerianDev</div>
   </div>
 
   <script>
-    async function fetchJson(url) {
-      const res = await fetch(url);
-      if (!res.ok) throw new Error(`Failed to fetch ${url}: ${res.status}`);
-      return res.json();
-    }
+    // CONFIG
+    const SOCIAL_JSON_URL = 'https://periandevelopment.github.io/Socials/social.json';
+    const SOCIAL_HOST = (new URL(SOCIAL_JSON_URL)).origin; // https://periandevelopment.github.io
 
-    async function applyBrandingFromRemote() {
-      try {
-        const social = await fetchJson('https://periandevelopment.github.io/Portfolio1/Socials/social.json');
-        const colors = social.colors || {};
-        const identity = social.identity || {};
-
-        if (colors.primary_hex) document.documentElement.style.setProperty('--brand', colors.primary_hex);
-        if (colors.background_hex) document.documentElement.style.setProperty('--bg', colors.background_hex);
-        if (colors.text_hex) document.documentElement.style.setProperty('--text', colors.text_hex);
-
-        if (identity.display_name) document.getElementById('site-footer').textContent = `Made with ♥ by ${identity.display_name}`;
-      } catch (err) {
-        console.warn('Could not load remote social.json — using defaults.', err);
+    // Utility: try to fetch a JSON file from current folder up to parent levels
+    async function fetchJsonFromParents(name, maxDepth = 8) {
+      const candidates = [];
+      for (let i = 0; i <= maxDepth; i++) {
+        candidates.push(i === 0 ? name : `${'../'.repeat(i)}${name}`);
       }
+      candidates.push('/' + name);
+      for (const path of candidates) {
+        try {
+          const res = await fetch(path, { cache: 'no-cache' });
+          if (!res.ok) continue;
+          const json = await res.json();
+          return { json, url: res.url };
+        } catch (e) {
+          // try next
+        }
+      }
+      throw new Error(`Could not fetch ${name} from any parent path`);
     }
 
+    // fetch absolute JSON
+    async function fetchJsonAbsolute(url) {
+      const res = await fetch(url, { cache: 'no-cache' });
+      if (!res.ok) throw new Error(`Failed to fetch ${url}: ${res.status}`);
+      return { json: await res.json(), url: res.url };
+    }
+
+    // resolve relative (non-absolute/non-root) against base which ends with '/'
+    function resolveUrl(possibleUrl, base) {
+      if (!possibleUrl) return possibleUrl;
+      if (/^https?:\/\//i.test(possibleUrl) || possibleUrl.startsWith('/')) return possibleUrl;
+      if (!base.endsWith('/')) base = base + '/';
+      return base + possibleUrl;
+    }
+
+    // derive site prefix (first path segment) so root fallback resolves correctly on GitHub Pages
+    function getSitePrefix() {
+      const parts = window.location.pathname.split('/').filter(Boolean);
+      return parts.length > 0 ? `/${parts[0]}/` : '/';
+    }
+
+    // Render project quick links and selected project
     function renderProjectLinks(projects) {
       const linksContainer = document.getElementById('project-links');
       linksContainer.innerHTML = '';
       projects.forEach(p => {
         const a = document.createElement('a');
         a.className = 'game-link';
-        // Use the link from projects.json if it exists
-        a.href = p.link || `?id=${encodeURIComponent(p.id)}`;
+        a.href = p.link || '#';
         a.textContent = p.title || p.name || p.id || 'Project';
         linksContainer.appendChild(a);
       });
     }
 
+    // Get query param id
     function getQueryParam(name) {
       const params = new URLSearchParams(window.location.search);
       return params.get(name);
     }
 
-    function renderSelectedProject(projects, id) {
+    // Render a selected project into the page (keeps your existing content structure)
+    function renderSelectedProject(projects, id, projectsBase, remoteBannerUrl, siteFallbackAbsolute) {
       const container = document.getElementById('game-info');
       container.innerHTML = '';
 
@@ -181,9 +226,31 @@
       const cover = document.createElement('div');
       cover.className = 'game-cover';
       const img = document.createElement('img');
-      img.src = project.cover || 'banner_2x1.png';
+
+      // Compute cover fallback resolution:
+      // project.cover -> project.icon_url -> remoteBannerUrl -> siteFallbackAbsolute -> computed root fallback
+      let coverUrl = project.cover || project.icon_url || null;
+
+      if (coverUrl && !/^https?:\/\//i.test(coverUrl) && !coverUrl.startsWith('/')) {
+        if (projectsBase) coverUrl = projectsBase + coverUrl;
+        else {
+          const sitePrefix = getSitePrefix();
+          coverUrl = window.location.origin + sitePrefix + coverUrl;
+        }
+      }
+
+      if (!coverUrl && remoteBannerUrl) coverUrl = remoteBannerUrl;
+      if (!coverUrl && siteFallbackAbsolute) coverUrl = siteFallbackAbsolute;
+      if (!coverUrl) {
+        const sitePrefix = getSitePrefix();
+        coverUrl = window.location.origin + sitePrefix + 'fallback.png';
+      }
+
+      img.src = coverUrl;
+      img.alt = (project.title || project.name || '') + ' cover';
       img.loading = 'lazy';
       cover.appendChild(img);
+
       details.appendChild(cover);
 
       const meta = document.createElement('div');
@@ -206,23 +273,114 @@
 
       details.appendChild(meta);
       container.appendChild(details);
+
+      // also wire overview & banner images below using same resolved fallback
+      const overviewBanner = document.getElementById('overview-banner');
+      const contribBanner = document.getElementById('contrib-banner');
+      overviewBanner.src = coverUrl;
+      contribBanner.src = coverUrl;
+
+      // (keep default overview text unchanged; you can later load project-specific description)
+      // document.getElementById('overview-text').textContent = project.description || existing text
     }
 
-    async function init() {
-      await applyBrandingFromRemote();
+    // INIT
+    (async function init() {
+      // 1) website.json (search parents)
+      let siteFallbackAbsolute = null;
+      let repoRootUrl = null; // link to repo root for "Portfolio" link
       try {
-        const projects = await fetchJson('https://periandevelopment.github.io/Portfolio1/projects.json');
-        renderProjectLinks(projects);
+        const { json: siteJson, url: siteJsonUrl } = await fetchJsonFromParents('website.json', 8);
+        // if repo specified, build absolute fallback using SOCIAL_HOST (Github Pages host)
+        if (siteJson.repo) {
+          const repo = siteJson.repo.replace(/^\/|\/$/g, '');
+          const fallbackName = siteJson.fallbackImage || 'fallback.png';
+          siteFallbackAbsolute = `${SOCIAL_HOST}/${repo}/${fallbackName}`;
+          repoRootUrl = `${SOCIAL_HOST}/${repo}/`;
+        } else {
+          // resolve fallbackImage relative to website.json location
+          if (siteJson.fallbackImage) {
+            const siteBase = siteJsonUrl.replace(/website\.json$/i, '');
+            siteFallbackAbsolute = resolveUrl(siteJson.fallbackImage, siteBase);
+          }
+          // repo root link -> location origin + site prefix
+          const sitePrefix = getSitePrefix();
+          repoRootUrl = window.location.origin + sitePrefix;
+        }
+        if (siteJson.footerText) {
+          document.getElementById('site-footer').textContent = siteJson.footerText;
+          document.getElementById('site-footer').dataset.locked = '1';
+        }
+      } catch (err) {
+        // no website.json found — fall back
+        const sitePrefix = getSitePrefix();
+        repoRootUrl = window.location.origin + sitePrefix;
+      }
+
+      // set repo root link
+      const repoRootLink = document.getElementById('repo-root-link');
+      repoRootLink.href = repoRootUrl || '#';
+
+      // 2) social.json (branding)
+      let remoteBannerUrl = null;
+      try {
+        const { json: socialJson } = await fetchJsonAbsolute(SOCIAL_JSON_URL);
+        const colors = socialJson.colors || {};
+        const icons = socialJson.icons || {};
+        const banners = socialJson.banners || {};
+        const identity = socialJson.identity || {};
+
+        if (colors.primary_hex) document.documentElement.style.setProperty('--brand', colors.primary_hex);
+        if (colors.background_hex) document.documentElement.style.setProperty('--bg', colors.background_hex);
+        if (colors.text_hex) document.documentElement.style.setProperty('--text', colors.text_hex);
+
+        if (Array.isArray(colors.gradient_hex) && colors.gradient_hex.length >= 2) {
+          const g = colors.gradient_hex.slice(0,2).join(', ');
+          document.querySelector('.banner').style.background = `linear-gradient(90deg, ${g})`;
+        }
+
+        const iconEl = document.getElementById('brand-icon');
+        if (icons.icon_transparent) iconEl.src = icons.icon_transparent;
+        else if (icons.icon) iconEl.src = icons.icon;
+
+        if (identity.display_name) document.getElementById('brand-name').textContent = identity.display_name;
+        if (identity.tagline) document.getElementById('brand-tagline').textContent = identity.tagline;
+        if (identity.bio) {
+          // optional: use bio if you want to override about content later
+        }
+
+        remoteBannerUrl = banners['2x1'] || null;
+      } catch (err) {
+        console.warn('Failed to fetch remote social.json', err);
+      }
+
+      // 3) projects.json (search parents)
+      try {
+        let projectsData, projectsBase;
+        try {
+          // try projects.json in current folder first
+          const res = await fetch('projects.json', { cache: 'no-cache' });
+          if (!res.ok) throw new Error('not found in current folder');
+          projectsData = await res.json();
+          projectsBase = res.url.replace(/projects\.json$/i, '');
+        } catch (_) {
+          const res2 = await fetchJsonFromParents('projects.json', 8);
+          projectsData = res2.json;
+          projectsBase = res2.url.replace(/projects\.json$/i, '');
+        }
+
+        // render links
+        renderProjectLinks(projectsData);
+
+        // get id param and render selected
         const paramId = getQueryParam('id');
-        renderSelectedProject(projects, paramId);
+        renderSelectedProject(projectsData, paramId, projectsBase, remoteBannerUrl, siteFallbackAbsolute);
+
       } catch (err) {
         console.error('Failed to load projects.json', err);
-        const container = document.getElementById('game-info');
-        container.innerHTML = '<div style="color:var(--muted)">Failed to load projects. Check projects.json in the repo root.</div>';
+        document.getElementById('game-info').innerHTML = '<div style="color:var(--muted)">Failed to load projects. Check projects.json in repo root.</div>';
       }
-    }
-
-    init();
+    })();
   </script>
 </body>
 </html>
