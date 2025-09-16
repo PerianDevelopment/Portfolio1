@@ -10,11 +10,9 @@
   <style>
     :root{
       --bg: #222222;
-      --surface: #2b2b2b;
       --muted: #bdbdbd;
       --text: #eaeaea;
       --brand: #FF382E;
-      --glass: rgba(255,255,255,0.03);
       --card-shadow: 0 6px 18px rgba(0,0,0,0.6);
       --radius: 12px;
       --transition: 240ms cubic-bezier(.2,.9,.2,1);
@@ -49,11 +47,9 @@
       padding:30px;
       border-radius:16px;
       box-shadow: 0 8px 30px rgba(0,0,0,0.55);
-      color: #fff;
+      color:#fff;
       overflow:hidden;
     }
-
-    /* Icon: removed box / background but keep size + animation */
     .banner .icon{
       width:110px;
       height:110px;
@@ -63,7 +59,6 @@
       justify-content:center;
       transition: transform var(--transition);
       padding:0;
-      border-radius:0;
     }
     .banner .icon img{
       max-width:100%;
@@ -71,7 +66,6 @@
       display:block;
       filter: drop-shadow(0 6px 18px rgba(0,0,0,0.45));
     }
-
     .banner h1{
       margin:0;
       font-size: clamp(28px, 4.5vw, 54px);
@@ -80,15 +74,12 @@
       text-shadow: 0 6px 20px rgba(0,0,0,0.35);
       line-height:1;
     }
-
     .banner-sub{
       margin-top:8px;
       color: rgba(255,255,255,0.92);
       font-weight:500;
       opacity:0.95;
     }
-
-    /* Keep the hover animation but no background box */
     .banner:hover .icon{ transform: translateX(-6px) rotate(-4deg) scale(1.02); }
 
     /* About */
@@ -106,7 +97,7 @@
       font-size:16px;
     }
 
-    /* Divider BETWEEN About and Projects header (moved) */
+    /* Divider used between sections */
     .divider{
       height:1px;
       background: linear-gradient(90deg, transparent, rgba(255,255,255,0.04), transparent);
@@ -114,10 +105,10 @@
       border-radius:4px;
     }
 
-    /* Projects header + links container - stacked with links under title */
+    /* Projects header (title + links stacked) */
     .projects-header{
       display:flex;
-      flex-direction:column; /* stack title then links underneath */
+      flex-direction:column;
       align-items:flex-start;
       gap:12px;
       margin:0 0 8px 0;
@@ -137,16 +128,15 @@
       box-shadow: 0 6px 20px rgba(255,56,46,0.16);
     }
 
-    /* Game Links (text-only clickable links) - normal text color */
+    /* Text links under Projects title (normal color, brand underline on hover) */
     .game-links{
       display:flex;
       gap:16px;
       flex-wrap:wrap;
       align-items:center;
     }
-
     .game-link{
-      color:var(--text); /* normal page text color */
+      color:var(--text);
       font-weight:700;
       text-decoration:none;
       position:relative;
@@ -154,7 +144,6 @@
       transition: color var(--transition), transform var(--transition);
       outline: none;
     }
-    /* animated underline now uses brand color */
     .game-link::after{
       content:"";
       position:absolute;
@@ -162,7 +151,7 @@
       right:0;
       bottom:0;
       height:2px;
-      background: var(--brand); /* brand color for underline */
+      background: var(--brand);
       transform: scaleX(0);
       transform-origin:left center;
       transition: transform var(--transition);
@@ -232,16 +221,14 @@
       border: 1px solid rgba(255,255,255,0.02);
     }
 
-    /* Cover image with 4:3 ratio; uses banner_2x1.png as texture */
+    /* Cover (texture is banner_2x1.png) */
     .cover-link{
       display:block;
       border-radius:10px;
       overflow:hidden;
       text-decoration:none;
       outline:none;
-      /* cover links (inside project) use brand color for focus outlines */
     }
-
     .cover{
       width:100%;
       aspect-ratio: 4 / 3;
@@ -256,7 +243,6 @@
       transition: transform var(--transition);
     }
     .project:hover .cover{ transform: scale(1.02); }
-
     .cover-title{
       position:absolute;
       left:12px;
@@ -268,7 +254,6 @@
       text-shadow: 0 6px 18px rgba(0,0,0,0.6);
       pointer-events:none;
     }
-
     .cover::after{
       content:"";
       position:absolute;
@@ -299,7 +284,7 @@
       font-size:13px;
     }
 
-    /* Make meta links use brand color (only links inside project boxes) */
+    /* Links inside project boxes use brand color */
     a.reset{
       color:var(--brand);
       text-decoration:none;
@@ -308,15 +293,12 @@
     a.reset:focus{
       text-decoration: underline;
     }
-
-    /* cover link focus outline uses brand */
     .cover-link:focus {
       outline: 3px solid rgba(255,56,46,0.14);
       outline-offset: 6px;
       border-radius:8px;
     }
 
-    /* focus styles for keyboard users keep consistent */
     a:focus, button:focus, .game-link:focus{
       outline: 3px solid rgba(255,255,255,0.06);
       outline-offset: 4px;
@@ -336,7 +318,7 @@
 <body>
   <div class="container" role="main">
 
-    <!-- Banner -->
+    <!-- Header / Banner -->
     <header class="banner" role="banner" aria-label="PerianDev banner">
       <div class="icon" aria-hidden="false">
         <img src="icon_transparent.png" alt="PerianDev icon (texture)" />
@@ -344,7 +326,7 @@
 
       <div style="flex:1; min-width:0;">
         <h1 aria-label="PerianDev — indie game studio">
-          <span class="accent">PerianDev</span>
+          PerianDev
         </h1>
         <div class="banner-sub" aria-hidden="true">Indie games & experiments — playable, polished, irreverent.</div>
       </div>
@@ -359,10 +341,10 @@
       </p>
     </section>
 
-    <!-- Divider moved here (between About and Projects header) -->
+    <!-- Divider between About and Projects -->
     <div class="divider" aria-hidden="true"></div>
 
-    <!-- Projects header + text links (stacked: title then links underneath) -->
+    <!-- Projects header + quick text links (links stacked under title) -->
     <div class="projects-header" aria-hidden="false">
       <div class="section-header" aria-hidden="true">
         <div class="dot" aria-hidden="true"></div>
@@ -380,9 +362,11 @@
       </nav>
     </div>
 
-    <!-- Projects grid (no extra divider here anymore) -->
+    <!-- Additional divider below project text links -->
+    <div class="divider" aria-hidden="true"></div>
+
+    <!-- Projects grid -->
     <section class="projects" aria-label="Projects and games">
-      <!-- Project 1 -->
       <article class="project" id="slimez" aria-labelledby="title-slimez">
         <div class="project-head">
           <h3 id="title-slimez" class="project-title">SlimeZ</h3>
@@ -425,7 +409,6 @@
         </div>
       </article>
 
-      <!-- Project 2 -->
       <article class="project" id="astrodrift" aria-labelledby="title-astrodrift">
         <div class="project-head">
           <h3 id="title-astrodrift" class="project-title">Astro Drift</h3>
@@ -468,7 +451,6 @@
         </div>
       </article>
 
-      <!-- Project 3 -->
       <article class="project" id="neonrunner" aria-labelledby="title-neonrunner">
         <div class="project-head">
           <h3 id="title-neonrunner" class="project-title">Neon Runner</h3>
@@ -511,7 +493,6 @@
         </div>
       </article>
 
-      <!-- Project 4 -->
       <article class="project" id="tunnels" aria-labelledby="title-tunnels">
         <div class="project-head">
           <h3 id="title-tunnels" class="project-title">Forgotten Tunnels</h3>
@@ -553,15 +534,15 @@
           </div>
         </div>
       </article>
-
     </section>
 
+    <!-- Footer -->
     <div class="foot">Made with ♥ by PerianDev — feel free to replace data and images with real project assets.</div>
 
   </div>
 
   <script>
-    // Smooth scroll for the top text links (internal anchors).
+    // Smooth scroll for project quick links
     (function(){
       document.querySelectorAll('.game-link').forEach(a=>{
         a.addEventListener('click', (e)=>{
