@@ -106,14 +106,21 @@
       font-size:16px;
     }
 
-    /* Projects header + links container */
+    /* Divider BETWEEN About and Projects header (moved) */
+    .divider{
+      height:1px;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.04), transparent);
+      margin:18px 0 22px 0;
+      border-radius:4px;
+    }
+
+    /* Projects header + links container - stacked with links under title */
     .projects-header{
       display:flex;
-      align-items:center;
-      justify-content:space-between;
-      gap:20px;
-      margin:18px 0;
-      flex-wrap:wrap;
+      flex-direction:column; /* stack title then links underneath */
+      align-items:flex-start;
+      gap:12px;
+      margin:0 0 8px 0;
     }
     .section-header{
       font-size:18px;
@@ -130,7 +137,7 @@
       box-shadow: 0 6px 20px rgba(255,56,46,0.16);
     }
 
-    /* Game Links (text-only clickable links) - back to normal color */
+    /* Game Links (text-only clickable links) - normal text color */
     .game-links{
       display:flex;
       gap:16px;
@@ -147,7 +154,7 @@
       transition: color var(--transition), transform var(--transition);
       outline: none;
     }
-    /* subtle underline using muted color */
+    /* animated underline now uses brand color */
     .game-link::after{
       content:"";
       position:absolute;
@@ -155,7 +162,7 @@
       right:0;
       bottom:0;
       height:2px;
-      background: rgba(255,255,255,0.06);
+      background: var(--brand); /* brand color for underline */
       transform: scaleX(0);
       transform-origin:left center;
       transition: transform var(--transition);
@@ -170,14 +177,6 @@
     .game-link:hover::after,
     .game-link:focus::after{ transform: scaleX(1); }
 
-    /* Divider */
-    .divider{
-      height:1px;
-      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.04), transparent);
-      margin:18px 0 22px 0;
-      border-radius:4px;
-    }
-
     /* Projects grid */
     .projects{
       display:grid;
@@ -188,7 +187,6 @@
     @media (max-width:880px){
       .projects{ grid-template-columns: 1fr; }
       .banner{ flex-direction:row; }
-      .projects-header{ flex-direction:column; align-items:flex-start; gap:12px; }
     }
     @media (max-width:520px){
       .banner{ flex-direction:column; align-items:flex-start; gap:12px; padding:18px;}
@@ -311,7 +309,7 @@
       text-decoration: underline;
     }
 
-    /* also style cover links (the cover <a>) so focus/outline uses brand */
+    /* cover link focus outline uses brand */
     .cover-link:focus {
       outline: 3px solid rgba(255,56,46,0.14);
       outline-offset: 6px;
@@ -361,7 +359,10 @@
       </p>
     </section>
 
-    <!-- Projects header + text links (moved under About) -->
+    <!-- Divider moved here (between About and Projects header) -->
+    <div class="divider" aria-hidden="true"></div>
+
+    <!-- Projects header + text links (stacked: title then links underneath) -->
     <div class="projects-header" aria-hidden="false">
       <div class="section-header" aria-hidden="true">
         <div class="dot" aria-hidden="true"></div>
@@ -379,9 +380,7 @@
       </nav>
     </div>
 
-    <div class="divider" aria-hidden="true"></div>
-
-    <!-- Projects grid -->
+    <!-- Projects grid (no extra divider here anymore) -->
     <section class="projects" aria-label="Projects and games">
       <!-- Project 1 -->
       <article class="project" id="slimez" aria-labelledby="title-slimez">
