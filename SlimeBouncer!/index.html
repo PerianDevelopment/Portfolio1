@@ -54,7 +54,14 @@
 
     .game-details{display:flex;gap:24px;align-items:flex-start;}
     .game-cover{flex:0 0 50%;}
-    .game-cover img{width:100%;height:auto;border-radius:12px;box-shadow:var(--card-shadow);}
+    .game-cover img{
+      width:100%;
+      height:auto;
+      aspect-ratio:4 / 3;
+      object-fit:cover;
+      border-radius:12px;
+      box-shadow:var(--card-shadow);
+    }
     .game-meta{flex:1;display:flex;flex-direction:column;gap:12px;}
 
     .meta-item .label{display:block;color:var(--muted);font-weight:600;font-size:12px;}
@@ -89,7 +96,7 @@
     <section class="project-section">
       <h3>Overview</h3>
       <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla accumsan, metus ultrices eleifend gravida, nulla nunc varius lectus.</p>
-      <img src="banner_2x1.png" alt="Project banner" style="width:100%;border-radius:12px;box-shadow:var(--card-shadow);margin-top:12px;">
+      <img src="banner_2x1.png" alt="Project banner" style="width:100%;border-radius:12px;box-shadow:var(--card-shadow);margin-top:12px;aspect-ratio:2 / 1;">
     </section>
 
     <div class="divider"></div>
@@ -102,7 +109,7 @@
         <li>Created animations and effects</li>
         <li>Optimized performance</li>
       </ul>
-      <img src="banner_2x1.png" alt="Contributions banner" style="width:100%;border-radius:12px;box-shadow:var(--card-shadow);margin-top:12px;">
+      <img src="banner_2x1.png" alt="Contributions banner" style="width:100%;border-radius:12px;box-shadow:var(--card-shadow);margin-top:12px;aspect-ratio:2 / 1;">
     </section>
 
     <div class="foot" id="site-footer">Made with ♥ by PerianDev</div>
@@ -117,7 +124,7 @@
 
     async function applyBrandingFromRemote() {
       try {
-        const social = await fetchJson('https://periandevelopment.github.io/Socials/social.json');
+        const social = await fetchJson('https://periandevelopment.github.io/Portfolio1/Socials/social.json');
         const colors = social.colors || {};
         const identity = social.identity || {};
 
