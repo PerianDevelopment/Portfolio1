@@ -26,11 +26,11 @@
     "engineTools": "Unity, UnityServices, GitHub Workflows, VectorArt, GIMP"
   },
   {
-    "id": "minecraftComputer",
-    "title": "Minecraft Computer",
+    "id": "minecraftgrumbot",
+    "title": "Minecraft Grumbot",
     "year": "2025",
     "cover": "",
-    "link": "https://periandevelopment.github.io/Portfolio1/Projects/MinecraftComputer",
+    "link": "https://periandevelopment.github.io/Portfolio1/Projects/MinecraftGrumbot",
     "linkText": "Portfolio Page",
     "studio": "PerianDevelopment",
     "teamSize": "1 (solo)",
