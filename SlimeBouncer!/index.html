@@ -36,21 +36,22 @@
 
     .divider{height:1px;background:linear-gradient(90deg,transparent,rgba(255,255,255,0.04),transparent);margin:22px 0;border-radius:4px;}
 
-    /* Header area (compact) */
+    /* Top area */
     .top-row{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:6px;}
-    .projects-header{display:flex;flex-direction:column;gap:12px;}
+    .projects-header{display:flex;flex-direction:column;gap:8px;}
     .section-header{font-size:18px;font-weight:700;display:flex;align-items:center;gap:12px;}
     .section-header .dot{width:10px;height:10px;background:var(--brand);border-radius:50%;box-shadow:0 6px 20px rgba(255,56,46,0.12);}
 
-    /* Portfolio title - NO hover effect */
+    /* Portfolio title - NO hover effect, larger */
     .portfolio-title{
       color:var(--text);
-      font-weight:800;
+      font-weight:900;
       text-decoration:none;
-      padding:4px 2px;
+      padding:2px 0;
       display:inline-block;
-      font-size:18px;
+      font-size:32px; /* made bigger as requested */
       line-height:1;
+      letter-spacing:-0.01em;
     }
 
     /* Game text links (identical to main page) */
@@ -60,7 +61,7 @@
     .game-link:hover{color:white;transform:translateY(-2px);}
     .game-link:hover::after{transform:scaleX(1);}
 
-    /* Game info layout: title left, 4:3 cover below, meta on the right */
+    /* Game info layout: title left, 4:3 cover under title, meta on the right */
     .game-info{
       display:grid;
       grid-template-columns: 320px 1fr;
@@ -100,26 +101,28 @@
 <body>
   <div class="container" role="main">
 
-    <!-- Top row: small compact header area with portfolio title and (optionally) something on the right -->
+    <!-- Top row: title and project links (no divider between title and links) -->
     <div class="top-row">
       <div class="projects-header" style="margin:0">
         <div class="section-header" aria-hidden="true">
           <div class="dot"></div>
-          <!-- Portfolio title: NO hover effect -->
-          <a class="portfolio-title" href="https://periandevelopment.github.io/Portfolio1">PerianDev Portfolio</a>
+          <!-- Title now says exactly "Portfolio" and is larger; no hover effect -->
+          <a class="portfolio-title" href="https://periandevelopment.github.io/Portfolio1">Portfolio</a>
         </div>
 
-        <!-- Game links (text buttons identical to main page) -->
+        <!-- Game links (text buttons identical to main page) — directly under title -->
         <nav aria-label="Project quick links">
           <div class="game-links" id="project-links"></div>
         </nav>
       </div>
 
-      <!-- spare area if you want small controls or icons later -->
+      <!-- spare area for future controls -->
       <div aria-hidden="true"></div>
     </div>
 
-    <div class="divider"></div>
+    <!-- NOTE: removed the divider that previously sat between title and links / header -->
+
+    <div class="divider"></div> <!-- keeps separation between header area and project info -->
 
     <!-- Game Info: title (left), 4x3 cover under title, meta on right -->
     <section id="game-info" class="game-info" aria-labelledby="project-title">
@@ -180,18 +183,13 @@
       try {
         const social = await fetchJson('https://periandevelopment.github.io/Socials/social.json');
         const colors = social.colors || {};
-        const icons = social.icons || {};
         const identity = social.identity || {};
 
         if (colors.primary_hex) document.documentElement.style.setProperty('--brand', colors.primary_hex);
         if (colors.background_hex) document.documentElement.style.setProperty('--bg', colors.background_hex);
         if (colors.text_hex) document.documentElement.style.setProperty('--text', colors.text_hex);
 
-        // Identity: footer text
         if (identity.display_name) document.getElementById('site-footer').textContent = `Made with ♥ by ${identity.display_name}`;
-
-        // NOTE: We are not rendering a banner image here (you asked the banner removed),
-        // but we still prefer to pick up brand colors & identity.
       } catch (err) {
         console.warn('Could not load remote social.json — using defaults.', err);
       }
@@ -276,7 +274,8 @@
       await applyBrandingFromRemote();
 
       try {
-        const projects = await fetchJson('projects.json');
+        // load projects.json from the repo root as requested
+        const projects = await fetchJson('/projects.json');
         renderProjectLinks(projects);
 
         // support selecting a project via ?id=slug or id (fallback to first project)
@@ -285,7 +284,7 @@
       } catch (err) {
         console.error('Failed to load projects.json', err);
         const container = document.getElementById('game-info');
-        container.innerHTML = '<div style="color:var(--muted)">Failed to load projects. Check projects.json in the same folder.</div>';
+        container.innerHTML = '<div style="color:var(--muted)">Failed to load projects. Check /projects.json in the repo root.</div>';
       }
     }
 
