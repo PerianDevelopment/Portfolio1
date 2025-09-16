@@ -56,10 +56,10 @@
 
     /* Game text links (identical to main page) */
     .game-links{display:flex;gap:16px;flex-wrap:wrap;align-items:center;}
-    .game-link{color:var(--text);font-weight:700;text-decoration:none;position:relative;padding:4px 2px;transition:color var(--transition), transform var(--transition);}
-    .game-link::after{content:"";position:absolute;left:0;right:0;bottom:0;height:2px;background:var(--brand);transform:scaleX(0);transform-origin:left center;transition:transform var(--transition);}
-    .game-link:hover{color:white;transform:translateY(-2px);}
-    .game-link:hover::after{transform:scaleX(1);}
+    .game-link{color:var(--text);font-weight:700;text-decoration:none;position:relative;padding:4px 2px;transition:color var(--transition), transform var(--transition);}    
+    .game-link::after{content:"";position:absolute;left:0;right:0;bottom:0;height:2px;background:var(--brand);transform:scaleX(0);transform-origin:left center;transition:transform var(--transition);}    
+    .game-link:hover{color:white;transform:translateY(-2px);}    
+    .game-link:hover::after{transform:scaleX(1);}    
 
     /* Game info layout: title left, 4:3 cover under title, meta on the right */
     .game-info{
@@ -74,8 +74,8 @@
 
     /* Left column */
     .left-col{}
-    .project-title{margin:0 0 12px;font-size:28px;font-weight:900;color:var(--text);}
-    .cover-wrap{width:100%;border-radius:12px;overflow:hidden;box-shadow:var(--card-shadow);}
+    .project-title{margin:0 0 12px;font-size:28px;font-weight:900;color:var(--text);}    
+    .cover-wrap{width:100%;border-radius:12px;overflow:hidden;box-shadow:var(--card-shadow);}    
     .cover-img{width:100%;display:block;aspect-ratio:4 / 3;object-fit:cover;background:#111;border-radius:12px;}
 
     /* Right column meta */
@@ -124,7 +124,7 @@
 
     <div class="divider"></div> <!-- keeps separation between header area and project info -->
 
-    <!-- Game Info: title (left), 4x3 cover under title, meta on right -->
+    <!-- Game Info: title (left), 4x3 cover under title, meta on the right -->
     <section id="game-info" class="game-info" aria-labelledby="project-title">
       <!-- Filled by JS -->
     </section>
@@ -274,8 +274,8 @@
       await applyBrandingFromRemote();
 
       try {
-        // load projects.json from the repo root as requested
-        const projects = await fetchJson('projects.json');
+        // fetch projects.json using the full absolute URL (as requested)
+        const projects = await fetchJson('https://periandevelopment.github.io/Portfolio1/projects.json');
         renderProjectLinks(projects);
 
         // support selecting a project via ?id=slug or id (fallback to first project)
@@ -284,7 +284,7 @@
       } catch (err) {
         console.error('Failed to load projects.json', err);
         const container = document.getElementById('game-info');
-        container.innerHTML = '<div style="color:var(--muted)">Failed to load projects. Check /projects.json in the repo root.</div>';
+        container.innerHTML = '<div style="color:var(--muted)">Failed to load projects. Check the projects.json URL or that the file exists at https://periandevelopment.github.io/Portfolio1/projects.json.</div>';
       }
     }
 
