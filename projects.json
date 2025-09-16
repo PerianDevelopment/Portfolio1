@@ -5,6 +5,7 @@
     "year": "2025",
     "cover": "banner_2x1.png",
     "link": "https://periandevelopment.itch.io/",
+    "linkText": "Play on Itch.io",
     "studio": "PerianDevelopment",
     "teamSize": "1 (solo)",
     "contribution": "Design, Code, Art Direction",
@@ -17,22 +18,11 @@
     "year": "2023",
     "cover": "banner_2x1.png",
     "link": "https://periandevelopment.itch.io/",
+    "linkText": "See more",
     "studio": "PerianDevelopment",
     "teamSize": "2",
     "contribution": "Gameplay programming, tools",
     "platform": "PC, Steam",
     "engineTools": "Godot, Aseprite"
-  },
-  {
-    "id": "neonrunner",
-    "title": "Neon Runner",
-    "year": "2024",
-    "cover": "banner_2x1.png",
-    "link": "https://periandevelopment.itch.io/",
-    "studio": "PerianDevelopment",
-    "teamSize": "3",
-    "contribution": "Level design, FX, polish",
-    "platform": "Mobile",
-    "engineTools": "Unity, FMOD"
   }
 ]
