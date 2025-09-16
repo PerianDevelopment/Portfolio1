@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>PerianDev — Project Page</title>
+  <title>PerianDev — Games Portfolio</title>
 
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;700;900&display=swap" rel="stylesheet">
 
@@ -34,10 +34,24 @@
 
     .container{max-width:var(--max-width);margin:32px auto;padding:24px;}
 
+    .banner{
+      display:flex;align-items:center;gap:20px;
+      background: linear-gradient(90deg, var(--brand), color-mix(in srgb, var(--brand) 85%, black 15%));
+      padding:30px;border-radius:16px;box-shadow:0 8px 30px rgba(0,0,0,0.55);color:#fff;
+    }
+    .banner .icon{width:110px;height:110px;flex:0 0 110px;display:flex;align-items:center;justify-content:center;transition:transform var(--transition);}
+    .banner .icon img{max-width:100%;max-height:100%;display:block;filter:drop-shadow(0 6px 18px rgba(0,0,0,0.45));}
+    .banner h1{margin:0;font-size:clamp(28px,4.5vw,54px);font-weight:900;letter-spacing:-0.02em;text-shadow:0 6px 20px rgba(0,0,0,0.35);}
+    .banner-sub{margin-top:8px;color:rgba(255,255,255,0.92);font-weight:500;}
+    .banner:hover .icon{transform:translateX(-6px) rotate(-4deg) scale(1.02);}
+
+    .about{margin:28px 0;padding:20px;background:linear-gradient(180deg,rgba(255,255,255,0.02),rgba(0,0,0,0.03));border-radius:12px;border:1px solid rgba(255,255,255,0.02);box-shadow:var(--card-shadow);}
+    .about p{margin:0;color:var(--text);font-size:16px;}
+
     .divider{height:1px;background:linear-gradient(90deg,transparent,rgba(255,255,255,0.04),transparent);margin:18px 0 22px 0;border-radius:4px;}
 
     .projects-header{display:flex;flex-direction:column;align-items:flex-start;gap:12px;margin:0 0 8px 0;}
-    .section-header{font-size:24px;font-weight:900;display:flex;align-items:center;gap:12px;}
+    .section-header{font-size:18px;font-weight:700;display:flex;align-items:center;gap:12px;}
     .section-header .dot{width:10px;height:10px;background:var(--brand);border-radius:50%;box-shadow:0 6px 20px rgba(255,56,46,0.16);}
 
     .game-links{display:flex;gap:16px;flex-wrap:wrap;align-items:center;}
@@ -46,25 +60,26 @@
     .game-link:hover{color:white;transform:translateY(-2px);}
     .game-link:hover::after{transform:scaleX(1);}
 
-    .portfolio-title{font-size:32px;font-weight:900;margin-bottom:12px;color:var(--text);}
-    .portfolio-title a{color:var(--text);text-decoration:none;}
+    .projects{display:grid;grid-template-columns:repeat(2,1fr);gap:20px;}
+    @media (max-width:880px){.projects{grid-template-columns:1fr;}}
+    @media (max-width:520px){.banner{flex-direction:column;align-items:flex-start;gap:12px;padding:18px;}.banner .icon{width:86px;height:86px;flex:0 0 86px;}}
 
-    .game-info{display:flex;flex-direction:column;gap:16px;}
-    .game-info h2{margin:0;font-size:28px;font-weight:800;}
+    .project{background:linear-gradient(180deg,rgba(255,255,255,0.01),rgba(0,0,0,0.05));border-radius:var(--radius);padding:14px;border:1px solid rgba(255,255,255,0.025);box-shadow:var(--card-shadow);transition:transform var(--transition), box-shadow var(--transition);display:flex;flex-direction:column;gap:10px;}
+    .project:hover{transform:translateY(-8px);box-shadow:0 16px 38px rgba(0,0,0,0.7);}
+    .project-head{display:flex;justify-content:space-between;align-items:center;}
+    .project-title{font-weight:800;letter-spacing:-0.01em;margin:0;font-size:18px;color:var(--text);}
+    .project-year{font-size:13px;color:var(--muted);background:rgba(255,255,255,0.02);padding:6px 10px;border-radius:999px;border:1px solid rgba(255,255,255,0.02);}
 
-    .game-details{display:flex;gap:24px;align-items:flex-start;}
-    .game-cover{flex:0 0 50%;}
-    .game-cover img{width:100%;height:auto;border-radius:12px;box-shadow:var(--card-shadow);}
-    .game-meta{flex:1;display:flex;flex-direction:column;gap:12px;}
+    .cover-link{display:block;border-radius:10px;overflow:hidden;text-decoration:none;}
+    .cover{width:100%;aspect-ratio:4/3;border-radius:10px;overflow:hidden;position:relative;background-size:cover;background-position:center;box-shadow:inset 0 -30px 60px rgba(0,0,0,0.25);transition:transform var(--transition);}
+    .project:hover .cover{transform:scale(1.02);}
+    .cover-title{position:absolute;left:12px;bottom:12px;z-index:2;font-weight:800;font-size:18px;color:#fff;text-shadow:0 6px 18px rgba(0,0,0,0.6);}
+    .cover::after{content:"";position:absolute;left:0;right:0;bottom:0;height:34%;background:linear-gradient(180deg,rgba(0,0,0,0),rgba(0,0,0,0.6));}
 
+    .meta{display:grid;grid-template-columns:1fr 1fr;gap:8px 16px;}
+    .meta-item{font-size:13px;}
     .meta-item .label{display:block;color:var(--muted);font-weight:600;font-size:12px;}
-    .meta-item .value{color:var(--text);font-weight:500;margin-top:4px;font-size:14px;}
-
-    .project-section{margin:24px 0;}
-    .project-section h3{margin:0 0 12px;font-size:20px;font-weight:700;color:var(--text);}
-    .project-section p{margin:0 0 12px;color:var(--text);}
-    .project-section ul{margin:0;padding-left:20px;}
-    .project-section li{margin-bottom:6px;}
+    .meta-item .value{color:var(--text);font-weight:500;margin-top:4px;font-size:13px;}
 
     a.reset{color:var(--brand);text-decoration:none;}
     a.reset:hover{text-decoration:underline;}
@@ -74,36 +89,37 @@
 </head>
 <body>
   <div class="container" role="main">
-    <div class="portfolio-title"><a href="https://periandevelopment.github.io/Portfolio1">Portfolio</a></div>
 
-    <nav aria-label="Project quick links">
-      <div class="game-links" id="project-links"></div>
-    </nav>
+    <header class="banner">
+      <!-- local placeholder src will be overridden by remote branding if available -->
+      <div class="icon"><img id="brand-icon" src="icon_transparent.png" alt="PerianDev icon" /></div>
+      <div style="flex:1;">
+        <h1 id="brand-name">PerianDev</h1>
+        <div class="banner-sub" id="brand-tagline">Indie games & experiments — playable, polished, irreverent.</div>
+      </div>
+    </header>
 
-    <div class="divider"></div>
-
-    <section class="game-info" id="game-info"></section>
-
-    <div class="divider"></div>
-
-    <section class="project-section">
-      <h3>Overview</h3>
-      <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla accumsan, metus ultrices eleifend gravida, nulla nunc varius lectus.</p>
-      <img src="banner_2x1.png" alt="Project banner" style="width:100%;border-radius:12px;box-shadow:var(--card-shadow);margin-top:12px;">
+    <section class="about">
+      <h2 style="margin:0 0 8px;font-size:16px;font-weight:700;color:var(--text)">About</h2>
+      <p id="bio">Perian is a programmer, indie game developer, software engineer and passionate gamer based in Germany. This site focuses on the projects and playable experiences created under the PerianDev brand.</p>
     </section>
 
     <div class="divider"></div>
 
-    <section class="project-section">
-      <h3>Summary of Contributions</h3>
-      <ul>
-        <li>Implemented gameplay systems</li>
-        <li>Designed UI/UX</li>
-        <li>Created animations and effects</li>
-        <li>Optimized performance</li>
-      </ul>
-      <img src="banner_2x1.png" alt="Contributions banner" style="width:100%;border-radius:12px;box-shadow:var(--card-shadow);margin-top:12px;">
-    </section>
+    <div class="projects-header">
+      <div class="section-header">
+        <div class="dot"></div>
+        <div>Projects</div>
+      </div>
+
+      <nav aria-label="Project quick links">
+        <div class="game-links" id="project-links"></div>
+      </nav>
+    </div>
+
+    <div class="divider"></div>
+
+    <section class="projects" id="projects-container"></section>
 
     <div class="foot" id="site-footer">Made with ♥ by PerianDev</div>
   </div>
@@ -115,93 +131,128 @@
       return res.json();
     }
 
+    // Apply branding: prefer icon_transparent from social.json
     async function applyBrandingFromRemote() {
       try {
         const social = await fetchJson('https://periandevelopment.github.io/Socials/social.json');
         const colors = social.colors || {};
+        const icons = social.icons || {};
+        const banners = social.banners || {};
         const identity = social.identity || {};
 
         if (colors.primary_hex) document.documentElement.style.setProperty('--brand', colors.primary_hex);
         if (colors.background_hex) document.documentElement.style.setProperty('--bg', colors.background_hex);
         if (colors.text_hex) document.documentElement.style.setProperty('--text', colors.text_hex);
 
+        if (Array.isArray(colors.gradient_hex) && colors.gradient_hex.length >= 2) {
+          const g = colors.gradient_hex.slice(0,2).join(', ');
+          document.querySelector('.banner').style.background = `linear-gradient(90deg, ${g})`;
+        }
+
+        // Prefer icon_transparent over icon
+        const iconImg = document.getElementById('brand-icon');
+        if (icons.icon_transparent) {
+          iconImg.src = icons.icon_transparent;
+        } else if (icons.icon) {
+          iconImg.src = icons.icon;
+        }
+
+        if (identity.display_name) document.getElementById('brand-name').textContent = identity.display_name;
+        if (identity.tagline) document.getElementById('brand-tagline').textContent = identity.tagline;
+        if (identity.bio) document.getElementById('bio').textContent = identity.bio;
         if (identity.display_name) document.getElementById('site-footer').textContent = `Made with ♥ by ${identity.display_name}`;
+
+        return banners["2x1"] || null;
       } catch (err) {
         console.warn('Could not load remote social.json — using defaults.', err);
+        return null;
       }
     }
 
-    function renderProjectLinks(projects) {
+    function renderProjects(projects, defaultCover) {
       const linksContainer = document.getElementById('project-links');
+      const projectsContainer = document.getElementById('projects-container');
       linksContainer.innerHTML = '';
+      projectsContainer.innerHTML = '';
+
       projects.forEach(p => {
+        const linkHref = p.link || p.website || '#';
         const a = document.createElement('a');
         a.className = 'game-link';
-        a.href = `?id=${encodeURIComponent(p.id)}`;
+        a.href = linkHref;
+        a.target = '_blank';
+        a.rel = 'noopener';
         a.textContent = p.title || p.name || p.id || 'Project';
         linksContainer.appendChild(a);
+
+        const card = document.createElement('article');
+        card.className = 'project';
+        card.id = p.id || (`project-${Math.random().toString(36).slice(2,9)}`);
+
+        const head = document.createElement('div');
+        head.className = 'project-head';
+        const title = document.createElement('h3');
+        title.className = 'project-title';
+        title.textContent = p.title || p.name || p.id || 'Project';
+        const year = document.createElement('div');
+        year.className = 'project-year';
+        year.textContent = p.year || '';
+
+        head.appendChild(title);
+        head.appendChild(year);
+        card.appendChild(head);
+
+        const coverLink = document.createElement('a');
+        coverLink.className = 'cover-link';
+        coverLink.href = linkHref;
+        coverLink.target = '_blank';
+        coverLink.rel = 'noopener';
+
+        const cover = document.createElement('div');
+        cover.className = 'cover';
+        const coverUrl = p.cover || p.icon_url || defaultCover || '';
+        if (coverUrl) cover.style.backgroundImage = `url("${coverUrl}")`;
+        const ctitle = document.createElement('div');
+        ctitle.className = 'cover-title';
+        ctitle.textContent = p.title || p.name || '';
+        cover.appendChild(ctitle);
+        coverLink.appendChild(cover);
+        card.appendChild(coverLink);
+
+        const meta = document.createElement('div');
+        meta.className = 'meta';
+
+        const mk = (label, valueHtml) => {
+          const wrapper = document.createElement('div');
+          wrapper.className = 'meta-item';
+          wrapper.innerHTML = `<span class="label">${label}</span><span class="value">${valueHtml}</span>`;
+          return wrapper;
+        };
+
+        const projectHref = linkHref;
+        const linkText = p.linkText || '';
+        meta.appendChild(mk('Link', `<a class="reset" href="${projectHref}" target="_blank" rel="noopener">${linkText}</a>`));
+        meta.appendChild(mk('Studio', `${p.studio || ''}`));
+        meta.appendChild(mk('Team size', `${p.teamSize || p.team_size || ''}`));
+        meta.appendChild(mk('My contribution', `${p.contribution || ''}`));
+        meta.appendChild(mk('Platform', `${p.platform || ''}`));
+        meta.appendChild(mk('Engine & Tools', `${p.engineTools || p.engine_tools || ''}`));
+
+        card.appendChild(meta);
+        projectsContainer.appendChild(card);
       });
     }
 
-    function getQueryParam(name) {
-      const params = new URLSearchParams(window.location.search);
-      return params.get(name);
-    }
-
-    function renderSelectedProject(projects, id) {
-      const container = document.getElementById('game-info');
-      container.innerHTML = '';
-
-      const project = projects.find(p => p.id === id) || projects[0];
-      if (!project) return;
-
-      const title = document.createElement('h2');
-      title.textContent = project.title || project.name || 'Project';
-      container.appendChild(title);
-
-      const details = document.createElement('div');
-      details.className = 'game-details';
-
-      const cover = document.createElement('div');
-      cover.className = 'game-cover';
-      const img = document.createElement('img');
-      img.src = project.cover || 'banner_2x1.png';
-      cover.appendChild(img);
-      details.appendChild(cover);
-
-      const meta = document.createElement('div');
-      meta.className = 'game-meta';
-
-      const mk = (label, valueHtml) => {
-        const wrapper = document.createElement('div');
-        wrapper.className = 'meta-item';
-        wrapper.innerHTML = `<span class="label">${label}</span><span class="value">${valueHtml}</span>`;
-        return wrapper;
-      };
-
-      meta.appendChild(mk('Year', project.year || ''));
-      meta.appendChild(mk('Studio', project.studio || ''));
-      meta.appendChild(mk('Team size', project.teamSize || project.team_size || ''));
-      meta.appendChild(mk('My contribution', project.contribution || ''));
-      meta.appendChild(mk('Platform', project.platform || ''));
-      meta.appendChild(mk('Engine & Tools', project.engineTools || project.engine_tools || ''));
-      if (project.link) meta.appendChild(mk('Link', `<a class="reset" href="${project.link}" target="_blank" rel="noopener">${project.linkText || project.link}</a>`));
-
-      details.appendChild(meta);
-      container.appendChild(details);
-    }
-
     async function init() {
-      await applyBrandingFromRemote();
+      const defaultCover = await applyBrandingFromRemote();
+
       try {
-        const projects = await fetchJson('https://periandevelopment.github.io/Portfolio1/projects.json');
-        renderProjectLinks(projects);
-        const paramId = getQueryParam('id');
-        renderSelectedProject(projects, paramId);
+        const projects = await fetchJson('projects.json');
+        renderProjects(projects, defaultCover);
       } catch (err) {
         console.error('Failed to load projects.json', err);
-        const container = document.getElementById('game-info');
-        container.innerHTML = '<div style="color:var(--muted)">Failed to load projects. Check projects.json in the repo root.</div>';
+        const container = document.getElementById('projects-container');
+        container.innerHTML = '<div style="color:var(--muted)">Failed to load projects. Check projects.json in the same folder.</div>';
       }
     }
 
