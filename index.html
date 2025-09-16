@@ -34,7 +34,6 @@
 
     .container{max-width:var(--max-width);margin:32px auto;padding:24px;}
 
-    /* Banner */
     .banner{
       display:flex;align-items:center;gap:20px;
       background: linear-gradient(90deg, var(--brand), color-mix(in srgb, var(--brand) 85%, black 15%));
@@ -46,7 +45,6 @@
     .banner-sub{margin-top:8px;color:rgba(255,255,255,0.92);font-weight:500;}
     .banner:hover .icon{transform:translateX(-6px) rotate(-4deg) scale(1.02);}
 
-    /* About (text uses normal page color) */
     .about{margin:28px 0;padding:20px;background:linear-gradient(180deg,rgba(255,255,255,0.02),rgba(0,0,0,0.03));border-radius:12px;border:1px solid rgba(255,255,255,0.02);box-shadow:var(--card-shadow);}
     .about p{margin:0;color:var(--text);font-size:16px;}
 
@@ -56,14 +54,12 @@
     .section-header{font-size:18px;font-weight:700;display:flex;align-items:center;gap:12px;}
     .section-header .dot{width:10px;height:10px;background:var(--brand);border-radius:50%;box-shadow:0 6px 20px rgba(255,56,46,0.16);}
 
-    /* Text project links */
     .game-links{display:flex;gap:16px;flex-wrap:wrap;align-items:center;}
     .game-link{color:var(--text);font-weight:700;text-decoration:none;position:relative;padding:4px 2px;transition:color var(--transition), transform var(--transition);}
     .game-link::after{content:"";position:absolute;left:0;right:0;bottom:0;height:2px;background:var(--brand);transform:scaleX(0);transform-origin:left center;transition:transform var(--transition);}
     .game-link:hover{color:white;transform:translateY(-2px);}
     .game-link:hover::after{transform:scaleX(1);}
 
-    /* Projects grid */
     .projects{display:grid;grid-template-columns:repeat(2,1fr);gap:20px;}
     @media (max-width:880px){.projects{grid-template-columns:1fr;}}
     @media (max-width:520px){.banner{flex-direction:column;align-items:flex-start;gap:12px;padding:18px;}.banner .icon{width:86px;height:86px;flex:0 0 86px;}}
@@ -94,8 +90,8 @@
 <body>
   <div class="container" role="main">
 
-    <!-- Banner -->
     <header class="banner">
+      <!-- local placeholder src will be overridden by remote branding if available -->
       <div class="icon"><img id="brand-icon" src="icon_transparent.png" alt="PerianDev icon" /></div>
       <div style="flex:1;">
         <h1 id="brand-name">PerianDev</h1>
@@ -103,16 +99,13 @@
       </div>
     </header>
 
-    <!-- About -->
     <section class="about">
       <h2 style="margin:0 0 8px;font-size:16px;font-weight:700;color:var(--text)">About</h2>
       <p id="bio">Perian is a programmer, indie game developer, software engineer and passionate gamer based in Germany. This site focuses on the projects and playable experiences created under the PerianDev brand.</p>
     </section>
 
-    <!-- Divider -->
     <div class="divider"></div>
 
-    <!-- Projects header -->
     <div class="projects-header">
       <div class="section-header">
         <div class="dot"></div>
@@ -124,72 +117,58 @@
       </nav>
     </div>
 
-    <!-- Divider -->
     <div class="divider"></div>
 
-    <!-- Projects grid -->
     <section class="projects" id="projects-container"></section>
 
-    <!-- Footer -->
     <div class="foot" id="site-footer">Made with ♥ by PerianDev</div>
   </div>
 
   <script>
-    // Fetch helper
     async function fetchJson(url) {
       const res = await fetch(url);
       if (!res.ok) throw new Error(`Failed to fetch ${url}: ${res.status}`);
       return res.json();
     }
 
-    // Apply social branding (colors, icon, banner text)
+    // Apply branding: prefer icon_transparent from social.json
     async function applyBrandingFromRemote() {
       try {
         const social = await fetchJson('https://periandevelopment.github.io/Socials/social.json');
-
         const colors = social.colors || {};
         const icons = social.icons || {};
         const banners = social.banners || {};
         const identity = social.identity || {};
 
-        // Only override key variables: brand, background, text.
         if (colors.primary_hex) document.documentElement.style.setProperty('--brand', colors.primary_hex);
         if (colors.background_hex) document.documentElement.style.setProperty('--bg', colors.background_hex);
         if (colors.text_hex) document.documentElement.style.setProperty('--text', colors.text_hex);
-        // Do NOT override --muted here to avoid using brand as the muted color.
 
-        // If gradient provided, use it for banner background
         if (Array.isArray(colors.gradient_hex) && colors.gradient_hex.length >= 2) {
           const g = colors.gradient_hex.slice(0,2).join(', ');
           document.querySelector('.banner').style.background = `linear-gradient(90deg, ${g})`;
         }
 
-        // Icon (use icons.icon if present)
+        // Prefer icon_transparent over icon
         const iconImg = document.getElementById('brand-icon');
-        if (icons.icon) {
-          iconImg.src = icons.icon;
-          iconImg.alt = identity.display_name ? `${identity.display_name} icon` : 'brand icon';
-        } else if (icons.icon_transparent) {
+        if (icons.icon_transparent) {
           iconImg.src = icons.icon_transparent;
+        } else if (icons.icon) {
+          iconImg.src = icons.icon;
         }
 
-        // Banner name and tagline
         if (identity.display_name) document.getElementById('brand-name').textContent = identity.display_name;
         if (identity.tagline) document.getElementById('brand-tagline').textContent = identity.tagline;
         if (identity.bio) document.getElementById('bio').textContent = identity.bio;
-
-        // Footer text
         if (identity.display_name) document.getElementById('site-footer').textContent = `Made with ♥ by ${identity.display_name}`;
 
-        // Return default cover banner URL (2x1) for project fallback
-        return banners["2x1"] || banners["2x1"] || null;
+        return banners["2x1"] || null;
       } catch (err) {
         console.warn('Could not load remote social.json — using defaults.', err);
         return null;
       }
     }
 
-    // Render projects from local projects.json
     function renderProjects(projects, defaultCover) {
       const linksContainer = document.getElementById('project-links');
       const projectsContainer = document.getElementById('projects-container');
@@ -197,7 +176,6 @@
       projectsContainer.innerHTML = '';
 
       projects.forEach(p => {
-        // text link (goes to project website)
         const linkHref = p.link || p.website || '#';
         const a = document.createElement('a');
         a.className = 'game-link';
@@ -207,7 +185,6 @@
         a.textContent = p.title || p.name || p.id || 'Project';
         linksContainer.appendChild(a);
 
-        // project card
         const card = document.createElement('article');
         card.className = 'project';
         card.id = p.id || (`project-${Math.random().toString(36).slice(2,9)}`);
@@ -266,7 +243,6 @@
       });
     }
 
-    // Initialize the page: apply branding, then load projects
     async function init() {
       const defaultCover = await applyBrandingFromRemote();
 
