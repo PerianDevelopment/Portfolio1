@@ -275,7 +275,7 @@
 
       try {
         // load projects.json from the repo root as requested
-        const projects = await fetchJson('/projects.json');
+        const projects = await fetchJson('projects.json');
         renderProjectLinks(projects);
 
         // support selecting a project via ?id=slug or id (fallback to first project)
