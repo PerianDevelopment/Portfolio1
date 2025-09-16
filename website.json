@@ -1,8 +1,5 @@
 {
-  "title": "PerianDev — Games Portfolio",
-  "bannerSub": "Indie games & experiments — playable, polished, irreverent.",
-  "about": "Perian is a programmer, indie game developer, software engineer and passionate gamer based in Germany. This site focuses on the projects and playable experiences created under the PerianDev brand.",
-  "about_is_html": false,
   "footerText": "Made with ♥ by PerianDev",
-  "defaultCover": "fallback.png"
+  "defaultCover": "fallback.png",
+  "assetsBase": ""  /* optional: absolute or site-rooted path used for resolving assets if you want */
 }
