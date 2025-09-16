@@ -5,7 +5,6 @@
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>PerianDev — Games Portfolio</title>
 
-  <!-- Simple structure: load font and styles, content is injected by JS -->
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;700;900&display=swap" rel="stylesheet">
 
   <style>
@@ -20,7 +19,6 @@
       --max-width: 1100px;
     }
 
-    /* Base */
     *{box-sizing:border-box}
     html,body{height:100%}
     body{
@@ -48,9 +46,9 @@
     .banner-sub{margin-top:8px;color:rgba(255,255,255,0.92);font-weight:500;}
     .banner:hover .icon{transform:translateX(-6px) rotate(-4deg) scale(1.02);}
 
-    /* About */
+    /* About (text uses normal page color) */
     .about{margin:28px 0;padding:20px;background:linear-gradient(180deg,rgba(255,255,255,0.02),rgba(0,0,0,0.03));border-radius:12px;border:1px solid rgba(255,255,255,0.02);box-shadow:var(--card-shadow);}
-    .about p{margin:0;color:var(--muted);font-size:16px;}
+    .about p{margin:0;color:var(--text);font-size:16px;}
 
     .divider{height:1px;background:linear-gradient(90deg,transparent,rgba(255,255,255,0.04),transparent);margin:18px 0 22px 0;border-radius:4px;}
 
@@ -58,7 +56,7 @@
     .section-header{font-size:18px;font-weight:700;display:flex;align-items:center;gap:12px;}
     .section-header .dot{width:10px;height:10px;background:var(--brand);border-radius:50%;box-shadow:0 6px 20px rgba(255,56,46,0.16);}
 
-    /* Text project links (normal color; brand underline on hover) */
+    /* Text project links */
     .game-links{display:flex;gap:16px;flex-wrap:wrap;align-items:center;}
     .game-link{color:var(--text);font-weight:700;text-decoration:none;position:relative;padding:4px 2px;transition:color var(--transition), transform var(--transition);}
     .game-link::after{content:"";position:absolute;left:0;right:0;bottom:0;height:2px;background:var(--brand);transform:scaleX(0);transform-origin:left center;transition:transform var(--transition);}
@@ -87,7 +85,6 @@
     .meta-item .label{display:block;color:var(--muted);font-weight:600;font-size:12px;}
     .meta-item .value{color:var(--text);font-weight:500;margin-top:4px;font-size:13px;}
 
-    /* links inside project cards use brand color */
     a.reset{color:var(--brand);text-decoration:none;}
     a.reset:hover{text-decoration:underline;}
 
@@ -97,25 +94,25 @@
 <body>
   <div class="container" role="main">
 
-    <!-- Header / Banner -->
+    <!-- Banner -->
     <header class="banner">
-      <div class="icon"><img src="icon_transparent.png" alt="PerianDev icon" /></div>
+      <div class="icon"><img id="brand-icon" src="icon_transparent.png" alt="PerianDev icon" /></div>
       <div style="flex:1;">
-        <h1>PerianDev</h1>
-        <div class="banner-sub">Indie games & experiments — playable, polished, irreverent.</div>
+        <h1 id="brand-name">PerianDev</h1>
+        <div class="banner-sub" id="brand-tagline">Indie games & experiments — playable, polished, irreverent.</div>
       </div>
     </header>
 
     <!-- About -->
     <section class="about">
       <h2 style="margin:0 0 8px;font-size:16px;font-weight:700;color:var(--text)">About</h2>
-      <p id="bio">Perian is a programmer, indie game developer, software engineer and passionate gamer based in Germany.</p>
+      <p id="bio">Perian is a programmer, indie game developer, software engineer and passionate gamer based in Germany. This site focuses on the projects and playable experiences created under the PerianDev brand.</p>
     </section>
 
-    <!-- Divider between About and Projects -->
+    <!-- Divider -->
     <div class="divider"></div>
 
-    <!-- Projects header and quick links -->
+    <!-- Projects header -->
     <div class="projects-header">
       <div class="section-header">
         <div class="dot"></div>
@@ -127,7 +124,7 @@
       </nav>
     </div>
 
-    <!-- Divider below links -->
+    <!-- Divider -->
     <div class="divider"></div>
 
     <!-- Projects grid -->
@@ -138,53 +135,61 @@
   </div>
 
   <script>
-    /* Overall structure:
-       1) fetch brand data from remote social.json and apply theme (colors/icons/banners/bio)
-       2) fetch local projects.json and render project links + project cards
-    */
-
-    async function fetchJson(url){
+    // Fetch helper
+    async function fetchJson(url) {
       const res = await fetch(url);
       if (!res.ok) throw new Error(`Failed to fetch ${url}: ${res.status}`);
       return res.json();
     }
 
-    async function applyBranding(social) {
-      if (!social) return;
-      const colors = social.colors || {};
-      const icons = social.icons || {};
-      const banners = social.banners || {};
-      const identity = social.identity || {};
+    // Apply social branding (colors, icon, banner text)
+    async function applyBrandingFromRemote() {
+      try {
+        const social = await fetchJson('https://periandevelopment.github.io/Socials/social.json');
 
-      // Apply color variables if present
-      if (colors.primary_hex) document.documentElement.style.setProperty('--brand', colors.primary_hex);
-      if (colors.background_hex) document.documentElement.style.setProperty('--bg', colors.background_hex);
-      if (colors.text_hex) document.documentElement.style.setProperty('--text', colors.text_hex);
-      if (colors.secondary_hex) document.documentElement.style.setProperty('--muted', colors.secondary_hex);
+        const colors = social.colors || {};
+        const icons = social.icons || {};
+        const banners = social.banners || {};
+        const identity = social.identity || {};
 
-      // Apply banner background gradient
-      if (Array.isArray(colors.gradient_hex) && colors.gradient_hex.length >= 2) {
-        const g = colors.gradient_hex.slice(0,2).join(', ');
-        document.querySelector('.banner').style.background = `linear-gradient(90deg, ${g})`;
+        // Only override key variables: brand, background, text.
+        if (colors.primary_hex) document.documentElement.style.setProperty('--brand', colors.primary_hex);
+        if (colors.background_hex) document.documentElement.style.setProperty('--bg', colors.background_hex);
+        if (colors.text_hex) document.documentElement.style.setProperty('--text', colors.text_hex);
+        // Do NOT override --muted here to avoid using brand as the muted color.
+
+        // If gradient provided, use it for banner background
+        if (Array.isArray(colors.gradient_hex) && colors.gradient_hex.length >= 2) {
+          const g = colors.gradient_hex.slice(0,2).join(', ');
+          document.querySelector('.banner').style.background = `linear-gradient(90deg, ${g})`;
+        }
+
+        // Icon (use icons.icon if present)
+        const iconImg = document.getElementById('brand-icon');
+        if (icons.icon) {
+          iconImg.src = icons.icon;
+          iconImg.alt = identity.display_name ? `${identity.display_name} icon` : 'brand icon';
+        } else if (icons.icon_transparent) {
+          iconImg.src = icons.icon_transparent;
+        }
+
+        // Banner name and tagline
+        if (identity.display_name) document.getElementById('brand-name').textContent = identity.display_name;
+        if (identity.tagline) document.getElementById('brand-tagline').textContent = identity.tagline;
+        if (identity.bio) document.getElementById('bio').textContent = identity.bio;
+
+        // Footer text
+        if (identity.display_name) document.getElementById('site-footer').textContent = `Made with ♥ by ${identity.display_name}`;
+
+        // Return default cover banner URL (2x1) for project fallback
+        return banners["2x1"] || banners["2x1"] || null;
+      } catch (err) {
+        console.warn('Could not load remote social.json — using defaults.', err);
+        return null;
       }
-
-      // Replace icon image if remote provided
-      const bannerIconImg = document.querySelector('.banner .icon img');
-      if (icons.icon_transparent) bannerIconImg.src = icons.icon_transparent;
-
-      // Update bio text if available
-      if (identity.bio) document.getElementById('bio').textContent = identity.bio;
-      if (identity.display_name) {
-        document.querySelector('.banner h1').textContent = identity.display_name;
-        document.getElementById('site-footer').textContent = `Made with ♥ by ${identity.display_name}`;
-      }
-
-      // store default cover for later use
-      return {
-        defaultCover: banners["2x1"] || banners["2x1"] || null
-      };
     }
 
+    // Render projects from local projects.json
     function renderProjects(projects, defaultCover) {
       const linksContainer = document.getElementById('project-links');
       const projectsContainer = document.getElementById('projects-container');
@@ -192,10 +197,11 @@
       projectsContainer.innerHTML = '';
 
       projects.forEach(p => {
-        // text link (opens project website)
+        // text link (goes to project website)
+        const linkHref = p.link || p.website || '#';
         const a = document.createElement('a');
         a.className = 'game-link';
-        a.href = p.link || p.website || '#';
+        a.href = linkHref;
         a.target = '_blank';
         a.rel = 'noopener';
         a.textContent = p.title || p.name || p.id || 'Project';
@@ -213,7 +219,7 @@
         title.textContent = p.title || p.name || p.id || 'Project';
         const year = document.createElement('div');
         year.className = 'project-year';
-        year.textContent = p.year || p.yearBuilt || '';
+        year.textContent = p.year || '';
 
         head.appendChild(title);
         head.appendChild(year);
@@ -221,7 +227,7 @@
 
         const coverLink = document.createElement('a');
         coverLink.className = 'cover-link';
-        coverLink.href = p.link || p.website || '#';
+        coverLink.href = linkHref;
         coverLink.target = '_blank';
         coverLink.rel = 'noopener';
 
@@ -246,9 +252,8 @@
           return wrapper;
         };
 
-        // Link text comes from linkText in projects.json
+        const projectHref = linkHref;
         const linkText = p.linkText || '';
-        const projectHref = p.link || p.website || '#';
         meta.appendChild(mk('Link', `<a class="reset" href="${projectHref}" target="_blank" rel="noopener">${linkText}</a>`));
         meta.appendChild(mk('Studio', `${p.studio || ''}`));
         meta.appendChild(mk('Team size', `${p.teamSize || p.team_size || ''}`));
@@ -261,24 +266,15 @@
       });
     }
 
+    // Initialize the page: apply branding, then load projects
     async function init() {
-      // 1) fetch branding data (remote)
-      let defaultCover = null;
-      try {
-        const social = await fetchJson('https://periandevelopment.github.io/Socials/social.json');
-        const result = await applyBranding(social);
-        if (result && result.defaultCover) defaultCover = result.defaultCover;
-      } catch (err) {
-        console.warn('Could not load remote social.json — falling back to local defaults.', err);
-      }
+      const defaultCover = await applyBrandingFromRemote();
 
-      // 2) fetch projects (local) and render
       try {
         const projects = await fetchJson('projects.json');
         renderProjects(projects, defaultCover);
       } catch (err) {
         console.error('Failed to load projects.json', err);
-        // show a message in the projects container
         const container = document.getElementById('projects-container');
         container.innerHTML = '<div style="color:var(--muted)">Failed to load projects. Check projects.json in the same folder.</div>';
       }
