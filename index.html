@@ -140,13 +140,13 @@
   </div>
 
   <script>
-    // Try to fetch a JSON filename from current folder up to parent levels.
+    // Utility: try to fetch JSON from current folder up to parent levels
     async function fetchJsonFromParents(name, maxDepth = 8) {
       const candidates = [];
       for (let i = 0; i <= maxDepth; i++) {
         candidates.push(i === 0 ? name : `${'../'.repeat(i)}${name}`);
       }
-      candidates.push('/' + name); // root fallback
+      candidates.push('/' + name); // absolute root fallback
 
       for (const path of candidates) {
         try {
@@ -161,7 +161,7 @@
       throw new Error(`Could not fetch ${name} from any parent path`);
     }
 
-    // Fetch a JSON by absolute URL
+    // Fetch absolute JSON
     async function fetchJsonAbsolute(url) {
       const res = await fetch(url, { cache: 'no-cache' });
       if (!res.ok) throw new Error(`Failed to fetch ${url}: ${res.status}`);
@@ -169,7 +169,7 @@
       return { json, url: res.url };
     }
 
-    // Resolve relative path (relative to base which must end with '/')
+    // Resolve relative path relative to base (base must end with '/')
     function resolveUrl(possibleUrl, base) {
       if (!possibleUrl) return possibleUrl;
       if (/^https?:\/\//i.test(possibleUrl) || possibleUrl.startsWith('/')) return possibleUrl;
@@ -177,10 +177,15 @@
       return base + possibleUrl;
     }
 
-    // Render projects with robust cover resolution and an <img> fallback to ensure images show.
+    // Compute site-root prefix (first path segment) so fallbacks resolve correctly on GitHub Pages
+    const siteOrigin = window.location.origin;
+    const pathParts = window.location.pathname.split('/').filter(Boolean);
+    const sitePrefix = pathParts.length > 0 ? `/${pathParts[0]}/` : '/'; // e.g. "/Portfolio1/"
+
+    // Render projects with robust cover resolution (and <img> fallback)
     function renderProjects(projects, projectsBase, remoteBanner, siteFallbackImage) {
-      // final fallback: website fallbackImage (absolute if provided) else root /fallback.png
-      const finalFallback = siteFallbackImage || (window.location.origin + '/fallback.png');
+      // final fallback: siteFallbackImage (resolved to absolute earlier) else siteOrigin + sitePrefix + 'fallback.png'
+      const finalFallback = siteFallbackImage || (siteOrigin + sitePrefix + 'fallback.png');
 
       const linksContainer = document.getElementById('project-links');
       const projectsContainer = document.getElementById('projects-container');
@@ -222,27 +227,25 @@
         const cover = document.createElement('div');
         cover.className = 'cover';
 
-        // Determine coverUrl
-        let coverUrl = null;
-        if (p.cover) coverUrl = p.cover;
-        else if (p.icon_url) coverUrl = p.icon_url;
+        // compute coverUrl (project cover -> icon_url -> remoteBanner -> siteFallbackImage -> finalFallback)
+        let coverUrl = p.cover || p.icon_url || null;
 
-        // Resolve relative project asset URLs against projectsBase
         if (coverUrl && !/^https?:\/\//i.test(coverUrl) && !coverUrl.startsWith('/')) {
           if (projectsBase) coverUrl = projectsBase + coverUrl;
+          else coverUrl = siteOrigin + sitePrefix + coverUrl;
         }
 
         if (!coverUrl && remoteBanner) coverUrl = remoteBanner;
         if (!coverUrl && siteFallbackImage) coverUrl = siteFallbackImage;
         if (!coverUrl) coverUrl = finalFallback;
 
-        // Insert <img> so browser shows something even if background-image has issues
+        // create <img> so it always displays
         const imgEl = document.createElement('img');
         imgEl.src = coverUrl;
         imgEl.alt = (p.title || p.name || '') + ' cover';
         cover.appendChild(imgEl);
 
-        // Keep the cover-title overlay
+        // overlay title
         const ctitle = document.createElement('div');
         ctitle.className = 'cover-title';
         ctitle.textContent = p.title || p.name || '';
@@ -254,7 +257,6 @@
         // meta
         const meta = document.createElement('div');
         meta.className = 'meta';
-
         const mk = (label, valueHtml) => {
           const wrapper = document.createElement('div');
           wrapper.className = 'meta-item';
@@ -276,9 +278,9 @@
       });
     }
 
-    // Initialization: load website.json (parents), social.json (remote), projects.json (current/parents)
+    // Main init: load website.json (parents), load social.json (remote), load projects.json (current or parents), then render
     (async function init() {
-      // 1) website.json
+      // website.json
       let siteFallbackImage = null;
       try {
         const res = await fetchJsonFromParents('website.json', 8);
@@ -290,10 +292,10 @@
         }
         siteFallbackImage = siteJson.fallbackImage ? resolveUrl(siteJson.fallbackImage, siteBase) : null;
       } catch (_) {
-        // ignore — will use root fallback
+        // no website.json found — continue; finalFallback uses siteOrigin + sitePrefix
       }
 
-      // 2) social.json (remote)
+      // social.json remote branding
       let remoteBanner = null;
       try {
         const { json: socialJson } = await fetchJsonAbsolute('https://periandevelopment.github.io/Socials/social.json');
@@ -324,7 +326,7 @@
         console.warn('social.json load failed', err);
       }
 
-      // 3) projects.json
+      // projects.json
       try {
         let projectsData, projectsBase;
         try {
