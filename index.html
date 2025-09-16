@@ -8,7 +8,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;700;900&display=swap" rel="stylesheet">
 
   <style>
-    :root{
+    :root {
       --bg: #222222;
       --muted: #bdbdbd;
       --text: #eaeaea;
@@ -19,7 +19,7 @@
       --max-width: 1100px;
     }
 
-    *{box-sizing: border-box}
+    *{box-sizing:border-box}
     html,body{height:100%}
     body{
       margin:0;
@@ -32,534 +32,167 @@
       line-height:1.45;
     }
 
-    .container{
-      max-width:var(--max-width);
-      margin: 32px auto;
-      padding: 24px;
-    }
+    .container{max-width:var(--max-width);margin:32px auto;padding:24px;}
 
     /* Banner */
     .banner{
-      display:flex;
-      align-items:center;
-      gap:20px;
+      display:flex;align-items:center;gap:20px;
       background: linear-gradient(90deg, var(--brand), color-mix(in srgb, var(--brand) 85%, black 15%));
-      padding:30px;
-      border-radius:16px;
-      box-shadow: 0 8px 30px rgba(0,0,0,0.55);
-      color:#fff;
-      overflow:hidden;
+      padding:30px;border-radius:16px;box-shadow:0 8px 30px rgba(0,0,0,0.55);color:#fff;
     }
-    .banner .icon{
-      width:110px;
-      height:110px;
-      flex:0 0 110px;
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      transition: transform var(--transition);
-      padding:0;
-    }
-    .banner .icon img{
-      max-width:100%;
-      max-height:100%;
-      display:block;
-      filter: drop-shadow(0 6px 18px rgba(0,0,0,0.45));
-    }
-    .banner h1{
-      margin:0;
-      font-size: clamp(28px, 4.5vw, 54px);
-      font-weight:900;
-      letter-spacing:-0.02em;
-      text-shadow: 0 6px 20px rgba(0,0,0,0.35);
-      line-height:1;
-    }
-    .banner-sub{
-      margin-top:8px;
-      color: rgba(255,255,255,0.92);
-      font-weight:500;
-      opacity:0.95;
-    }
-    .banner:hover .icon{ transform: translateX(-6px) rotate(-4deg) scale(1.02); }
+    .banner .icon{width:110px;height:110px;flex:0 0 110px;display:flex;align-items:center;justify-content:center;transition:transform var(--transition);}
+    .banner .icon img{max-width:100%;max-height:100%;display:block;filter:drop-shadow(0 6px 18px rgba(0,0,0,0.45));}
+    .banner h1{margin:0;font-size:clamp(28px,4.5vw,54px);font-weight:900;letter-spacing:-0.02em;text-shadow:0 6px 20px rgba(0,0,0,0.35);}
+    .banner-sub{margin-top:8px;color:rgba(255,255,255,0.92);font-weight:500;}
+    .banner:hover .icon{transform:translateX(-6px) rotate(-4deg) scale(1.02);}
 
     /* About */
-    .about{
-      margin:28px 0;
-      padding:20px;
-      background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(0,0,0,0.03));
-      border-radius: 12px;
-      border: 1px solid rgba(255,255,255,0.02);
-      box-shadow: var(--card-shadow);
-    }
-    .about p{
-      margin:0;
-      color:var(--muted);
-      font-size:16px;
-    }
+    .about{margin:28px 0;padding:20px;background:linear-gradient(180deg,rgba(255,255,255,0.02),rgba(0,0,0,0.03));border-radius:12px;border:1px solid rgba(255,255,255,0.02);box-shadow:var(--card-shadow);}
+    .about p{margin:0;color:var(--muted);font-size:16px;}
 
-    /* Divider used between sections */
-    .divider{
-      height:1px;
-      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.04), transparent);
-      margin:18px 0 22px 0;
-      border-radius:4px;
-    }
+    .divider{height:1px;background:linear-gradient(90deg,transparent,rgba(255,255,255,0.04),transparent);margin:18px 0 22px 0;border-radius:4px;}
 
-    /* Projects header (title + links stacked) */
-    .projects-header{
-      display:flex;
-      flex-direction:column;
-      align-items:flex-start;
-      gap:12px;
-      margin:0 0 8px 0;
-    }
-    .section-header{
-      font-size:18px;
-      font-weight:700;
-      display:flex;
-      align-items:center;
-      gap:12px;
-    }
-    .section-header .dot{
-      width:10px;
-      height:10px;
-      background:var(--brand);
-      border-radius:50%;
-      box-shadow: 0 6px 20px rgba(255,56,46,0.16);
-    }
+    .projects-header{display:flex;flex-direction:column;align-items:flex-start;gap:12px;margin:0 0 8px 0;}
+    .section-header{font-size:18px;font-weight:700;display:flex;align-items:center;gap:12px;}
+    .section-header .dot{width:10px;height:10px;background:var(--brand);border-radius:50%;box-shadow:0 6px 20px rgba(255,56,46,0.16);}
 
-    /* Text links under Projects title (normal color, brand underline on hover) */
-    .game-links{
-      display:flex;
-      gap:16px;
-      flex-wrap:wrap;
-      align-items:center;
-    }
-    .game-link{
-      color:var(--text);
-      font-weight:700;
-      text-decoration:none;
-      position:relative;
-      padding:4px 2px;
-      transition: color var(--transition), transform var(--transition);
-      outline: none;
-    }
-    .game-link::after{
-      content:"";
-      position:absolute;
-      left:0;
-      right:0;
-      bottom:0;
-      height:2px;
-      background: var(--brand);
-      transform: scaleX(0);
-      transform-origin:left center;
-      transition: transform var(--transition);
-      border-radius:2px;
-      opacity:0.95;
-    }
-    .game-link:hover,
-    .game-link:focus{
-      color: white;
-      transform: translateY(-2px);
-    }
-    .game-link:hover::after,
-    .game-link:focus::after{ transform: scaleX(1); }
+    /* Text project links */
+    .game-links{display:flex;gap:16px;flex-wrap:wrap;align-items:center;}
+    .game-link{color:var(--text);font-weight:700;text-decoration:none;position:relative;padding:4px 2px;transition:color var(--transition), transform var(--transition);}
+    .game-link::after{content:"";position:absolute;left:0;right:0;bottom:0;height:2px;background:var(--brand);transform:scaleX(0);transform-origin:left center;transition:transform var(--transition);}
+    .game-link:hover{color:white;transform:translateY(-2px);}
+    .game-link:hover::after{transform:scaleX(1);}
 
     /* Projects grid */
-    .projects{
-      display:grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap:20px;
-    }
+    .projects{display:grid;grid-template-columns:repeat(2,1fr);gap:20px;}
+    @media (max-width:880px){.projects{grid-template-columns:1fr;}}
+    @media (max-width:520px){.banner{flex-direction:column;align-items:flex-start;gap:12px;padding:18px;}.banner .icon{width:86px;height:86px;flex:0 0 86px;}}
 
-    @media (max-width:880px){
-      .projects{ grid-template-columns: 1fr; }
-      .banner{ flex-direction:row; }
-    }
-    @media (max-width:520px){
-      .banner{ flex-direction:column; align-items:flex-start; gap:12px; padding:18px;}
-      .banner .icon{ width:86px; height:86px; flex:0 0 86px; }
-    }
+    .project{background:linear-gradient(180deg,rgba(255,255,255,0.01),rgba(0,0,0,0.05));border-radius:var(--radius);padding:14px;border:1px solid rgba(255,255,255,0.025);box-shadow:var(--card-shadow);transition:transform var(--transition), box-shadow var(--transition);display:flex;flex-direction:column;gap:10px;}
+    .project:hover{transform:translateY(-8px);box-shadow:0 16px 38px rgba(0,0,0,0.7);}
+    .project-head{display:flex;justify-content:space-between;align-items:center;}
+    .project-title{font-weight:800;letter-spacing:-0.01em;margin:0;font-size:18px;color:var(--text);}
+    .project-year{font-size:13px;color:var(--muted);background:rgba(255,255,255,0.02);padding:6px 10px;border-radius:999px;border:1px solid rgba(255,255,255,0.02);}
 
-    .project{
-      background: linear-gradient(180deg, rgba(255,255,255,0.01), rgba(0,0,0,0.05));
-      border-radius: var(--radius);
-      padding:14px;
-      border: 1px solid rgba(255,255,255,0.025);
-      box-shadow: var(--card-shadow);
-      transition: transform var(--transition), box-shadow var(--transition);
-      display:flex;
-      flex-direction:column;
-      gap:10px;
-    }
-    .project:focus-within,
-    .project:hover{
-      transform: translateY(-8px);
-      box-shadow: 0 16px 38px rgba(0,0,0,0.7);
-    }
+    .cover-link{display:block;border-radius:10px;overflow:hidden;text-decoration:none;}
+    .cover{width:100%;aspect-ratio:4/3;border-radius:10px;overflow:hidden;position:relative;background-size:cover;background-position:center;box-shadow:inset 0 -30px 60px rgba(0,0,0,0.25);transition:transform var(--transition);}
+    .project:hover .cover{transform:scale(1.02);}
+    .cover-title{position:absolute;left:12px;bottom:12px;z-index:2;font-weight:800;font-size:18px;color:#fff;text-shadow:0 6px 18px rgba(0,0,0,0.6);}
+    .cover::after{content:"";position:absolute;left:0;right:0;bottom:0;height:34%;background:linear-gradient(180deg,rgba(0,0,0,0),rgba(0,0,0,0.6));}
 
-    .project-head{
-      display:flex;
-      justify-content:space-between;
-      align-items:center;
-      gap:8px;
-    }
-    .project-title{
-      font-weight:800;
-      letter-spacing:-0.01em;
-      margin:0;
-      font-size:18px;
-      color:var(--text);
-    }
-    .project-year{
-      font-size:13px;
-      color:var(--muted);
-      background: rgba(255,255,255,0.02);
-      padding:6px 10px;
-      border-radius:999px;
-      border: 1px solid rgba(255,255,255,0.02);
-    }
+    .meta{display:grid;grid-template-columns:1fr 1fr;gap:8px 16px;}
+    .meta-item{font-size:13px;}
+    .meta-item .label{display:block;color:var(--muted);font-weight:600;font-size:12px;}
+    .meta-item .value{color:var(--text);font-weight:500;margin-top:4px;font-size:13px;}
 
-    /* Cover (texture is banner_2x1.png) */
-    .cover-link{
-      display:block;
-      border-radius:10px;
-      overflow:hidden;
-      text-decoration:none;
-      outline:none;
-    }
-    .cover{
-      width:100%;
-      aspect-ratio: 4 / 3;
-      border-radius:10px;
-      overflow:hidden;
-      position:relative;
-      display:block;
-      background-image: url('banner_2x1.png');
-      background-size: cover;
-      background-position:center;
-      box-shadow: inset 0 -30px 60px rgba(0,0,0,0.25);
-      transition: transform var(--transition);
-    }
-    .project:hover .cover{ transform: scale(1.02); }
-    .cover-title{
-      position:absolute;
-      left:12px;
-      bottom:12px;
-      z-index:2;
-      font-weight:800;
-      font-size:18px;
-      color:#fff;
-      text-shadow: 0 6px 18px rgba(0,0,0,0.6);
-      pointer-events:none;
-    }
-    .cover::after{
-      content:"";
-      position:absolute;
-      left:0;right:0;bottom:0;height:34%;
-      background: linear-gradient(180deg, rgba(0,0,0,0.0), rgba(0,0,0,0.6));
-      pointer-events:none;
-    }
+    a.reset{color:var(--brand);text-decoration:none;}
+    a.reset:hover{text-decoration:underline;}
 
-    .meta{
-      display:grid;
-      grid-template-columns: 1fr 1fr;
-      gap:8px 16px;
-      align-items:start;
-    }
-    .meta-item{
-      font-size:13px;
-    }
-    .meta-item .label{
-      display:block;
-      color:var(--muted);
-      font-weight:600;
-      font-size:12px;
-    }
-    .meta-item .value{
-      color:var(--text);
-      font-weight:500;
-      margin-top:4px;
-      font-size:13px;
-    }
-
-    /* Links inside project boxes use brand color */
-    a.reset{
-      color:var(--brand);
-      text-decoration:none;
-    }
-    a.reset:hover,
-    a.reset:focus{
-      text-decoration: underline;
-    }
-    .cover-link:focus {
-      outline: 3px solid rgba(255,56,46,0.14);
-      outline-offset: 6px;
-      border-radius:8px;
-    }
-
-    a:focus, button:focus, .game-link:focus{
-      outline: 3px solid rgba(255,255,255,0.06);
-      outline-offset: 4px;
-      border-radius:6px;
-    }
-
-    .foot{
-      margin-top:28px;
-      color:var(--muted);
-      font-size:13px;
-      text-align:center;
-      opacity:0.95;
-    }
-
+    .foot{margin-top:28px;color:var(--muted);font-size:13px;text-align:center;}
   </style>
 </head>
 <body>
   <div class="container" role="main">
 
-    <!-- Header / Banner -->
-    <header class="banner" role="banner" aria-label="PerianDev banner">
-      <div class="icon" aria-hidden="false">
-        <img src="icon_transparent.png" alt="PerianDev icon (texture)" />
-      </div>
-
-      <div style="flex:1; min-width:0;">
-        <h1 aria-label="PerianDev — indie game studio">
-          PerianDev
-        </h1>
-        <div class="banner-sub" aria-hidden="true">Indie games & experiments — playable, polished, irreverent.</div>
+    <!-- Banner -->
+    <header class="banner">
+      <div class="icon"><img src="icon_transparent.png" alt="PerianDev icon" /></div>
+      <div style="flex:1;">
+        <h1>PerianDev</h1>
+        <div class="banner-sub">Indie games & experiments — playable, polished, irreverent.</div>
       </div>
     </header>
 
     <!-- About -->
-    <section class="about" aria-labelledby="about-heading">
-      <h2 id="about-heading" style="margin:0 0 8px 0; font-size:16px; font-weight:700; color:var(--text)">About</h2>
+    <section class="about">
+      <h2 style="margin:0 0 8px;font-size:16px;font-weight:700;color:var(--text)">About</h2>
       <p>
         Perian is a programmer, indie game developer, software engineer and passionate gamer based in Germany.
         This site focuses on the projects and playable experiences created under the PerianDev brand.
       </p>
     </section>
 
-    <!-- Divider between About and Projects -->
-    <div class="divider" aria-hidden="true"></div>
+    <!-- Divider -->
+    <div class="divider"></div>
 
-    <!-- Projects header + quick text links (links stacked under title) -->
-    <div class="projects-header" aria-hidden="false">
-      <div class="section-header" aria-hidden="true">
-        <div class="dot" aria-hidden="true"></div>
+    <!-- Projects header -->
+    <div class="projects-header">
+      <div class="section-header">
+        <div class="dot"></div>
         <div>Projects</div>
       </div>
 
       <nav aria-label="Project quick links">
-        <div class="game-links">
-          <a class="game-link" href="#slimez" role="link">SlimeZ</a>
-          <a class="game-link" href="#astrodrift" role="link">Astro Drift</a>
-          <a class="game-link" href="#neonrunner" role="link">Neon Runner</a>
-          <a class="game-link" href="#tunnels" role="link">Forgotten Tunnels</a>
-          <a class="game-link" href="#more" role="link">More projects →</a>
+        <div class="game-links" id="project-links">
+          <!-- Text project links will be injected here -->
         </div>
       </nav>
     </div>
 
-    <!-- Additional divider below project text links -->
-    <div class="divider" aria-hidden="true"></div>
+    <!-- Divider -->
+    <div class="divider"></div>
 
     <!-- Projects grid -->
-    <section class="projects" aria-label="Projects and games">
-      <article class="project" id="slimez" aria-labelledby="title-slimez">
-        <div class="project-head">
-          <h3 id="title-slimez" class="project-title">SlimeZ</h3>
-          <div class="project-year">2025</div>
-        </div>
-
-        <a class="cover-link" href="https://periandevelopment.itch.io/" target="_blank" rel="noopener" aria-label="Open SlimeZ project page">
-          <div class="cover" role="img" aria-label="Cover: SlimeZ">
-            <div class="cover-title">SlimeZ</div>
-          </div>
-        </a>
-
-        <div class="meta" aria-hidden="false">
-          <div class="meta-item">
-            <span class="label">Link</span>
-            <span class="value"><a class="reset" href="https://periandevelopment.itch.io/" target="_blank" rel="noopener">Play / Details</a></span>
-          </div>
-          <div class="meta-item">
-            <span class="label">Studio</span>
-            <span class="value">PerianDevelopment</span>
-          </div>
-
-          <div class="meta-item">
-            <span class="label">Team size</span>
-            <span class="value">1 (solo)</span>
-          </div>
-          <div class="meta-item">
-            <span class="label">My contribution</span>
-            <span class="value">Design, Code, Art Direction</span>
-          </div>
-
-          <div class="meta-item">
-            <span class="label">Platform</span>
-            <span class="value">Mobile / PC</span>
-          </div>
-          <div class="meta-item">
-            <span class="label">Engine & Tools</span>
-            <span class="value">Unity, Spine, Photoshop</span>
-          </div>
-        </div>
-      </article>
-
-      <article class="project" id="astrodrift" aria-labelledby="title-astrodrift">
-        <div class="project-head">
-          <h3 id="title-astrodrift" class="project-title">Astro Drift</h3>
-          <div class="project-year">2023</div>
-        </div>
-
-        <a class="cover-link" href="https://periandevelopment.itch.io/" target="_blank" rel="noopener" aria-label="Open Astro Drift project page">
-          <div class="cover" role="img" aria-label="Cover: Astro Drift">
-            <div class="cover-title">Astro Drift</div>
-          </div>
-        </a>
-
-        <div class="meta">
-          <div class="meta-item">
-            <span class="label">Link</span>
-            <span class="value"><a class="reset" href="https://periandevelopment.itch.io/" target="_blank" rel="noopener">Gameplay / Build</a></span>
-          </div>
-          <div class="meta-item">
-            <span class="label">Studio</span>
-            <span class="value">PerianDevelopment</span>
-          </div>
-
-          <div class="meta-item">
-            <span class="label">Team size</span>
-            <span class="value">2</span>
-          </div>
-          <div class="meta-item">
-            <span class="label">My contribution</span>
-            <span class="value">Gameplay programming, tools</span>
-          </div>
-
-          <div class="meta-item">
-            <span class="label">Platform</span>
-            <span class="value">PC, Steam</span>
-          </div>
-          <div class="meta-item">
-            <span class="label">Engine & Tools</span>
-            <span class="value">Godot, Aseprite</span>
-          </div>
-        </div>
-      </article>
-
-      <article class="project" id="neonrunner" aria-labelledby="title-neonrunner">
-        <div class="project-head">
-          <h3 id="title-neonrunner" class="project-title">Neon Runner</h3>
-          <div class="project-year">2024</div>
-        </div>
-
-        <a class="cover-link" href="https://periandevelopment.itch.io/" target="_blank" rel="noopener" aria-label="Open Neon Runner project page">
-          <div class="cover" role="img" aria-label="Cover: Neon Runner">
-            <div class="cover-title">Neon Runner</div>
-          </div>
-        </a>
-
-        <div class="meta">
-          <div class="meta-item">
-            <span class="label">Link</span>
-            <span class="value"><a class="reset" href="https://periandevelopment.itch.io/" target="_blank" rel="noopener">More info</a></span>
-          </div>
-          <div class="meta-item">
-            <span class="label">Studio</span>
-            <span class="value">PerianDevelopment</span>
-          </div>
-
-          <div class="meta-item">
-            <span class="label">Team size</span>
-            <span class="value">3</span>
-          </div>
-          <div class="meta-item">
-            <span class="label">My contribution</span>
-            <span class="value">Level design, FX, polish</span>
-          </div>
-
-          <div class="meta-item">
-            <span class="label">Platform</span>
-            <span class="value">Mobile</span>
-          </div>
-          <div class="meta-item">
-            <span class="label">Engine & Tools</span>
-            <span class="value">Unity, FMOD</span>
-          </div>
-        </div>
-      </article>
-
-      <article class="project" id="tunnels" aria-labelledby="title-tunnels">
-        <div class="project-head">
-          <h3 id="title-tunnels" class="project-title">Forgotten Tunnels</h3>
-          <div class="project-year">2021</div>
-        </div>
-
-        <a class="cover-link" href="https://periandevelopment.itch.io/" target="_blank" rel="noopener" aria-label="Open Forgotten Tunnels project page">
-          <div class="cover" role="img" aria-label="Cover: Forgotten Tunnels">
-            <div class="cover-title">Forgotten Tunnels</div>
-          </div>
-        </a>
-
-        <div class="meta">
-          <div class="meta-item">
-            <span class="label">Link</span>
-            <span class="value"><a class="reset" href="https://periandevelopment.itch.io/" target="_blank" rel="noopener">Article / Build</a></span>
-          </div>
-          <div class="meta-item">
-            <span class="label">Studio</span>
-            <span class="value">PerianDevelopment</span>
-          </div>
-
-          <div class="meta-item">
-            <span class="label">Team size</span>
-            <span class="value">4</span>
-          </div>
-          <div class="meta-item">
-            <span class="label">My contribution</span>
-            <span class="value">Systems, UI, networking</span>
-          </div>
-
-          <div class="meta-item">
-            <span class="label">Platform</span>
-            <span class="value">PC / Web</span>
-          </div>
-          <div class="meta-item">
-            <span class="label">Engine & Tools</span>
-            <span class="value">Phaser, Node.js</span>
-          </div>
-        </div>
-      </article>
+    <section class="projects" id="projects-container">
+      <!-- Project boxes will be injected here -->
     </section>
 
     <!-- Footer -->
-    <div class="foot">Made with ♥ by PerianDev — feel free to replace data and images with real project assets.</div>
-
+    <div class="foot">Made with ♥ by PerianDev</div>
   </div>
 
   <script>
-    // Smooth scroll for project quick links
-    (function(){
-      document.querySelectorAll('.game-link').forEach(a=>{
-        a.addEventListener('click', (e)=>{
-          const href = a.getAttribute('href');
-          if (href && href.startsWith('#')) {
-            const id = href.slice(1);
-            const target = document.getElementById(id);
-            if (target){
-              e.preventDefault();
-              target.scrollIntoView({behavior:'smooth', block:'start'});
-              setTimeout(()=> target.querySelector('.project-title')?.focus?.(), 350);
-            }
-          }
-        });
-      });
-    })();
-  </script>
+  async function loadProjects() {
+    try {
+      const response = await fetch('projects.json');
+      const projects = await response.json();
 
+      const linksContainer = document.getElementById('project-links');
+      const projectsContainer = document.getElementById('projects-container');
+
+      linksContainer.innerHTML = "";
+      projectsContainer.innerHTML = "";
+
+      projects.forEach(p => {
+        // text link
+        const linkEl = document.createElement('a');
+        linkEl.className = 'game-link';
+        linkEl.href = p.link;
+        linkEl.target = '_blank';
+        linkEl.rel = 'noopener';
+        linkEl.textContent = p.title;
+        linksContainer.appendChild(linkEl);
+
+        // project card
+        const projectHTML = `
+          <article class="project" id="${p.id}">
+            <div class="project-head">
+              <h3 class="project-title">${p.title}</h3>
+              <div class="project-year">${p.year}</div>
+            </div>
+            <a class="cover-link" href="${p.link}" target="_blank" rel="noopener">
+              <div class="cover" style="background-image:url('${p.cover}')">
+                <div class="cover-title">${p.title}</div>
+              </div>
+            </a>
+            <div class="meta">
+              <div class="meta-item"><span class="label">Link</span><span class="value"><a class="reset" href="${p.link}" target="_blank" rel="noopener">Visit project</a></span></div>
+              <div class="meta-item"><span class="label">Studio</span><span class="value">${p.studio}</span></div>
+              <div class="meta-item"><span class="label">Team size</span><span class="value">${p.teamSize}</span></div>
+              <div class="meta-item"><span class="label">My contribution</span><span class="value">${p.contribution}</span></div>
+              <div class="meta-item"><span class="label">Platform</span><span class="value">${p.platform}</span></div>
+              <div class="meta-item"><span class="label">Engine & Tools</span><span class="value">${p.engineTools}</span></div>
+            </div>
+          </article>`;
+        projectsContainer.insertAdjacentHTML('beforeend', projectHTML);
+      });
+
+    } catch (err) {
+      console.error("Failed to load projects.json", err);
+    }
+  }
+
+  loadProjects();
+  </script>
 </body>
 </html>
