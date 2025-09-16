@@ -97,9 +97,8 @@
 <body>
   <div class="container" role="main">
 
-    <!-- Banner -->
+    <!-- Banner (uses local icon.png immediately; remote social.json may replace with icon_transparent) -->
     <header class="banner">
-      <!-- local placeholder icon (icon.png) used immediately -->
       <div class="icon"><img id="brand-icon" src="icon.png" alt="brand icon" /></div>
       <div style="flex:1;">
         <h1 id="brand-name">PerianDev</h1>
@@ -124,9 +123,7 @@
       </div>
 
       <nav aria-label="Project quick links">
-        <div class="game-links" id="project-links">
-          <!-- injected -->
-        </div>
+        <div class="game-links" id="project-links"></div>
       </nav>
     </div>
 
@@ -136,116 +133,139 @@
     <!-- Projects grid -->
     <section class="projects" id="projects-container"></section>
 
-    <!-- Footer (text pulled from website.json if present) -->
+    <!-- Footer (controlled via website.json/footerText when present) -->
     <div class="foot" id="site-footer">Made with ♥ by PerianDev</div>
   </div>
 
   <script>
-    // Helper: fetch JSON
-    async function fetchJson(url) {
-      const res = await fetch(url);
-      if (!res.ok) throw new Error(`Failed to fetch ${url}: ${res.status}`);
-      return res.json();
+    /* Utility: attempt to fetch a JSON file from multiple parent paths and return the first success.
+       Returns { json, url } where url is response.url (absolute) of where the file was fetched from.
+       We try: ./name, ../name, ../../name ... up to N levels, then try '/name' as fallback.
+    */
+    async function fetchJsonFromParents(name, maxDepth = 6) {
+      const candidates = [];
+      // relative candidates
+      let rel = '';
+      for (let i = 0; i <= maxDepth; i++) {
+        const path = (i === 0) ? `${name}` : `${'../'.repeat(i)}${name}`;
+        candidates.push(path);
+      }
+      // root fallback
+      candidates.push('/' + name);
+
+      for (const path of candidates) {
+        try {
+          const res = await fetch(path, {cache: 'no-cache'});
+          if (!res.ok) continue;
+          const data = await res.json();
+          return { json: data, url: res.url };
+        } catch (e) {
+          // try next
+        }
+      }
+      throw new Error(`Could not fetch ${name} from any candidate path`);
     }
 
-    // Load website.json (centralized editable content) and apply defaults
-    // website.json should be placed at the site root (same folder) and contain site-wide strings.
-    async function applyWebsiteJson() {
+    // Simple fetch for absolute URLs (like social.json hosted remote)
+    async function fetchJsonAbsolute(url) {
+      const res = await fetch(url, {cache: 'no-cache'});
+      if (!res.ok) throw new Error(`Failed to fetch ${url}: ${res.status}`);
+      const json = await res.json();
+      return { json, url: res.url };
+    }
+
+    // Resolve a possibly-relative URL against a base (base must end with /)
+    function resolveUrl(possibleUrl, base) {
+      if (!possibleUrl) return possibleUrl;
+      if (/^https?:\/\//i.test(possibleUrl) || possibleUrl.startsWith('/')) return possibleUrl;
+      // make sure base ends with slash
+      if (!base.endsWith('/')) base = base + '/';
+      return base + possibleUrl;
+    }
+
+    // Apply website.json site-wide data (footerText, defaultCover). Find website.json by searching parents.
+    async function loadWebsiteJson() {
       try {
-        const site = await fetchJson('website.json');
-
-        // Page title (optional)
-        if (site.title) {
-          document.getElementById('page-title').textContent = site.title;
-          document.title = site.title;
+        const { json: siteJson, url } = await fetchJsonFromParents('website.json', 8);
+        const base = url.replace(/website\.json$/i, '');
+        // footerText
+        if (siteJson.footerText) {
+          document.getElementById('site-footer').textContent = siteJson.footerText;
+          // mark footer as locked so remote social.json won't override
+          document.getElementById('site-footer').dataset.locked = '1';
         }
-
-        // Banner subtitle (small line below name)
-        if (site.bannerSub) document.getElementById('brand-tagline').textContent = site.bannerSub;
-
-        // About text (allow HTML or plain text)
-        if (site.about) {
-          // if user provides HTML, keep it; otherwise set textContent for safety
-          const bioEl = document.getElementById('bio');
-          if (site.about_is_html) bioEl.innerHTML = site.about;
-          else bioEl.textContent = site.about;
-        }
-
-        // Footer text
-        if (site.footerText) document.getElementById('site-footer').textContent = site.footerText;
-
-        // Optional site-wide default cover (can be overridden by social.json)
-        return { siteDefaultCover: site.defaultCover || null };
-
+        // return site defaults, resolving defaultCover relative to website.json location
+        const siteDefaultCover = siteJson.defaultCover ? resolveUrl(siteJson.defaultCover, base) : null;
+        return { siteJson, siteBase: base, siteDefaultCover };
       } catch (err) {
-        // Not fatal — continue with defaults
-        console.warn('No website.json or failed to load it; continuing with defaults.', err);
-        return { siteDefaultCover: null };
+        // no website.json found — not fatal
+        console.warn('website.json not found (searched parents). Using defaults.', err);
+        return { siteJson: null, siteBase: null, siteDefaultCover: null };
       }
     }
 
-    // Apply branding from remote social.json (colors, icon_transparent, name, tagline, bio, banners)
-    async function applyBrandingFromRemote() {
+    // Apply remote social.json branding (colors, icons, banners). Returns remoteBannerUrl (2x1) absolute if found.
+    async function loadSocialJson() {
       try {
-        const social = await fetchJson('https://periandevelopment.github.io/Socials/social.json');
+        const SOCIAL_URL = 'https://periandevelopment.github.io/Socials/social.json';
+        const { json: socialJson, url } = await fetchJsonAbsolute(SOCIAL_URL);
+        const colors = (socialJson && socialJson.colors) || {};
+        const icons = (socialJson && socialJson.icons) || {};
+        const banners = (socialJson && socialJson.banners) || {};
+        const identity = (socialJson && socialJson.identity) || {};
 
-        const colors = social.colors || {};
-        const icons = social.icons || {};
-        const banners = social.banners || {};
-        const identity = social.identity || {};
-
-        // Colors
         if (colors.primary_hex) document.documentElement.style.setProperty('--brand', colors.primary_hex);
         if (colors.background_hex) document.documentElement.style.setProperty('--bg', colors.background_hex);
         if (colors.text_hex) document.documentElement.style.setProperty('--text', colors.text_hex);
 
-        // Banner gradient (if provided)
         if (Array.isArray(colors.gradient_hex) && colors.gradient_hex.length >= 2) {
           const g = colors.gradient_hex.slice(0,2).join(', ');
           document.querySelector('.banner').style.background = `linear-gradient(90deg, ${g})`;
         }
 
-        // Prefer icon_transparent, then icon
+        // Prefer icon_transparent, else icon. Only replace if provided.
         const iconImg = document.getElementById('brand-icon');
-        if (icons.icon_transparent) {
-          iconImg.src = icons.icon_transparent;
-        } else if (icons.icon) {
-          iconImg.src = icons.icon;
-        }
+        if (icons.icon_transparent) iconImg.src = icons.icon_transparent;
+        else if (icons.icon) iconImg.src = icons.icon;
 
-        // Name / tagline / bio
-        if (identity.display_name) {
-          document.getElementById('brand-name').textContent = identity.display_name;
-          // update page title if website.json didn't set it
-          if (!document.title || document.title === 'PerianDev — Games Portfolio') {
-            document.title = `${identity.display_name} — Games Portfolio`;
-            document.getElementById('page-title').textContent = document.title;
-          }
-        }
+        if (identity.display_name) document.getElementById('brand-name').textContent = identity.display_name;
         if (identity.tagline) document.getElementById('brand-tagline').textContent = identity.tagline;
         if (identity.bio) document.getElementById('bio').textContent = identity.bio;
-        if (identity.display_name && !document.getElementById('site-footer').dataset.locked) {
-          // Only override footer if website.json didn't explicitly set it (see below)
-          const siteFooter = document.getElementById('site-footer');
-          if (siteFooter.textContent.trim() === '' || siteFooter.textContent.includes('PerianDev')) {
-            siteFooter.textContent = `Made with ♥ by ${identity.display_name}`;
-          }
-        }
 
-        return banners["2x1"] || null;
-
+        // remote banner 2x1 (may be absolute)
+        return banners['2x1'] || null;
       } catch (err) {
-        console.warn('Could not load remote social.json — using defaults.', err);
+        console.warn('Could not fetch remote social.json; continuing with defaults.', err);
         return null;
       }
     }
 
-    // Render projects: uses project.cover, project.icon_url, remote banner (social.json) or website.json default,
-    // falling back to local "fallback.png" as final fallback.
-    function renderProjects(projects, remoteBannerUrl, siteDefaultCover) {
-      const fallback = 'fallback.png';
-      const defaultCoverUrl = remoteBannerUrl || siteDefaultCover || fallback;
+    // Fetch projects.json (from the current folder). We use fetchJsonFromParents only if needed,
+    // but typically projects.json sits next to each page, so we try current folder first.
+    async function loadProjectsJson() {
+      // We will try: ./projects.json first, then search parents (to be robust)
+      try {
+        // try current folder
+        let res = await fetch('projects.json', {cache: 'no-cache'});
+        if (res.ok) {
+          const json = await res.json();
+          return { projects: json, base: res.url.replace(/projects\.json$/i,'') };
+        }
+      } catch (e) { /* ignore */ }
 
+      // fallback: search parents
+      try {
+        const { json, url } = await fetchJsonFromParents('projects.json', 8);
+        return { projects: json, base: url.replace(/projects\.json$/i,'') };
+      } catch (err) {
+        throw new Error('projects.json not found in current folder or parents.');
+      }
+    }
+
+    // Render projects. Resolution order for cover:
+    // project.cover -> project.icon_url -> projects.json base + relative -> remoteBanner -> website.defaultCover -> fallback.png
+    function renderProjects(projects, projectsBase, remoteBanner, siteDefaultCover) {
+      const fallback = 'fallback.png';
       const linksContainer = document.getElementById('project-links');
       const projectsContainer = document.getElementById('projects-container');
       linksContainer.innerHTML = '';
@@ -254,10 +274,10 @@
       projects.forEach(p => {
         const linkHref = p.link || p.website || '#';
 
-        // top text link -> open same tab
+        // top text link (open same tab)
         const a = document.createElement('a');
         a.className = 'game-link';
-        a.href = linkHref; // same tab
+        a.href = linkHref;
         a.textContent = p.title || p.name || p.id || 'Project';
         linksContainer.appendChild(a);
 
@@ -281,12 +301,30 @@
 
         const coverLink = document.createElement('a');
         coverLink.className = 'cover-link';
-        coverLink.href = linkHref; // same tab
+        coverLink.href = linkHref;
 
         const cover = document.createElement('div');
         cover.className = 'cover';
-        const coverUrl = p.cover || p.icon_url || defaultCoverUrl;
-        if (coverUrl) cover.style.backgroundImage = `url("${coverUrl}")`;
+
+        // compute cover URL with robust resolution
+        let coverUrl = null;
+        if (p.cover) coverUrl = p.cover;
+        else if (p.icon_url) coverUrl = p.icon_url;
+
+        // if coverUrl exists and is relative, resolve relative to projectsBase
+        if (coverUrl && !/^https?:\/\//i.test(coverUrl) && !coverUrl.startsWith('/')) {
+          if (projectsBase) coverUrl = projectsBase + coverUrl;
+        }
+
+        // if still no coverUrl, try remoteBanner (if relative, it is left as-is since social.json gives absolute URL)
+        if (!coverUrl && remoteBanner) coverUrl = remoteBanner;
+        // if still not, try siteDefaultCover (already resolved to absolute by loadWebsiteJson)
+        if (!coverUrl && siteDefaultCover) coverUrl = siteDefaultCover;
+        // fallback final
+        if (!coverUrl) coverUrl = fallback;
+
+        cover.style.backgroundImage = `url("${coverUrl}")`;
+
         const ctitle = document.createElement('div');
         ctitle.className = 'cover-title';
         ctitle.textContent = p.title || p.name || '';
@@ -318,73 +356,87 @@
       });
     }
 
-    // Initialization order:
-    // 1) website.json (local) to load central strings and site defaults
-    // 2) social.json (remote) to apply branding + icon_transparent preference
-    // 3) projects.json (local) to render projects
-    async function init() {
-      // website.json (centralized strings) - if present, use it and mark footer locked
-      const siteResult = await applyWebsiteJson();
-      // If website.json set a footerText, we set a flag so remote brand won't overwrite it.
-      if (siteResult && siteResult.siteDefaultCover) {
-        // store temporarily
-      }
-      // After website.json applied, mark footer as locked if it was set there
-      try {
-        const site = await fetchJson('website.json');
-        if (site && site.footerText) {
-          const footer = document.getElementById('site-footer');
-          footer.dataset.locked = '1';
-        }
-      } catch (_) { /* ignore */ }
-
-      // Apply remote social branding & get remote banner
-      const remoteBanner = await applyBrandingFromRemote();
-
-      // Load local projects.json and render
-      try {
-        const projects = await fetchJson('projects.json');
-        // pass remoteBanner and site default (if any)
-        let siteDefaultCover = null;
+    // Initialize sequence:
+    // 1) read website.json (search parents) -> apply footerText and resolve siteDefaultCover
+    // 2) read remote social.json -> apply brand colors/icon/name/tagline and get remote banner
+    // 3) read projects.json (search parents) -> render projects with resolution order as above
+    (async function init() {
+      // 1) website.json
+      const { siteJson, siteBase, siteDefaultCover } = await (async () => {
         try {
-          const site = await fetchJson('website.json');
-          siteDefaultCover = site.defaultCover || null;
-        } catch (_) { /* ignore */ }
+          const res = await fetchJsonFromParents('website.json', 8);
+          const siteJson = res.json;
+          const base = res.url.replace(/website\.json$/i,'');
+          // footer
+          if (siteJson.footerText) {
+            document.getElementById('site-footer').textContent = siteJson.footerText;
+            document.getElementById('site-footer').dataset.locked = '1';
+          }
+          const resolvedDefault = siteJson.defaultCover ? resolveUrl(siteJson.defaultCover, base) : null;
+          return { siteJson, siteBase: base, siteDefaultCover: resolvedDefault };
+        } catch (err) {
+          return { siteJson: null, siteBase: null, siteDefaultCover: null };
+        }
+      })();
 
-        renderProjects(projects, remoteBanner, siteDefaultCover);
+      // 2) remote social.json (branding)
+      const remoteBanner = await (async () => {
+        try {
+          const res = await fetchJsonAbsolute('https://periandevelopment.github.io/Socials/social.json');
+          const socialJson = res.json;
+          const colors = (socialJson && socialJson.colors) || {};
+          const icons = (socialJson && socialJson.icons) || {};
+          const banners = (socialJson && socialJson.banners) || {};
+          const identity = (socialJson && socialJson.identity) || {};
+
+          if (colors.primary_hex) document.documentElement.style.setProperty('--brand', colors.primary_hex);
+          if (colors.background_hex) document.documentElement.style.setProperty('--bg', colors.background_hex);
+          if (colors.text_hex) document.documentElement.style.setProperty('--text', colors.text_hex);
+
+          if (Array.isArray(colors.gradient_hex) && colors.gradient_hex.length >= 2) {
+            const g = colors.gradient_hex.slice(0,2).join(', ');
+            document.querySelector('.banner').style.background = `linear-gradient(90deg, ${g})`;
+          }
+
+          const iconImg = document.getElementById('brand-icon');
+          // prefer icon_transparent
+          if (icons.icon_transparent) iconImg.src = icons.icon_transparent;
+          else if (icons.icon) iconImg.src = icons.icon;
+
+          if (identity.display_name) document.getElementById('brand-name').textContent = identity.display_name;
+          if (identity.tagline) document.getElementById('brand-tagline').textContent = identity.tagline;
+          if (identity.bio) document.getElementById('bio').textContent = identity.bio;
+
+          return banners['2x1'] || null;
+        } catch (err) {
+          console.warn('social.json load failed', err);
+          return null;
+        }
+      })();
+
+      // 3) projects.json
+      try {
+        // try current folder then parents
+        let projectsData, projectsBase;
+        try {
+          // try current folder
+          const res = await fetch('projects.json', {cache:'no-cache'});
+          if (!res.ok) throw new Error('not found here');
+          projectsData = await res.json();
+          projectsBase = res.url.replace(/projects\.json$/i,'');
+        } catch (_) {
+          const res2 = await fetchJsonFromParents('projects.json', 8);
+          projectsData = res2.json;
+          projectsBase = res2.url.replace(/projects\.json$/i,'');
+        }
+        const effectiveSiteDefault = siteDefaultCover || null;
+        renderProjects(projectsData, projectsBase, remoteBanner, effectiveSiteDefault);
       } catch (err) {
         console.error('Failed to load projects.json', err);
         const container = document.getElementById('projects-container');
-        container.innerHTML = '<div style="color:var(--muted)">Failed to load projects. Check projects.json in the same folder.</div>';
+        container.innerHTML = '<div style="color:var(--muted)">Failed to load projects. Check projects.json in the same folder or a parent folder.</div>';
       }
-    }
-
-    // small wrapper to call applyWebsiteJson first (so we can set some strings early)
-    async function applyWebsiteJson() {
-      try {
-        const site = await fetchJson('website.json');
-
-        if (site.title) {
-          document.getElementById('page-title').textContent = site.title;
-          document.title = site.title;
-        }
-        if (site.bannerSub) document.getElementById('brand-tagline').textContent = site.bannerSub;
-        if (site.about) {
-          const bioEl = document.getElementById('bio');
-          if (site.about_is_html) bioEl.innerHTML = site.about;
-          else bioEl.textContent = site.about;
-        }
-        if (site.footerText) document.getElementById('site-footer').textContent = site.footerText;
-
-        return { siteDefaultCover: site.defaultCover || null };
-      } catch (err) {
-        console.warn('No website.json or failed to load it; continuing with defaults.', err);
-        return { siteDefaultCover: null };
-      }
-    }
-
-    // Start
-    init();
+    })();
   </script>
 </body>
 </html>
