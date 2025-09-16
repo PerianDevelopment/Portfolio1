@@ -1,5 +1,4 @@
 {
   "footerText": "Made with ♥ by PerianDev",
-  "defaultCover": "fallback.png",
-  "assetsBase": ""  /* optional: absolute or site-rooted path used for resolving assets if you want */
+  "fallbackImage": "fallback.png"
 }
