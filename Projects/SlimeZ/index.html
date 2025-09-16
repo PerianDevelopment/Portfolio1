@@ -19,6 +19,10 @@
       --radius: 12px;
       --transition: 240ms cubic-bezier(.2,.9,.2,1);
       --max-width: 1100px;
+
+      /* placeholder color */
+      --placeholder: #2b2b2b;
+      --placeholder-grad: linear-gradient(90deg, rgba(255,255,255,0.01), rgba(0,0,0,0.03));
     }
 
     *{box-sizing:border-box}
@@ -57,7 +61,7 @@
     .game-details{display:flex;gap:24px;align-items:flex-start;}
     @media (max-width:880px){.game-details{flex-direction:column;}}
 
-    /* Reserve the cover space with aspect-ratio even before image loads */
+    /* Reserve the cover space with aspect-ratio so layout won't shift */
     .game-cover{flex:0 0 50%;}
     .game-cover img{
       width:100%;
@@ -66,7 +70,8 @@
       border-radius:12px;
       box-shadow:var(--card-shadow);
       display:block;
-      background:linear-gradient(90deg, rgba(255,255,255,0.02), rgba(0,0,0,0.02));
+      background: var(--placeholder);
+      background-image: var(--placeholder-grad);
     }
 
     .game-meta{flex:1;display:flex;flex-direction:column;gap:12px;min-height:200px;}
@@ -80,7 +85,7 @@
     .project-section ul{margin:0;padding-left:20px;}
     .project-section li{margin-bottom:6px;}
 
-    /* 2:1 banners reserve space */
+    /* 2:1 banners reserve space, dark placeholder */
     .project-section img {
       width:100%;
       aspect-ratio:2 / 1;
@@ -88,7 +93,8 @@
       border-radius:12px;
       box-shadow:var(--card-shadow);
       display:block;
-      background:linear-gradient(90deg, rgba(255,255,255,0.02), rgba(0,0,0,0.02));
+      background: var(--placeholder);
+      background-image: var(--placeholder-grad);
     }
 
     a.reset{color:var(--brand);text-decoration:none;}
@@ -108,14 +114,14 @@
 
     <div class="divider"></div>
 
-    <!-- SKELETON: We keep this structure in the HTML so space is reserved immediately -->
+    <!-- SKELETON: kept to avoid layout shift -->
     <section class="game-info" id="game-info">
       <h2 id="project-title">Loading…</h2>
 
       <div class="game-details">
         <div class="game-cover">
-          <!-- 1x1 GIF placeholder ensures an <img> exists and CSS aspect-ratio reserves height -->
-          <img id="cover-img" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==" alt="project cover placeholder" />
+          <!-- dark SVG placeholder (1x1) -->
+          <img id="cover-img" src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1 1'><rect width='1' height='1' fill='%232b2b2b'/></svg>" alt="project cover placeholder" />
         </div>
 
         <div class="game-meta">
@@ -134,7 +140,7 @@
     <section class="project-section">
       <h3>Overview</h3>
       <p id="overview-text">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla accumsan, metus ultrices eleifend gravida, nulla nunc varius lectus.</p>
-      <img id="overview-banner" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==" alt="Project banner" loading="lazy">
+      <img id="overview-banner" src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 2 1'><rect width='2' height='1' fill='%232b2b2b'/></svg>" alt="Project banner" loading="lazy">
     </section>
 
     <div class="divider"></div>
@@ -147,18 +153,16 @@
         <li>Created animations and effects</li>
         <li>Optimized performance</li>
       </ul>
-      <img id="contrib-banner" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==" alt="Contributions banner" loading="lazy">
+      <img id="contrib-banner" src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 2 1'><rect width='2' height='1' fill='%232b2b2b'/></svg>" alt="Contributions banner" loading="lazy">
     </section>
 
     <div class="foot" id="site-footer">Made with ♥ by PerianDev</div>
   </div>
 
   <script>
-    // configuration
     const SOCIAL_JSON_URL = 'https://periandevelopment.github.io/Socials/social.json';
     const SOCIAL_HOST = (new URL(SOCIAL_JSON_URL)).origin;
 
-    // utilities
     async function fetchJsonFromParents(name, maxDepth = 8) {
       const candidates = [];
       for (let i = 0; i <= maxDepth; i++) candidates.push(i === 0 ? name : `${'../'.repeat(i)}${name}`);
@@ -169,9 +173,7 @@
           if (!res.ok) continue;
           const json = await res.json();
           return { json, url: res.url };
-        } catch (e) {
-          // next
-        }
+        } catch (e) {}
       }
       throw new Error(`Could not fetch ${name}`);
     }
@@ -203,7 +205,6 @@
       return params.get(name);
     }
 
-    // fill quick links, marking current project as red non-clickable
     function renderProjectLinks(projects, currentId) {
       const linksContainer = document.getElementById('project-links');
       linksContainer.innerHTML = '';
@@ -224,7 +225,6 @@
       });
     }
 
-    // fill the skeleton elements (no heavy DOM replacements => minimal layout shift)
     function fillProjectSkeleton(project, projectsBase, remoteBannerUrl, siteFallbackAbsolute) {
       const titleEl = document.getElementById('project-title');
       const coverImg = document.getElementById('cover-img');
@@ -236,7 +236,6 @@
 
       titleEl.textContent = project.title || project.name || 'Project';
 
-      // compute cover url (project.cover -> icon_url -> remoteBanner -> siteFallback -> sitePrefix/fallback.png)
       let coverUrl = project.cover || project.icon_url || null;
       if (coverUrl && !/^https?:\/\//i.test(coverUrl) && !coverUrl.startsWith('/')) {
         if (projectsBase) coverUrl = projectsBase + coverUrl;
@@ -256,13 +255,11 @@
       setMeta('meta-platform', project.platform || '');
       setMeta('meta-engine', project.engineTools || project.engine_tools || '');
 
-      // overview & contrib banners use same resolved cover
       document.getElementById('overview-banner').src = coverUrl;
       document.getElementById('contrib-banner').src = coverUrl;
     }
 
     (async function init() {
-      // 1) website.json
       let siteFallbackAbsolute = null;
       let repoRootUrl = null;
       let repoNameFromWebsiteJson = null;
@@ -285,7 +282,6 @@
           document.getElementById('site-footer').dataset.locked = '1';
         }
 
-        // set favicon to repo root icon.png if possible
         const faviconEl = document.getElementById('favicon-link');
         if (repoNameFromWebsiteJson) {
           faviconEl.href = `${SOCIAL_HOST}/${repoNameFromWebsiteJson}/icon.png`;
@@ -294,21 +290,17 @@
           faviconEl.href = resolveUrl('icon.png', siteBase);
         }
       } catch (err) {
-        // fallback favicon
         const faviconEl = document.getElementById('favicon-link');
         faviconEl.href = window.location.origin + getSitePrefix() + 'icon.png';
         repoRootUrl = window.location.origin + getSitePrefix();
       }
 
-      // set portfolio link
       document.getElementById('repo-root-link').href = repoRootUrl || '#';
 
-      // 2) social.json branding (non-blocking)
       let remoteBannerUrl = null;
       try {
         const { json: socialJson } = await fetchJsonAbsolute(SOCIAL_JSON_URL);
         const colors = socialJson.colors || {};
-        const icons = socialJson.icons || {};
         const banners = socialJson.banners || {};
         const identity = socialJson.identity || {};
 
@@ -316,14 +308,9 @@
         if (colors.background_hex) document.documentElement.style.setProperty('--bg', colors.background_hex);
         if (colors.text_hex) document.documentElement.style.setProperty('--text', colors.text_hex);
 
-        const iconEl = document.getElementById('brand-icon');
-        // (we removed top banner, so only set favicon to root icon via website.json earlier)
         remoteBannerUrl = banners['2x1'] || null;
-      } catch (err) {
-        // ignore branding fetch error
-      }
+      } catch (err) {}
 
-      // 3) projects.json
       try {
         let projectsData, projectsBase;
         try {
@@ -337,7 +324,6 @@
           projectsBase = res2.url.replace(/projects\.json$/i, '');
         }
 
-        // determine currentId (prefer ?id, else infer from folder name)
         let currentId = getQueryParam('id');
         if (!currentId) {
           const parts = window.location.pathname.split('/').filter(Boolean);
@@ -357,19 +343,12 @@
           currentId = slugify(currentId);
         }
 
-        // render links (top)
         renderProjectLinks(projectsData.map(p => ({...p, id: p.id || slugify(p.title || '')})), currentId);
 
-        // fill skeleton for selected project (no heavy DOM rebuild)
         const selected = (projectsData.find(p => (p.id || slugify(p.title || '')) === currentId) || projectsData[0]);
-        if (selected) {
-          fillProjectSkeleton(selected, projectsBase, remoteBannerUrl, siteFallbackAbsolute);
-        } else {
-          // nothing found — keep skeleton placeholders
-        }
+        if (selected) fillProjectSkeleton(selected, projectsBase, remoteBannerUrl, siteFallbackAbsolute);
       } catch (err) {
         console.error('Failed to load projects.json', err);
-        // show error in skeleton area but keep layout
         document.getElementById('project-title').textContent = 'Failed to load projects';
       }
     })();
