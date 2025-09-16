@@ -155,8 +155,6 @@
         // Use the link from projects.json if it exists
         a.href = p.link || `?id=${encodeURIComponent(p.id)}`;
         a.textContent = p.title || p.name || p.id || 'Project';
-        a.target = '_blank';
-        a.rel = 'noopener';
         linksContainer.appendChild(a);
       });
     }
