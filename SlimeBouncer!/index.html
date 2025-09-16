@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>PerianDev — Project</title>
+  <title>PerianDev — Project Page</title>
 
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;700;900&display=swap" rel="stylesheet">
 
@@ -26,7 +26,7 @@
       min-height:100%;
       background:var(--bg);
       color:var(--text);
-      font-family:"Poppins",system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial;
+      font-family: "Poppins", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
       -webkit-font-smoothing:antialiased;
       -moz-osx-font-smoothing:grayscale;
       line-height:1.45;
@@ -34,151 +34,87 @@
 
     .container{max-width:var(--max-width);margin:32px auto;padding:24px;}
 
-    .divider{height:1px;background:linear-gradient(90deg,transparent,rgba(255,255,255,0.04),transparent);margin:22px 0;border-radius:4px;}
+    .divider{height:1px;background:linear-gradient(90deg,transparent,rgba(255,255,255,0.04),transparent);margin:18px 0 22px 0;border-radius:4px;}
 
-    /* Top area */
-    .top-row{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:6px;}
-    .projects-header{display:flex;flex-direction:column;gap:8px;}
-    .section-header{font-size:18px;font-weight:700;display:flex;align-items:center;gap:12px;}
-    .section-header .dot{width:10px;height:10px;background:var(--brand);border-radius:50%;box-shadow:0 6px 20px rgba(255,56,46,0.12);}
+    .projects-header{display:flex;flex-direction:column;align-items:flex-start;gap:12px;margin:0 0 8px 0;}
+    .section-header{font-size:24px;font-weight:900;display:flex;align-items:center;gap:12px;}
+    .section-header .dot{width:10px;height:10px;background:var(--brand);border-radius:50%;box-shadow:0 6px 20px rgba(255,56,46,0.16);}
 
-    /* Portfolio title - NO hover effect, larger */
-    .portfolio-title{
-      color:var(--text);
-      font-weight:900;
-      text-decoration:none;
-      padding:2px 0;
-      display:inline-block;
-      font-size:32px; /* made bigger as requested */
-      line-height:1;
-      letter-spacing:-0.01em;
-    }
-
-    /* Game text links (identical to main page) */
     .game-links{display:flex;gap:16px;flex-wrap:wrap;align-items:center;}
-    .game-link{color:var(--text);font-weight:700;text-decoration:none;position:relative;padding:4px 2px;transition:color var(--transition), transform var(--transition);}    
-    .game-link::after{content:"";position:absolute;left:0;right:0;bottom:0;height:2px;background:var(--brand);transform:scaleX(0);transform-origin:left center;transition:transform var(--transition);}    
-    .game-link:hover{color:white;transform:translateY(-2px);}    
-    .game-link:hover::after{transform:scaleX(1);}    
+    .game-link{color:var(--text);font-weight:700;text-decoration:none;position:relative;padding:4px 2px;transition:color var(--transition), transform var(--transition);}
+    .game-link::after{content:"";position:absolute;left:0;right:0;bottom:0;height:2px;background:var(--brand);transform:scaleX(0);transform-origin:left center;transition:transform var(--transition);}
+    .game-link:hover{color:white;transform:translateY(-2px);}
+    .game-link:hover::after{transform:scaleX(1);}
 
-    /* Game info layout: title left, 4:3 cover under title, meta on the right */
-    .game-info{
-      display:grid;
-      grid-template-columns: 320px 1fr;
-      gap:28px;
-      align-items:start;
-    }
-    @media (max-width:980px){
-      .game-info{grid-template-columns: 1fr; }
-    }
+    .portfolio-title{font-size:32px;font-weight:900;margin-bottom:12px;color:var(--text);}
+    .portfolio-title a{color:var(--text);text-decoration:none;}
 
-    /* Left column */
-    .left-col{}
-    .project-title{margin:0 0 12px;font-size:28px;font-weight:900;color:var(--text);}    
-    .cover-wrap{width:100%;border-radius:12px;overflow:hidden;box-shadow:var(--card-shadow);}    
-    .cover-img{width:100%;display:block;aspect-ratio:4 / 3;object-fit:cover;background:#111;border-radius:12px;}
+    .game-info{display:flex;flex-direction:column;gap:16px;}
+    .game-info h2{margin:0;font-size:28px;font-weight:800;}
 
-    /* Right column meta */
-    .game-meta{display:grid;grid-template-columns:1fr 1fr;gap:12px 20px;align-items:start;}
-    .meta-item{font-size:13px;}
+    .game-details{display:flex;gap:24px;align-items:flex-start;}
+    .game-cover{flex:0 0 50%;}
+    .game-cover img{width:100%;height:auto;border-radius:12px;box-shadow:var(--card-shadow);}
+    .game-meta{flex:1;display:flex;flex-direction:column;gap:12px;}
+
     .meta-item .label{display:block;color:var(--muted);font-weight:600;font-size:12px;}
-    .meta-item .value{color:var(--text);font-weight:500;margin-top:6px;font-size:14px;}
+    .meta-item .value{color:var(--text);font-weight:500;margin-top:4px;font-size:14px;}
+
+    .project-section{margin:24px 0;}
+    .project-section h3{margin:0 0 12px;font-size:20px;font-weight:700;color:var(--text);}
+    .project-section p{margin:0 0 12px;color:var(--text);}
+    .project-section ul{margin:0;padding-left:20px;}
+    .project-section li{margin-bottom:6px;}
+
     a.reset{color:var(--brand);text-decoration:none;}
     a.reset:hover{text-decoration:underline;}
-
-    /* Project page sections */
-    .project-page{margin-top:8px;}
-    .project-section{margin-bottom:18px;}
-    .project-section h3{margin:0 0 12px;font-size:20px;font-weight:700;}
-    .project-section p{margin:0 0 12px;font-size:15px;line-height:1.6;color:var(--text);}
-    .project-section ul{margin:0;padding-left:20px;color:var(--text);}
-    .project-section ul li{margin:6px 0;font-size:15px;}
-    .project-banner{width:100%;display:block;aspect-ratio:2 / 1;object-fit:cover;border-radius:12px;box-shadow:var(--card-shadow);margin-top:12px;background:#111;}
 
     .foot{margin-top:28px;color:var(--muted);font-size:13px;text-align:center;}
   </style>
 </head>
 <body>
   <div class="container" role="main">
+    <div class="portfolio-title"><a href="https://periandevelopment.github.io/Portfolio1">Portfolio</a></div>
 
-    <!-- Top row: title and project links (no divider between title and links) -->
-    <div class="top-row">
-      <div class="projects-header" style="margin:0">
-        <div class="section-header" aria-hidden="true">
-          <div class="dot"></div>
-          <!-- Title now says exactly "Portfolio" and is larger; no hover effect -->
-          <a class="portfolio-title" href="https://periandevelopment.github.io/Portfolio1">Portfolio</a>
-        </div>
+    <nav aria-label="Project quick links">
+      <div class="game-links" id="project-links"></div>
+    </nav>
 
-        <!-- Game links (text buttons identical to main page) — directly under title -->
-        <nav aria-label="Project quick links">
-          <div class="game-links" id="project-links"></div>
-        </nav>
-      </div>
+    <div class="divider"></div>
 
-      <!-- spare area for future controls -->
-      <div aria-hidden="true"></div>
-    </div>
+    <section class="game-info" id="game-info"></section>
 
-    <!-- NOTE: removed the divider that previously sat between title and links / header -->
+    <div class="divider"></div>
 
-    <div class="divider"></div> <!-- keeps separation between header area and project info -->
-
-    <!-- Game Info: title (left), 4x3 cover under title, meta on the right -->
-    <section id="game-info" class="game-info" aria-labelledby="project-title">
-      <!-- Filled by JS -->
+    <section class="project-section">
+      <h3>Overview</h3>
+      <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla accumsan, metus ultrices eleifend gravida, nulla nunc varius lectus.</p>
+      <img src="banner_2x1.png" alt="Project banner" style="width:100%;border-radius:12px;box-shadow:var(--card-shadow);margin-top:12px;">
     </section>
 
     <div class="divider"></div>
 
-    <!-- Project Page Content (example content, use banner_2x1.png placeholders) -->
-    <section class="project-page">
-      <div class="project-section">
-        <h3>Overview</h3>
-        <p>This example project page contains placeholder text describing the project: a fast action-platformer with experimental movement mechanics, procedural encounters and a heavy focus on feel and polish. Replace this with your actual project explanation: genre, pillars, target platforms and short pitch.</p>
-        <img class="project-banner" src="banner_2x1.png" alt="Overview banner" />
-      </div>
-
-      <div class="divider"></div>
-
-      <div class="project-section">
-        <h3>Summary of contributions</h3>
-        <ul>
-          <li>Gameplay programming — core movement, state machine and combos</li>
-          <li>Procedural level flow and challenge tuning</li>
-          <li>Custom shader work for stylized lighting</li>
-          <li>Art pipeline tooling, sprite atlases and optimization</li>
-          <li>QA fixes, mobile optimizations and builds</li>
-        </ul>
-        <img class="project-banner" src="banner_2x1.png" alt="Contributions banner" />
-      </div>
-
-      <div class="divider"></div>
-
-      <div class="project-section">
-        <h3>Design notes & extras</h3>
-        <p>Use this section for interesting design decisions, editor tooling you built, or community features you plan to add. It's a good place for annotated gifs/screenshots and short developer commentary.</p>
-        <img class="project-banner" src="banner_2x1.png" alt="Extras banner" />
-      </div>
+    <section class="project-section">
+      <h3>Summary of Contributions</h3>
+      <ul>
+        <li>Implemented gameplay systems</li>
+        <li>Designed UI/UX</li>
+        <li>Created animations and effects</li>
+        <li>Optimized performance</li>
+      </ul>
+      <img src="banner_2x1.png" alt="Contributions banner" style="width:100%;border-radius:12px;box-shadow:var(--card-shadow);margin-top:12px;">
     </section>
 
     <div class="foot" id="site-footer">Made with ♥ by PerianDev</div>
   </div>
 
   <script>
-    // small helper to parse ?id= in the URL
-    function getQueryParam(name) {
-      const url = new URL(window.location.href);
-      return url.searchParams.get(name);
-    }
-
     async function fetchJson(url) {
       const res = await fetch(url);
       if (!res.ok) throw new Error(`Failed to fetch ${url}: ${res.status}`);
       return res.json();
     }
 
-    // Load brand colors and identity from socials.json (keeps styling consistent)
     async function applyBrandingFromRemote() {
       try {
         const social = await fetchJson('https://periandevelopment.github.io/Socials/social.json');
@@ -195,59 +131,47 @@
       }
     }
 
-    // Render all project links (identical visual behavior to main page)
     function renderProjectLinks(projects) {
       const linksContainer = document.getElementById('project-links');
       linksContainer.innerHTML = '';
       projects.forEach(p => {
-        const linkHref = p.link || p.website || '#';
         const a = document.createElement('a');
         a.className = 'game-link';
-        a.href = linkHref;
-        a.target = '_blank';
-        a.rel = 'noopener';
+        a.href = `?id=${encodeURIComponent(p.id)}`;
         a.textContent = p.title || p.name || p.id || 'Project';
         linksContainer.appendChild(a);
       });
     }
 
-    // Render selected project: title left, 4x3 cover under title, meta to the right
-    function renderSelectedProject(projects, selectedId) {
+    function getQueryParam(name) {
+      const params = new URLSearchParams(window.location.search);
+      return params.get(name);
+    }
+
+    function renderSelectedProject(projects, id) {
       const container = document.getElementById('game-info');
       container.innerHTML = '';
 
-      // find by id or slug, fallback to first item
-      let selected = null;
-      if (selectedId) {
-        selected = projects.find(p => (p.id && p.id === selectedId) || (p.slug && p.slug === selectedId) || (String(p.id) === selectedId));
-      }
-      if (!selected) selected = projects[0] || null;
-      if (!selected) {
-        container.innerHTML = '<div style="color:var(--muted)">No project found in projects.json</div>';
-        return;
-      }
+      const project = projects.find(p => p.id === id) || projects[0];
+      if (!project) return;
 
-      // Left column: title + 4:3 cover
-      const left = document.createElement('div');
-      left.className = 'left-col';
       const title = document.createElement('h2');
-      title.id = 'project-title';
-      title.className = 'project-title';
-      title.textContent = selected.title || selected.name || 'Untitled Project';
-      left.appendChild(title);
+      title.textContent = project.title || project.name || 'Project';
+      container.appendChild(title);
 
-      const coverWrap = document.createElement('div');
-      coverWrap.className = 'cover-wrap';
+      const details = document.createElement('div');
+      details.className = 'game-details';
+
+      const cover = document.createElement('div');
+      cover.className = 'game-cover';
       const img = document.createElement('img');
-      img.className = 'cover-img';
-      img.alt = (selected.title || selected.name || 'cover') + ' cover';
-      img.src = selected.cover || selected.icon_url || 'banner_2x1.png';
-      coverWrap.appendChild(img);
-      left.appendChild(coverWrap);
+      img.src = project.cover || 'banner_2x1.png';
+      cover.appendChild(img);
+      details.appendChild(cover);
 
-      // Right column: meta items
-      const right = document.createElement('div');
-      right.className = 'game-meta';
+      const meta = document.createElement('div');
+      meta.className = 'game-meta';
+
       const mk = (label, valueHtml) => {
         const wrapper = document.createElement('div');
         wrapper.className = 'meta-item';
@@ -255,36 +179,29 @@
         return wrapper;
       };
 
-      const projectHref = selected.link || selected.website || '#';
-      const linkText = selected.linkText || (selected.link ? 'Visit' : '');
+      meta.appendChild(mk('Year', project.year || ''));
+      meta.appendChild(mk('Studio', project.studio || ''));
+      meta.appendChild(mk('Team size', project.teamSize || project.team_size || ''));
+      meta.appendChild(mk('My contribution', project.contribution || ''));
+      meta.appendChild(mk('Platform', project.platform || ''));
+      meta.appendChild(mk('Engine & Tools', project.engineTools || project.engine_tools || ''));
+      if (project.link) meta.appendChild(mk('Link', `<a class="reset" href="${project.link}" target="_blank" rel="noopener">${project.linkText || project.link}</a>`));
 
-      right.appendChild(mk('Link', `<a class="reset" href="${projectHref}" target="_blank" rel="noopener">${linkText}</a>`));
-      right.appendChild(mk('Studio', selected.studio || 'PerianDev'));
-      right.appendChild(mk('Year', selected.year || '—'));
-      right.appendChild(mk('Team size', selected.teamSize || selected.team_size || '—'));
-      right.appendChild(mk('My contribution', selected.contribution || selected.myContribution || '—'));
-      right.appendChild(mk('Platform', selected.platform || '—'));
-      right.appendChild(mk('Engine & Tools', selected.engineTools || selected.engine_tools || '—'));
-
-      container.appendChild(left);
-      container.appendChild(right);
+      details.appendChild(meta);
+      container.appendChild(details);
     }
 
     async function init() {
       await applyBrandingFromRemote();
-
       try {
-        // fetch projects.json using the full absolute URL (as requested)
         const projects = await fetchJson('https://periandevelopment.github.io/Portfolio1/projects.json');
         renderProjectLinks(projects);
-
-        // support selecting a project via ?id=slug or id (fallback to first project)
         const paramId = getQueryParam('id');
         renderSelectedProject(projects, paramId);
       } catch (err) {
         console.error('Failed to load projects.json', err);
         const container = document.getElementById('game-info');
-        container.innerHTML = '<div style="color:var(--muted)">Failed to load projects. Check the projects.json URL or that the file exists at https://periandevelopment.github.io/Portfolio1/projects.json.</div>';
+        container.innerHTML = '<div style="color:var(--muted)">Failed to load projects. Check projects.json in the repo root.</div>';
       }
     }
 
