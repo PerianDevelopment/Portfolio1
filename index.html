@@ -3,7 +3,10 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>PerianDev — Games Portfolio</title>
+  <title id="page-title">PerianDev — Games Portfolio</title>
+
+  <!-- Favicon uses local icon.png -->
+  <link rel="icon" href="icon.png" type="image/png">
 
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;700;900&display=swap" rel="stylesheet">
 
@@ -34,6 +37,7 @@
 
     .container{max-width:var(--max-width);margin:32px auto;padding:24px;}
 
+    /* Banner */
     .banner{
       display:flex;align-items:center;gap:20px;
       background: linear-gradient(90deg, var(--brand), color-mix(in srgb, var(--brand) 85%, black 15%));
@@ -45,6 +49,7 @@
     .banner-sub{margin-top:8px;color:rgba(255,255,255,0.92);font-weight:500;}
     .banner:hover .icon{transform:translateX(-6px) rotate(-4deg) scale(1.02);}
 
+    /* About (text uses normal page color) */
     .about{margin:28px 0;padding:20px;background:linear-gradient(180deg,rgba(255,255,255,0.02),rgba(0,0,0,0.03));border-radius:12px;border:1px solid rgba(255,255,255,0.02);box-shadow:var(--card-shadow);}
     .about p{margin:0;color:var(--text);font-size:16px;}
 
@@ -54,12 +59,14 @@
     .section-header{font-size:18px;font-weight:700;display:flex;align-items:center;gap:12px;}
     .section-header .dot{width:10px;height:10px;background:var(--brand);border-radius:50%;box-shadow:0 6px 20px rgba(255,56,46,0.16);}
 
+    /* Text project links */
     .game-links{display:flex;gap:16px;flex-wrap:wrap;align-items:center;}
     .game-link{color:var(--text);font-weight:700;text-decoration:none;position:relative;padding:4px 2px;transition:color var(--transition), transform var(--transition);}
     .game-link::after{content:"";position:absolute;left:0;right:0;bottom:0;height:2px;background:var(--brand);transform:scaleX(0);transform-origin:left center;transition:transform var(--transition);}
     .game-link:hover{color:white;transform:translateY(-2px);}
     .game-link:hover::after{transform:scaleX(1);}
 
+    /* Projects grid */
     .projects{display:grid;grid-template-columns:repeat(2,1fr);gap:20px;}
     @media (max-width:880px){.projects{grid-template-columns:1fr;}}
     @media (max-width:520px){.banner{flex-direction:column;align-items:flex-start;gap:12px;padding:18px;}.banner .icon{width:86px;height:86px;flex:0 0 86px;}}
@@ -90,22 +97,26 @@
 <body>
   <div class="container" role="main">
 
+    <!-- Banner -->
     <header class="banner">
-      <!-- local placeholder src will be overridden by remote branding if available -->
-      <div class="icon"><img id="brand-icon" src="icon_transparent.png" alt="PerianDev icon" /></div>
+      <!-- local placeholder icon (icon.png) used immediately -->
+      <div class="icon"><img id="brand-icon" src="icon.png" alt="brand icon" /></div>
       <div style="flex:1;">
         <h1 id="brand-name">PerianDev</h1>
         <div class="banner-sub" id="brand-tagline">Indie games & experiments — playable, polished, irreverent.</div>
       </div>
     </header>
 
+    <!-- About -->
     <section class="about">
       <h2 style="margin:0 0 8px;font-size:16px;font-weight:700;color:var(--text)">About</h2>
       <p id="bio">Perian is a programmer, indie game developer, software engineer and passionate gamer based in Germany. This site focuses on the projects and playable experiences created under the PerianDev brand.</p>
     </section>
 
+    <!-- Divider between About and Projects -->
     <div class="divider"></div>
 
+    <!-- Projects header and quick links -->
     <div class="projects-header">
       <div class="section-header">
         <div class="dot"></div>
@@ -113,43 +124,88 @@
       </div>
 
       <nav aria-label="Project quick links">
-        <div class="game-links" id="project-links"></div>
+        <div class="game-links" id="project-links">
+          <!-- injected -->
+        </div>
       </nav>
     </div>
 
+    <!-- Divider below links -->
     <div class="divider"></div>
 
+    <!-- Projects grid -->
     <section class="projects" id="projects-container"></section>
 
+    <!-- Footer (text pulled from website.json if present) -->
     <div class="foot" id="site-footer">Made with ♥ by PerianDev</div>
   </div>
 
   <script>
+    // Helper: fetch JSON
     async function fetchJson(url) {
       const res = await fetch(url);
       if (!res.ok) throw new Error(`Failed to fetch ${url}: ${res.status}`);
       return res.json();
     }
 
-    // Apply branding: prefer icon_transparent from social.json
+    // Load website.json (centralized editable content) and apply defaults
+    // website.json should be placed at the site root (same folder) and contain site-wide strings.
+    async function applyWebsiteJson() {
+      try {
+        const site = await fetchJson('website.json');
+
+        // Page title (optional)
+        if (site.title) {
+          document.getElementById('page-title').textContent = site.title;
+          document.title = site.title;
+        }
+
+        // Banner subtitle (small line below name)
+        if (site.bannerSub) document.getElementById('brand-tagline').textContent = site.bannerSub;
+
+        // About text (allow HTML or plain text)
+        if (site.about) {
+          // if user provides HTML, keep it; otherwise set textContent for safety
+          const bioEl = document.getElementById('bio');
+          if (site.about_is_html) bioEl.innerHTML = site.about;
+          else bioEl.textContent = site.about;
+        }
+
+        // Footer text
+        if (site.footerText) document.getElementById('site-footer').textContent = site.footerText;
+
+        // Optional site-wide default cover (can be overridden by social.json)
+        return { siteDefaultCover: site.defaultCover || null };
+
+      } catch (err) {
+        // Not fatal — continue with defaults
+        console.warn('No website.json or failed to load it; continuing with defaults.', err);
+        return { siteDefaultCover: null };
+      }
+    }
+
+    // Apply branding from remote social.json (colors, icon_transparent, name, tagline, bio, banners)
     async function applyBrandingFromRemote() {
       try {
         const social = await fetchJson('https://periandevelopment.github.io/Socials/social.json');
+
         const colors = social.colors || {};
         const icons = social.icons || {};
         const banners = social.banners || {};
         const identity = social.identity || {};
 
+        // Colors
         if (colors.primary_hex) document.documentElement.style.setProperty('--brand', colors.primary_hex);
         if (colors.background_hex) document.documentElement.style.setProperty('--bg', colors.background_hex);
         if (colors.text_hex) document.documentElement.style.setProperty('--text', colors.text_hex);
 
+        // Banner gradient (if provided)
         if (Array.isArray(colors.gradient_hex) && colors.gradient_hex.length >= 2) {
           const g = colors.gradient_hex.slice(0,2).join(', ');
           document.querySelector('.banner').style.background = `linear-gradient(90deg, ${g})`;
         }
 
-        // Prefer icon_transparent over icon
+        // Prefer icon_transparent, then icon
         const iconImg = document.getElementById('brand-icon');
         if (icons.icon_transparent) {
           iconImg.src = icons.icon_transparent;
@@ -157,19 +213,39 @@
           iconImg.src = icons.icon;
         }
 
-        if (identity.display_name) document.getElementById('brand-name').textContent = identity.display_name;
+        // Name / tagline / bio
+        if (identity.display_name) {
+          document.getElementById('brand-name').textContent = identity.display_name;
+          // update page title if website.json didn't set it
+          if (!document.title || document.title === 'PerianDev — Games Portfolio') {
+            document.title = `${identity.display_name} — Games Portfolio`;
+            document.getElementById('page-title').textContent = document.title;
+          }
+        }
         if (identity.tagline) document.getElementById('brand-tagline').textContent = identity.tagline;
         if (identity.bio) document.getElementById('bio').textContent = identity.bio;
-        if (identity.display_name) document.getElementById('site-footer').textContent = `Made with ♥ by ${identity.display_name}`;
+        if (identity.display_name && !document.getElementById('site-footer').dataset.locked) {
+          // Only override footer if website.json didn't explicitly set it (see below)
+          const siteFooter = document.getElementById('site-footer');
+          if (siteFooter.textContent.trim() === '' || siteFooter.textContent.includes('PerianDev')) {
+            siteFooter.textContent = `Made with ♥ by ${identity.display_name}`;
+          }
+        }
 
         return banners["2x1"] || null;
+
       } catch (err) {
         console.warn('Could not load remote social.json — using defaults.', err);
         return null;
       }
     }
 
-    function renderProjects(projects, defaultCover) {
+    // Render projects: uses project.cover, project.icon_url, remote banner (social.json) or website.json default,
+    // falling back to local "fallback.png" as final fallback.
+    function renderProjects(projects, remoteBannerUrl, siteDefaultCover) {
+      const fallback = 'fallback.png';
+      const defaultCoverUrl = remoteBannerUrl || siteDefaultCover || fallback;
+
       const linksContainer = document.getElementById('project-links');
       const projectsContainer = document.getElementById('projects-container');
       linksContainer.innerHTML = '';
@@ -177,12 +253,15 @@
 
       projects.forEach(p => {
         const linkHref = p.link || p.website || '#';
+
+        // top text link -> open same tab
         const a = document.createElement('a');
         a.className = 'game-link';
-        a.href = linkHref;
+        a.href = linkHref; // same tab
         a.textContent = p.title || p.name || p.id || 'Project';
         linksContainer.appendChild(a);
 
+        // project card
         const card = document.createElement('article');
         card.className = 'project';
         card.id = p.id || (`project-${Math.random().toString(36).slice(2,9)}`);
@@ -202,11 +281,11 @@
 
         const coverLink = document.createElement('a');
         coverLink.className = 'cover-link';
-        coverLink.href = linkHref;
+        coverLink.href = linkHref; // same tab
 
         const cover = document.createElement('div');
         cover.className = 'cover';
-        const coverUrl = p.cover || p.icon_url || defaultCover || '';
+        const coverUrl = p.cover || p.icon_url || defaultCoverUrl;
         if (coverUrl) cover.style.backgroundImage = `url("${coverUrl}")`;
         const ctitle = document.createElement('div');
         ctitle.className = 'cover-title';
@@ -239,12 +318,40 @@
       });
     }
 
+    // Initialization order:
+    // 1) website.json (local) to load central strings and site defaults
+    // 2) social.json (remote) to apply branding + icon_transparent preference
+    // 3) projects.json (local) to render projects
     async function init() {
-      const defaultCover = await applyBrandingFromRemote();
+      // website.json (centralized strings) - if present, use it and mark footer locked
+      const siteResult = await applyWebsiteJson();
+      // If website.json set a footerText, we set a flag so remote brand won't overwrite it.
+      if (siteResult && siteResult.siteDefaultCover) {
+        // store temporarily
+      }
+      // After website.json applied, mark footer as locked if it was set there
+      try {
+        const site = await fetchJson('website.json');
+        if (site && site.footerText) {
+          const footer = document.getElementById('site-footer');
+          footer.dataset.locked = '1';
+        }
+      } catch (_) { /* ignore */ }
 
+      // Apply remote social branding & get remote banner
+      const remoteBanner = await applyBrandingFromRemote();
+
+      // Load local projects.json and render
       try {
         const projects = await fetchJson('projects.json');
-        renderProjects(projects, defaultCover);
+        // pass remoteBanner and site default (if any)
+        let siteDefaultCover = null;
+        try {
+          const site = await fetchJson('website.json');
+          siteDefaultCover = site.defaultCover || null;
+        } catch (_) { /* ignore */ }
+
+        renderProjects(projects, remoteBanner, siteDefaultCover);
       } catch (err) {
         console.error('Failed to load projects.json', err);
         const container = document.getElementById('projects-container');
@@ -252,6 +359,31 @@
       }
     }
 
+    // small wrapper to call applyWebsiteJson first (so we can set some strings early)
+    async function applyWebsiteJson() {
+      try {
+        const site = await fetchJson('website.json');
+
+        if (site.title) {
+          document.getElementById('page-title').textContent = site.title;
+          document.title = site.title;
+        }
+        if (site.bannerSub) document.getElementById('brand-tagline').textContent = site.bannerSub;
+        if (site.about) {
+          const bioEl = document.getElementById('bio');
+          if (site.about_is_html) bioEl.innerHTML = site.about;
+          else bioEl.textContent = site.about;
+        }
+        if (site.footerText) document.getElementById('site-footer').textContent = site.footerText;
+
+        return { siteDefaultCover: site.defaultCover || null };
+      } catch (err) {
+        console.warn('No website.json or failed to load it; continuing with defaults.', err);
+        return { siteDefaultCover: null };
+      }
+    }
+
+    // Start
     init();
   </script>
 </body>
