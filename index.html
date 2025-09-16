@@ -5,7 +5,6 @@
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>PerianDev — Games Portfolio</title>
 
-  <!-- Optional: a clean geometric typeface -->
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;700;900&display=swap" rel="stylesheet">
 
   <style>
@@ -22,7 +21,6 @@
       --max-width: 1100px;
     }
 
-    /* Global layout */
     *{box-sizing: border-box}
     html,body{height:100%}
     body{
@@ -34,7 +32,6 @@
       -webkit-font-smoothing:antialiased;
       -moz-osx-font-smoothing:grayscale;
       line-height:1.45;
-      -webkit-tap-highlight-color: transparent;
     }
 
     .container{
@@ -56,21 +53,24 @@
       overflow:hidden;
     }
 
+    /* Icon: removed box / background but keep size + animation */
     .banner .icon{
       width:110px;
       height:110px;
       flex:0 0 110px;
-      display:inline-grid;
-      place-items:center;
-      border-radius:12px;
-      background: linear-gradient(180deg, rgba(255,255,255,0.06), rgba(0,0,0,0.08));
-      padding:8px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
       transition: transform var(--transition);
+      /* background intentionally removed per request */
+      padding:0;
+      border-radius:0;
     }
     .banner .icon img{
       max-width:100%;
       max-height:100%;
       display:block;
+      /* keep subtle drop shadow for depth */
       filter: drop-shadow(0 6px 18px rgba(0,0,0,0.45));
     }
 
@@ -83,22 +83,15 @@
       line-height:1;
     }
 
-    .banner h1 .accent{
-      display:inline-block;
-      -webkit-background-clip: text;
-      background-clip: text;
-      color: white;
-    }
-
-    .banner:hover .icon{ transform: translateX(-6px) rotate(-4deg) scale(1.02); }
-
-    /* Small subline under banner */
     .banner-sub{
       margin-top:8px;
       color: rgba(255,255,255,0.92);
       font-weight:500;
       opacity:0.95;
     }
+
+    /* Keep the hover animation but no background box */
+    .banner:hover .icon{ transform: translateX(-6px) rotate(-4deg) scale(1.02); }
 
     /* About */
     .about{
@@ -115,7 +108,7 @@
       font-size:16px;
     }
 
-    /* Game Links (text links) */
+    /* Game Links (text-only clickable links) */
     .game-links{
       margin:20px 0 12px 0;
       display:flex;
@@ -124,16 +117,16 @@
       align-items:center;
     }
 
+    /* clickable text links in brand color */
     .game-link{
-      color:var(--text);
-      font-weight:600;
+      color:var(--brand);
+      font-weight:700;
       text-decoration:none;
       position:relative;
       padding:4px 2px;
       transition: color var(--transition), transform var(--transition);
       outline: none;
     }
-    /* animated underline */
     .game-link::after{
       content:"";
       position:absolute;
@@ -141,7 +134,7 @@
       right:0;
       bottom:0;
       height:2px;
-      background:linear-gradient(90deg,var(--brand), color-mix(in srgb,var(--brand) 70%, black 30%));
+      background: linear-gradient(90deg,var(--brand), color-mix(in srgb,var(--brand) 70%, black 30%));
       transform: scaleX(0);
       transform-origin:left center;
       transition: transform var(--transition);
@@ -150,7 +143,7 @@
     }
     .game-link:hover,
     .game-link:focus{
-      color: white;
+      color:var(--brand);
       transform: translateY(-2px);
     }
     .game-link:hover::after,
@@ -234,7 +227,15 @@
       border: 1px solid rgba(255,255,255,0.02);
     }
 
-    /* Cover image with 4:3 ratio */
+    /* Cover image with 4:3 ratio; uses banner_2x1.png as texture */
+    .cover-link{
+      display:block;
+      border-radius:10px;
+      overflow:hidden;
+      text-decoration:none;
+      outline:none;
+    }
+
     .cover{
       width:100%;
       aspect-ratio: 4 / 3;
@@ -242,12 +243,26 @@
       overflow:hidden;
       position:relative;
       display:block;
-      background-size:cover;
+      background-image: url('banner_2x1.png');
+      background-size: cover;
       background-position:center;
       box-shadow: inset 0 -30px 60px rgba(0,0,0,0.25);
       transition: transform var(--transition);
     }
     .project:hover .cover{ transform: scale(1.02); }
+
+    /* Cover title overlay so covers still show the game title */
+    .cover-title{
+      position:absolute;
+      left:12px;
+      bottom:12px;
+      z-index:2;
+      font-weight:800;
+      font-size:18px;
+      color:#fff;
+      text-shadow: 0 6px 18px rgba(0,0,0,0.6);
+      pointer-events:none;
+    }
 
     .cover::after{
       content:"";
@@ -279,10 +294,16 @@
       font-size:13px;
     }
 
-    /* Small utilities */
+    /* Make meta links use brand color */
     a.reset{
-      color:inherit;
+      color:var(--brand);
+      text-decoration:none;
     }
+    a.reset:hover,
+    a.reset:focus{
+      text-decoration: underline;
+    }
+
     /* focus styles for keyboard users */
     a:focus, button:focus, .game-link:focus{
       outline: 3px solid rgba(255,56,46,0.14);
@@ -290,7 +311,6 @@
       border-radius:6px;
     }
 
-    /* Footer small */
     .foot{
       margin-top:28px;
       color:var(--muted);
@@ -307,7 +327,7 @@
     <!-- Banner -->
     <header class="banner" role="banner" aria-label="PerianDev banner">
       <div class="icon" aria-hidden="false">
-        <!-- The user should provide icon_transparent.png in the same folder -->
+        <!-- No box behind icon (per request). Keep icon file in same folder -->
         <img src="icon_transparent.png" alt="PerianDev icon (texture)" />
       </div>
 
@@ -356,17 +376,17 @@
           <div class="project-year">2025</div>
         </div>
 
-        <!-- Cover image (4:3) using inline SVG data URI as background -->
-        <div class="cover"
-             role="img"
-             aria-label="Cover: SlimeZ"
-             style="background-image: url('data:image/svg+xml;utf8,<svg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 400 300%27><rect width=%27400%27 height=%27300%27 fill=%27%23222222%27/><rect x=%2712%27 y=%2712%27 rx=%2712%27 width=%27376%27 height=%27276%27 fill=%27%23FF382E%27/><text x=%27200%27 y=%27160%27 font-family=%27Poppins%2C%20sans-serif%27 font-weight=%27900%27 font-size=%2732%27 fill=%27%23ffffff%27 text-anchor=%27middle%27>SlimeZ</text></svg>');">
-        </div>
+        <!-- Cover now links to the itch page and uses banner_2x1.png as texture -->
+        <a class="cover-link" href="https://periandevelopment.itch.io/" target="_blank" rel="noopener" aria-label="Open SlimeZ project page">
+          <div class="cover" role="img" aria-label="Cover: SlimeZ">
+            <div class="cover-title">SlimeZ</div>
+          </div>
+        </a>
 
         <div class="meta" aria-hidden="false">
           <div class="meta-item">
             <span class="label">Link</span>
-            <span class="value"><a class="reset" href="#" target="_blank" rel="noopener">Play / Details</a></span>
+            <span class="value"><a class="reset" href="https://periandevelopment.itch.io/" target="_blank" rel="noopener">Play / Details</a></span>
           </div>
           <div class="meta-item">
             <span class="label">Studio</span>
@@ -400,14 +420,16 @@
           <div class="project-year">2023</div>
         </div>
 
-        <div class="cover" role="img" aria-label="Cover: Astro Drift"
-             style="background-image: url('data:image/svg+xml;utf8,<svg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 400 300%27><rect width=%27400%27 height=%27300%27 fill=%27%23222222%27/><rect x=%2712%27 y=%2712%27 rx=%2712%27 width=%27376%27 height=%27276%27 fill=%27%230077cc%27/><text x=%27200%27 y=%27160%27 font-family=%27Poppins%2C%20sans-serif%27 font-weight=%27900%27 font-size=%2732%27 fill=%27%23ffffff%27 text-anchor=%27middle%27>Astro%20Drift</text></svg>');">
-        </div>
+        <a class="cover-link" href="https://periandevelopment.itch.io/" target="_blank" rel="noopener" aria-label="Open Astro Drift project page">
+          <div class="cover" role="img" aria-label="Cover: Astro Drift">
+            <div class="cover-title">Astro Drift</div>
+          </div>
+        </a>
 
         <div class="meta">
           <div class="meta-item">
             <span class="label">Link</span>
-            <span class="value"><a class="reset" href="#" target="_blank" rel="noopener">Gameplay / Build</a></span>
+            <span class="value"><a class="reset" href="https://periandevelopment.itch.io/" target="_blank" rel="noopener">Gameplay / Build</a></span>
           </div>
           <div class="meta-item">
             <span class="label">Studio</span>
@@ -441,14 +463,16 @@
           <div class="project-year">2024</div>
         </div>
 
-        <div class="cover" role="img" aria-label="Cover: Neon Runner"
-             style="background-image: url('data:image/svg+xml;utf8,<svg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 400 300%27><rect width=%27400%27 height=%27300%27 fill=%27%23222222%27/><rect x=%2712%27 y=%2712%27 rx=%2712%27 width=%27376%27 height=%27276%27 fill=%27%2300ddaa%27/><text x=%27200%27 y=%27160%27 font-family=%27Poppins%2C%20sans-serif%27 font-weight=%27900%27 font-size=%2732%27 fill=%27%23001212%27 text-anchor=%27middle%27>Neon%20Runner</text></svg>');">
-        </div>
+        <a class="cover-link" href="https://periandevelopment.itch.io/" target="_blank" rel="noopener" aria-label="Open Neon Runner project page">
+          <div class="cover" role="img" aria-label="Cover: Neon Runner">
+            <div class="cover-title">Neon Runner</div>
+          </div>
+        </a>
 
         <div class="meta">
           <div class="meta-item">
             <span class="label">Link</span>
-            <span class="value"><a class="reset" href="#" target="_blank" rel="noopener">More info</a></span>
+            <span class="value"><a class="reset" href="https://periandevelopment.itch.io/" target="_blank" rel="noopener">More info</a></span>
           </div>
           <div class="meta-item">
             <span class="label">Studio</span>
@@ -482,14 +506,16 @@
           <div class="project-year">2021</div>
         </div>
 
-        <div class="cover" role="img" aria-label="Cover: Forgotten Tunnels"
-             style="background-image: url('data:image/svg+xml;utf8,<svg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 400 300%27><rect width=%27400%27 height=%27300%27 fill=%27%23222222%27/><rect x=%2712%27 y=%2712%27 rx=%2712%27 width=%27376%27 height=%27276%27 fill=%27%23334444%27/><text x=%27200%27 y=%27160%27 font-family=%27Poppins%2C%20sans-serif%27 font-weight=%27900%27 font-size=%2730%27 fill=%27%23FF382E%27 text-anchor=%27middle%27>Forgotten%20Tunnels</text></svg>');">
-        </div>
+        <a class="cover-link" href="https://periandevelopment.itch.io/" target="_blank" rel="noopener" aria-label="Open Forgotten Tunnels project page">
+          <div class="cover" role="img" aria-label="Cover: Forgotten Tunnels">
+            <div class="cover-title">Forgotten Tunnels</div>
+          </div>
+        </a>
 
         <div class="meta">
           <div class="meta-item">
             <span class="label">Link</span>
-            <span class="value"><a class="reset" href="#" target="_blank" rel="noopener">Article / Build</a></span>
+            <span class="value"><a class="reset" href="https://periandevelopment.itch.io/" target="_blank" rel="noopener">Article / Build</a></span>
           </div>
           <div class="meta-item">
             <span class="label">Studio</span>
@@ -502,7 +528,7 @@
           </div>
           <div class="meta-item">
             <span class="label">My contribution</span>
-            <span class="value">I build a System to generate enemies, modify them and make them feel interesting, exciting, dangerous and real. This is one of the core Systems the game is based on</span>
+            <span class="value">Systems, UI, networking</span>
           </div>
 
           <div class="meta-item">
@@ -523,7 +549,7 @@
   </div>
 
   <script>
-    // Small accessibility: ensure game-link clicks scroll into view smoothly
+    // Keep the smooth-scrolling for the top text links (internal anchors).
     (function(){
       document.querySelectorAll('.game-link').forEach(a=>{
         a.addEventListener('click', (e)=>{
@@ -534,7 +560,6 @@
             if (target){
               e.preventDefault();
               target.scrollIntoView({behavior:'smooth', block:'start'});
-              // focus for keyboard users:
               setTimeout(()=> target.querySelector('.project-title')?.focus?.(), 350);
             }
           }
