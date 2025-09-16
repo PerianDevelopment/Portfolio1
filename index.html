@@ -180,8 +180,6 @@
         const a = document.createElement('a');
         a.className = 'game-link';
         a.href = linkHref;
-        a.target = '_blank';
-        a.rel = 'noopener';
         a.textContent = p.title || p.name || p.id || 'Project';
         linksContainer.appendChild(a);
 
@@ -205,8 +203,6 @@
         const coverLink = document.createElement('a');
         coverLink.className = 'cover-link';
         coverLink.href = linkHref;
-        coverLink.target = '_blank';
-        coverLink.rel = 'noopener';
 
         const cover = document.createElement('div');
         cover.className = 'cover';
@@ -231,7 +227,7 @@
 
         const projectHref = linkHref;
         const linkText = p.linkText || '';
-        meta.appendChild(mk('Link', `<a class="reset" href="${projectHref}" target="_blank" rel="noopener">${linkText}</a>`));
+        meta.appendChild(mk('Link', `<a class="reset" href="${projectHref}">${linkText}</a>`));
         meta.appendChild(mk('Studio', `${p.studio || ''}`));
         meta.appendChild(mk('Team size', `${p.teamSize || p.team_size || ''}`));
         meta.appendChild(mk('My contribution', `${p.contribution || ''}`));
