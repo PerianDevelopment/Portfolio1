@@ -289,24 +289,15 @@
       });
     }
 
-    // --- startup flow:
-    // 1) look for website.json (search parents). If found and it contains `repo`, compute absolute fallback = SOCIAL_HOST + '/' + repo + '/' + fallbackImage
-    //    otherwise resolve fallbackImage relative to website.json location.
-    // 2) load remote social.json for colors/icon/banner.
-    // 3) load projects.json (current folder or parents) and render using resolved fallback.
-
     (async function init() {
-      // 1) website.json
       let siteFallbackAbsolute = null;
       try {
         const { json: siteJson, url: websiteJsonUrl } = await fetchJsonFromParents('website.json', 8);
-        // If siteJson has repo, use SOCIAL_HOST + repo to build an absolute base
         if (siteJson.repo) {
-          const repo = siteJson.repo.replace(/^\/|\/$/g, ''); // trim slashes
+          const repo = siteJson.repo.replace(/^\/|\/$/g, '');
           const fallbackName = siteJson.fallbackImage || 'fallback.png';
           siteFallbackAbsolute = `${SOCIAL_HOST}/${repo}/${fallbackName}`;
         } else if (siteJson.fallbackImage) {
-          // resolve relative to where website.json was found
           const websiteBase = websiteJsonUrl.replace(/website\.json$/i, '');
           siteFallbackAbsolute = resolveUrl(siteJson.fallbackImage, websiteBase);
         }
@@ -314,11 +305,8 @@
           document.getElementById('site-footer').textContent = siteJson.footerText;
           document.getElementById('site-footer').dataset.locked = '1';
         }
-      } catch (err) {
-        // no website.json found — fine, we'll fallback to origin + sitePrefix + 'fallback.png'
-      }
+      } catch (err) {}
 
-      // 2) remote social.json branding (prefer icon_transparent)
       let remoteBanner = null;
       try {
         const { json: socialJson } = await fetchJsonAbsolute(SOCIAL_JSON_URL);
@@ -342,30 +330,26 @@
 
         if (identity.display_name) document.getElementById('brand-name').textContent = identity.display_name;
         if (identity.tagline) document.getElementById('brand-tagline').textContent = identity.tagline;
-        if (identity.bio) document.getElementById('bio').textContent = identity.bio;
+        if (identity.bio) document.getElementById('bio').innerHTML = identity.bio;
 
         remoteBanner = banners['2x1'] || null;
       } catch (err) {
         console.warn('Failed to load social.json (branding).', err);
       }
 
-      // 3) projects.json
       try {
         let projectsData, projectsBase;
-        // try current folder
         try {
           const res = await fetch('projects.json', { cache: 'no-cache' });
           if (!res.ok) throw new Error('projects.json not in current folder');
           projectsData = await res.json();
           projectsBase = res.url.replace(/projects\.json$/i, '');
         } catch (_) {
-          // fallback: search parents
           const res2 = await fetchJsonFromParents('projects.json', 8);
           projectsData = res2.json;
           projectsBase = res2.url.replace(/projects\.json$/i, '');
         }
 
-        // Render with resolved siteFallbackAbsolute (may be null) and remoteBanner
         renderProjects(projectsData, projectsBase, remoteBanner, siteFallbackAbsolute);
       } catch (err) {
         console.error('Failed to load projects.json', err);
