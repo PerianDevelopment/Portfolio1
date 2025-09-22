@@ -118,15 +118,17 @@
 }
     .dot::before {
   content: '';
-  display: inline-block;          /* behaves like a character */
+  display: inline-block;
   width: 10px;
   height: 10px;
-  margin-right: 8px;              /* space between dot and text */
+  margin-right: 8px;
   background: var(--brand);
   border-radius: 50%;
   box-shadow: 0 6px 20px rgba(255,56,46,0.16);
-  vertical-align: middle;         /* centers dot with text */
+  vertical-align: middle;
+  transform: translateY(-2px);
 }
+
 
     
     a.reset{color:var(--brand);text-decoration:none;}
