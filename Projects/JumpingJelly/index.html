@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title id="page-title">Jumping Jelly</title>
+  <title id="page-title">Project</title>
 
   <link id="favicon-link" rel="icon" href="/icon.png" type="image/png">
 
@@ -258,6 +258,7 @@
       };
 
       titleEl.textContent = project.title || project.name || 'Project';
+      document.title = project.title || project.name || 'Project';
 
       let coverUrl = project.cover || project.icon_url || null;
       if (coverUrl && !/^https?:\/\//i.test(coverUrl) && !coverUrl.startsWith('/')) {
