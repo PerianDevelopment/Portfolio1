@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title id="page-title">Slime Bouncer</title>
+  <title id="page-title">Project</title>
 
   <link id="favicon-link" rel="icon" href="/icon.png" type="image/png">
 
@@ -116,6 +116,20 @@
   background-color: #e23329; /* slightly darker shade */
   transform: translateY(-2px);
 }
+    .dot::before {
+  content: '';
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  margin-right: 8px;
+  background: var(--brand);
+  border-radius: 50%;
+  box-shadow: 0 6px 20px rgba(255,56,46,0.16);
+  vertical-align: middle;
+  transform: translateY(-2px);
+}
+
+
     
     a.reset{color:var(--brand);text-decoration:none;}
     a.reset:hover{text-decoration:underline;}
@@ -151,7 +165,7 @@
           <div class="meta-item"><span class="label">My contribution</span><span class="value" id="meta-contrib"></span></div>
           <div class="meta-item"><span class="label">Platform</span><span class="value" id="meta-platform"></span></div>
           <div class="meta-item"><span class="label">Engine & Tools</span><span class="value" id="meta-engine"></span></div>
-          <!-- <a class="link-button" href="https://periandevelopment.github.io/" target="_blank" rel="noopener noreferrer">Open Game</a> -->
+          <a class="link-button" href="https://periandevelopment.itch.io/jumping-jelly" target="_blank" rel="noopener noreferrer">Download Page</a>
         </div>
       </div>
     </section>
@@ -159,7 +173,7 @@
     <div class="divider"></div>
 
     <section class="project-section">
-      <h3>Overview</h3>
+      <h3 class="dot">Overview</h3>
       <p id="overview-text">Empty</p>
     </section>
 
@@ -244,6 +258,7 @@
       };
 
       titleEl.textContent = project.title || project.name || 'Project';
+      document.title = project.title || project.name || 'Project';
 
       let coverUrl = project.cover || project.icon_url || null;
       if (coverUrl && !/^https?:\/\//i.test(coverUrl) && !coverUrl.startsWith('/')) {
