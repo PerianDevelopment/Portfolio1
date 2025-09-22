@@ -1,1 +1,214 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title id="page-title">Krunker Spin Simulator 2 — Project Page</title>
 
+  <link id="favicon-link" rel="icon" href="/icon.png" type="image/png">
+
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;700;900&display=swap" rel="stylesheet">
+
+  <style>
+    :root{
+      --bg: #222222;
+      --muted: #bdbdbd;
+      --text: #eaeaea;
+      --brand: #FF382E;
+      --card-shadow: 0 6px 18px rgba(0,0,0,0.6);
+      --radius: 12px;
+      --transition: 240ms cubic-bezier(.2,.9,.2,1);
+      --max-width: 1100px;
+      --placeholder: #2b2b2b;
+      --placeholder-grad: linear-gradient(90deg, rgba(255,255,255,0.01), rgba(0,0,0,0.03));
+    }
+
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0;
+      min-height:100%;
+      background:var(--bg);
+      color:var(--text);
+      font-family: "Poppins", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+      -webkit-font-smoothing:antialiased;
+      -moz-osx-font-smoothing:grayscale;
+      line-height:1.45;
+    }
+
+    .container{max-width:var(--max-width);margin:32px auto;padding:24px;}
+
+    .divider{height:1px;background:linear-gradient(90deg,transparent,rgba(255,255,255,0.04),transparent);margin:18px 0;border-radius:4px;}
+
+    .portfolio-title{font-size:22px;font-weight:900;margin-bottom:12px;color:var(--text);}
+    .portfolio-title a{color:var(--text);text-decoration:none;transition:all var(--transition);}
+    .portfolio-title a:hover{text-decoration:underline;}
+
+    .game-links{display:flex;gap:16px;flex-wrap:wrap;align-items:center;margin-bottom:12px;}
+    .game-link{color:var(--text);font-weight:700;text-decoration:none;position:relative;padding:4px 2px;transition:color var(--transition), transform var(--transition);}
+    .game-link::after{content:"";position:absolute;left:0;right:0;bottom:0;height:2px;background:var(--brand);transform:scaleX(0);transform-origin:left center;transition:transform var(--transition);}
+    .game-link:hover{color:white;transform:translateY(-2px);}
+    .game-link:hover::after{transform:scaleX(1);}
+    .game-link.current{ color: var(--brand); cursor:default; pointer-events:none; }
+    .game-link.current::after { transform: scaleX(1); background: transparent; }
+
+    .game-info{display:flex;flex-direction:column;gap:16px;}
+    .game-info h2{margin:0;font-size:28px;font-weight:800;color:var(--text);}
+    .game-info .play-button{
+      margin-top:12px;
+      padding:10px 18px;
+      background: var(--brand);
+      color:#fff;
+      border:none;
+      border-radius: var(--radius);
+      font-weight:700;
+      cursor:pointer;
+      text-decoration:none;
+      display:inline-block;
+      transition: transform var(--transition), background var(--transition);
+    }
+    .game-info .play-button:hover{
+      transform: translateY(-2px);
+      background:#e03127;
+    }
+
+    .game-details{display:flex;gap:24px;align-items:flex-start;}
+    @media (max-width:880px){.game-details{flex-direction:column;}}
+    .game-cover{flex:0 0 50%;}
+    .game-cover img{
+      width:100%;
+      aspect-ratio:4 / 3;
+      object-fit:cover;
+      border-radius:12px;
+      box-shadow:var(--card-shadow);
+      display:block;
+      background: var(--placeholder);
+      background-image: var(--placeholder-grad);
+    }
+
+    .game-meta{flex:1;display:flex;flex-direction:column;gap:12px;min-height:200px;}
+    .meta-item .label{display:block;color:var(--muted);font-weight:600;font-size:12px;}
+    .meta-item .value{color:var(--text);font-weight:500;margin-top:4px;font-size:14px;}
+
+    .project-section{margin:24px 0;}
+    .project-section h3{margin:0 0 12px;font-size:20px;font-weight:700;color:var(--text);}
+    .project-section p{margin:0 0 12px;color:var(--text);}
+    .project-section img{
+      width:100%;
+      aspect-ratio:2 / 1;
+      object-fit:cover;
+      border-radius:12px;
+      box-shadow:var(--card-shadow);
+      display:block;
+      background: var(--placeholder);
+      background-image: var(--placeholder-grad);
+    }
+
+    a.reset{color:var(--brand);text-decoration:none;}
+    a.reset:hover{text-decoration:underline;}
+
+    .foot{margin-top:28px;color:var(--muted);font-size:13px;text-align:center;}
+  </style>
+</head>
+<body>
+  <div class="container" role="main">
+
+    <div class="portfolio-title"><a id="repo-root-link" href="#">Portfolio</a></div>
+
+    <nav aria-label="Project quick links">
+      <div class="game-links" id="project-links"></div>
+    </nav>
+
+    <div class="divider"></div>
+
+    <section class="game-info" id="game-info">
+      <h2 id="project-title">Krunker Spin Simulator 2</h2>
+      <a class="play-button" href="https://placeholder.com" target="_self">Play Game</a>
+
+      <div class="game-details">
+        <div class="game-cover">
+          <img id="cover-img" src="placeholder.png" alt="Krunker Spin Simulator 2 cover">
+        </div>
+
+        <div class="game-meta">
+          <div class="meta-item"><span class="label">Year</span><span class="value" id="meta-year">2023</span></div>
+          <div class="meta-item"><span class="label">Studio</span><span class="value" id="meta-studio">PerianDevelopment</span></div>
+          <div class="meta-item"><span class="label">Team size</span><span class="value" id="meta-team">1 (solo)</span></div>
+          <div class="meta-item"><span class="label">My contribution</span><span class="value" id="meta-contrib">Designed, coded, and implemented all systems</span></div>
+          <div class="meta-item"><span class="label">Platform</span><span class="value" id="meta-platform">Browser</span></div>
+          <div class="meta-item"><span class="label">Engine & Tools</span><span class="value" id="meta-engine">JavaScript, HTML5, CSS</span></div>
+        </div>
+      </div>
+    </section>
+
+    <div class="divider"></div>
+
+    <section class="project-section">
+      <h3>Overview</h3>
+      <p>Krunker Spin Simulator 2 is a browser-based game that mimics the Krunker.io wheel spin, offering players an infinite currency experience. The main goal was to capture the feel and animations of the original spinner while making it fully playable in a web environment.</p>
+      <img src="placeholder.png" alt="Spinner GIF" loading="lazy">
+    </section>
+
+    <div class="divider"></div>
+
+    <section class="project-section">
+      <h3>Contributions</h3>
+      <p>This was a solo project, and I handled all aspects of design and implementation. The most notable challenges included closely mimicking the feel and animations of the Krunker.io spinner, obtaining 1000+ skins without a public API, and creating an efficient and visually appealing inventory system.</p>
+      <img src="placeholder.png" alt="Inventory Menu" loading="lazy">
+    </section>
+
+    <div class="foot" id="site-footer">Made with ♥ by PerianDev</div>
+  </div>
+
+  <script>
+    async function fetchJson(url) {
+      const res = await fetch(url);
+      if (!res.ok) throw new Error(`Failed to fetch ${url}: ${res.status}`);
+      return res.json();
+    }
+
+    function slugify(s){return(s||'').toString().toLowerCase().replace(/[^a-z0-9]/g,'');}
+
+    async function init() {
+      // Load website.json for fallback image and footer text
+      let siteFallbackAbsolute = null;
+      let repoRootUrl = null;
+      try {
+        const { json: siteJson } = await fetchJson('../../website.json');
+        const repoName = siteJson.repo || '';
+        siteFallbackAbsolute = `${window.location.origin}/${repoName}/fallback.png`;
+        repoRootUrl = `${window.location.origin}/${repoName}/`;
+        if (siteJson.footerText) document.getElementById('site-footer').textContent = siteJson.footerText;
+      } catch (err) {
+        console.warn('Could not load website.json', err);
+        siteFallbackAbsolute = 'fallback.png';
+        repoRootUrl = '#';
+      }
+
+      document.getElementById('repo-root-link').href = repoRootUrl;
+
+      // Load projects.json for top project links
+      let projects = [];
+      try {
+        const res = await fetch('../../projects.json');
+        projects = await res.json();
+      } catch(err) {
+        console.warn('Could not load projects.json', err);
+      }
+
+      const linksContainer = document.getElementById('project-links');
+      linksContainer.innerHTML = '';
+      projects.forEach(p=>{
+        const pid = p.id || slugify(p.title||'');
+        const spanOrLink = pid === 'krunkerspinsimulator2' ? document.createElement('span') : document.createElement('a');
+        spanOrLink.textContent = p.title;
+        if(pid === 'krunkerspinsimulator2') spanOrLink.className='game-link current';
+        else { spanOrLink.className='game-link'; spanOrLink.href=p.link||'#'; }
+        linksContainer.appendChild(spanOrLink);
+      });
+    }
+
+    init();
+  </script>
+</body>
+</html>
