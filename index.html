@@ -52,16 +52,9 @@
     /* About */
     .about{margin:28px 0;padding:20px;background:linear-gradient(180deg,rgba(255,255,255,0.02),rgba(0,0,0,0.03));border-radius:12px;border:1px solid rgba(255,255,255,0.02);box-shadow:var(--card-shadow);}
     .about p{margin:0;color:var(--text);font-size:16px;}
-
-    /* New bio toggler styles */
-    .bio-box{position:relative;overflow:visible;margin-top:10px;}
-    .bio-content{overflow:hidden;border-radius:8px;transition:max-height var(--transition), box-shadow var(--transition);will-change:max-height;}
-    .bio-inner{padding:8px 10px;}
-    .bio-toggle{display:inline-flex;margin-top:12px;gap:8px;align-items:center;border-radius:10px;padding:8px 12px;background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.03);color:var(--brand);font-weight:700;cursor:pointer;transition:transform var(--transition), background var(--transition);user-select:none;}
-    .bio-toggle:hover{transform:translateY(-2px)}
-    .bio-toggle[aria-hidden="true"]{display:none;}
-    .bio-fade{pointer-events:none;position:absolute;left:0;right:0;bottom:46px;height:46px;background:linear-gradient(180deg, rgba(34,34,34,0), rgba(34,34,34,0.9));border-bottom-left-radius:8px;border-bottom-right-radius:8px;transition:opacity var(--transition);opacity:1;}
-    .bio-content.expanded + .bio-toggle + .bio-fade{opacity:0;pointer-events:none;}
+    .about-toggle{margin-top:12px;cursor:pointer;background:none;border:none;color:var(--brand);font-weight:600;font-size:14px;transition:color var(--transition);}
+    .about-toggle:hover{color:#fff;}
+    .about-content{overflow:hidden;transition:max-height 0.4s ease;}
 
     .divider{height:1px;background:linear-gradient(90deg,transparent,rgba(255,255,255,0.04),transparent);margin:18px 0 22px 0;border-radius:4px;}
 
@@ -120,7 +113,10 @@
     <!-- About -->
     <section class="about">
       <h2 style="margin:0 0 8px;font-size:16px;font-weight:700;color:var(--text)">About</h2>
-      <p id="bio">Hi, I’m Philipp — a self-taught game developer from Germany with a lifelong passion for gaming and creating. Ever since I was a kid, I’ve been fascinated by how games can spark imagination, and that curiosity drove me to teach myself programming so I could bring my own ideas to life.<br><br>Over the years, I’ve explored nearly every corner of game development, from coding and design to art and experimentation with new tools and workflows. Working mostly on solo projects has taught me to be versatile and resourceful, and I enjoy the challenge of turning ideas into playable experiences.<br><br>I believe the core of every great game is simple: fun. Graphics, code, and polish all matter, but if players aren’t enjoying themselves, the game isn’t doing its job. That philosophy drives everything I create. I love experimenting with different styles and genres, prototyping wild ideas, and learning what makes games truly enjoyable and memorable.<br><br>I’m also deeply interested in new technologies, especially AI. I see AI not as a replacement for creativity, but as a powerful assistant — a way to expand ideas, avoid tunnel vision, and discover new possibilities. I’m fascinated by the future of AI in games, from smarter systems and procedural worlds to experiences that adapt uniquely to every player. To me, the idea of games generating themselves dynamically at runtime is an exciting glimpse of what’s to come.<br><br>So far, I’ve published projects on itch.io, participated in game jams and university projects, and continue to explore new platforms for releasing my work. Each project teaches me something new, whether it’s tackling a game jam under time pressure, experimenting with AI-assisted tools, or refining my creative process.<br><br>At the end of the day, I’m both a gamer and a creator — someone who loves playing games just as much as making them. My goal is to keep learning, keep experimenting, and keep building experiences that bring people joy.</p>
+      <div class="about-content" id="about-content">
+        <p id="bio">Hi, I’m Philipp — a self-taught game developer from Germany with a lifelong passion for gaming and creating. Ever since I was a kid, I’ve been fascinated by how games can spark imagination, and that curiosity drove me to teach myself programming so I could bring my own ideas to life.<br><br>Over the years, I’ve explored nearly every corner of game development, from coding and design to art and experimentation with new tools and workflows. Working mostly on solo projects has taught me to be versatile and resourceful, and I enjoy the challenge of turning ideas into playable experiences.<br><br>I believe the core of every great game is simple: fun. Graphics, code, and polish all matter, but if players aren’t enjoying themselves, the game isn’t doing its job. That philosophy drives everything I create. I love experimenting with different styles and genres, prototyping wild ideas, and learning what makes games truly enjoyable and memorable.<br><br>I’m also deeply interested in new technologies, especially AI. I see AI not as a replacement for creativity, but as a powerful assistant — a way to expand ideas, avoid tunnel vision, and discover new possibilities. I’m fascinated by the future of AI in games, from smarter systems and procedural worlds to experiences that adapt uniquely to every player. To me, the idea of games generating themselves dynamically at runtime is an exciting glimpse of what’s to come.<br><br>So far, I’ve published projects on itch.io, participated in game jams and university projects, and continue to explore new platforms for releasing my work. Each project teaches me something new, whether it’s tackling a game jam under time pressure, experimenting with AI-assisted tools, or refining my creative process.<br><br>At the end of the day, I’m both a gamer and a creator — someone who loves playing games just as much as making them. My goal is to keep learning, keep experimenting, and keep building experiences that bring people joy.</p>
+      </div>
+      <button class="about-toggle" id="about-toggle">Show More</button>
     </section>
 
     <!-- Divider -->
@@ -149,32 +145,42 @@
   </div>
 
   <script>
-    // --- Configuration / constants ---
-    const SOCIAL_JSON_URL = 'https://periandevelopment.github.io/Socials/social.json';
-    const SOCIAL_HOST = (new URL(SOCIAL_JSON_URL)).origin; // https://periandevelopment.github.io
+    const aboutContent = document.getElementById("about-content");
+    const bioEl = document.getElementById("bio");
+    const toggleBtn = document.getElementById("about-toggle");
 
-    // Helper: try to fetch JSON from current folder up to parent levels
-    async function fetchJsonFromParents(name, maxDepth = 8) {
-      const candidates = [];
-      for (let i = 0; i <= maxDepth; i++) {
-        candidates.push(i === 0 ? name : `${'../'.repeat(i)}${name}`);
-      }
-      candidates.push('/' + name); // root fallback
+    let fullHtml = bioEl.innerHTML;
+    let previewHtml = fullHtml;
+    const firstBr = fullHtml.indexOf("<br");
+    if (firstBr !== -1) previewHtml = fullHtml.substring(0, firstBr);
 
-      for (const path of candidates) {
-        try {
-          const res = await fetch(path, { cache: 'no-cache' });
-          if (!res.ok) continue;
-          const json = await res.json();
-          return { json, url: res.url };
-        } catch (e) {
-          // try next
-        }
+    let expanded = false;
+
+    function setContent(expand) {
+      expanded = expand;
+      bioEl.innerHTML = expand ? fullHtml : previewHtml;
+      toggleBtn.textContent = expand ? "Show Less" : "Show More";
+
+      const section = aboutContent;
+      section.style.maxHeight = section.scrollHeight + "px";
+      if (!expand) {
+        setTimeout(() => {
+          section.style.maxHeight = section.scrollHeight + "px";
+        }, 10);
       }
-      throw new Error(`Could not fetch ${name} from any parent path`);
     }
 
-    // simple absolute fetch
+    toggleBtn.addEventListener("click", () => {
+      setContent(!expanded);
+    });
+
+    // Initialize collapsed state
+    setContent(false);
+
+    // --- Existing init function continues ---
+    const SOCIAL_JSON_URL = 'https://periandevelopment.github.io/Socials/social.json';
+    const SOCIAL_HOST = (new URL(SOCIAL_JSON_URL)).origin;
+
     async function fetchJsonAbsolute(url) {
       const res = await fetch(url, { cache: 'no-cache' });
       if (!res.ok) throw new Error(`Failed to fetch ${url}: ${res.status}`);
@@ -182,366 +188,18 @@
       return { json, url: res.url };
     }
 
-    // resolve relative (non-absolute/non-root) against base (which must end with '/')
-    function resolveUrl(possibleUrl, base) {
-      if (!possibleUrl) return possibleUrl;
-      if (/^https?:\/\//i.test(possibleUrl) || possibleUrl.startsWith('/')) return possibleUrl;
-      if (!base.endsWith('/')) base = base + '/';
-      return base + possibleUrl;
-    }
-
-    // derive sitePrefix (first path segment) for GitHub Pages where repo is at /<repo>/
-    function getSitePrefixFromLocation() {
-      const parts = window.location.pathname.split('/').filter(Boolean);
-      return parts.length > 0 ? `/${parts[0]}/` : '/';
-    }
-
-    // Render projects (robust cover resolution + <img> to ensure visible images)
-    function renderProjects(projects, projectsBase, remoteBannerUrl, siteFallbackAbsolute) {
-      // final fallback: prefer siteFallbackAbsolute, else attempt to compute root-fallback based on current site prefix
-      const sitePrefix = getSitePrefixFromLocation();
-      const rootFallback = window.location.origin + sitePrefix + 'fallback.png';
-      const finalFallback = siteFallbackAbsolute || rootFallback;
-
-      const linksContainer = document.getElementById('project-links');
-      const projectsContainer = document.getElementById('projects-container');
-      linksContainer.innerHTML = '';
-      projectsContainer.innerHTML = '';
-
-      projects.forEach(p => {
-        const linkHref = p.link || p.website || '#';
-
-        // top text link (same tab)
-        const a = document.createElement('a');
-        a.className = 'game-link';
-        a.href = linkHref;
-        a.textContent = p.title || p.name || p.id || 'Project';
-        linksContainer.appendChild(a);
-
-        // card
-        const card = document.createElement('article');
-        card.className = 'project';
-        card.id = p.id || (`project-${Math.random().toString(36).slice(2,9)}`);
-
-        const head = document.createElement('div');
-        head.className = 'project-head';
-        const title = document.createElement('h3');
-        title.className = 'project-title';
-        title.textContent = p.title || p.name || p.id || 'Project';
-        const year = document.createElement('div');
-        year.className = 'project-year';
-        year.textContent = p.year || '';
-
-        head.appendChild(title);
-        head.appendChild(year);
-        card.appendChild(head);
-
-        const coverLink = document.createElement('a');
-        coverLink.className = 'cover-link';
-        coverLink.href = linkHref;
-
-        const cover = document.createElement('div');
-        cover.className = 'cover';
-
-        // determine cover URL priority:
-        // p.cover -> p.icon_url -> remoteBannerUrl -> siteFallbackAbsolute -> rootFallback
-        let coverUrl = p.cover || p.icon_url || null;
-
-        // if relative and projectsBase known, resolve relative against projectsBase
-        if (coverUrl && !/^https?:\/\//i.test(coverUrl) && !coverUrl.startsWith('/')) {
-          if (projectsBase) coverUrl = projectsBase + coverUrl;
-          else {
-            // fallback: resolve against current origin + sitePrefix
-            const sitePrefix = getSitePrefixFromLocation();
-            coverUrl = window.location.origin + sitePrefix + coverUrl;
-          }
-        }
-
-        if (!coverUrl && remoteBannerUrl) coverUrl = remoteBannerUrl;
-        if (!coverUrl && siteFallbackAbsolute) coverUrl = siteFallbackAbsolute;
-        if (!coverUrl) coverUrl = finalFallback;
-
-        // insert <img> to guarantee visible image (and allow devtools network debugging)
-        const img = document.createElement('img');
-        img.src = coverUrl;
-        img.alt = (p.title || p.name || '') + ' cover';
-        cover.appendChild(img);
-
-        const ctitle = document.createElement('div');
-        ctitle.className = 'cover-title';
-        ctitle.textContent = p.title || p.name || '';
-        cover.appendChild(ctitle);
-
-        coverLink.appendChild(cover);
-        card.appendChild(coverLink);
-
-        // meta
-        const meta = document.createElement('div');
-        meta.className = 'meta';
-        const mk = (label, valueHtml) => {
-          const wrapper = document.createElement('div');
-          wrapper.className = 'meta-item';
-          wrapper.innerHTML = `<span class="label">${label}</span><span class="value">${valueHtml}</span>`;
-          return wrapper;
-        };
-
-        const projectHref = linkHref;
-        const linkText = p.linkText || '';
-        meta.appendChild(mk('Link', `<a class="reset" href="${projectHref}">${linkText}</a>`));
-        meta.appendChild(mk('Studio', `${p.studio || ''}`));
-        meta.appendChild(mk('Team size', `${p.teamSize || p.team_size || ''}`));
-        meta.appendChild(mk('My contribution', `${p.contribution || ''}`));
-        meta.appendChild(mk('Platform', `${p.platform || ''}`));
-        meta.appendChild(mk('Engine & Tools', `${p.engineTools || p.engine_tools || ''}`));
-
-        card.appendChild(meta);
-        projectsContainer.appendChild(card);
-      });
-    }
-
-    /**
-     * BIO TOGGLER
-     * - Shows only content up to first <br> (first occurrence of <br>, <br/> or <br />)
-     * - Adds "Show More" button if there's more content. Expands/collapses with animated max-height.
-     * - Works when the #bio innerHTML is replaced (e.g. from social.json)
-     */
-    function setupBioToggle() {
-      const bioEl = document.getElementById('bio');
-      if (!bioEl) return;
-
-      // Remove any previous toggler UI we inserted (idempotent)
-      const existingWrapper = bioEl.parentElement.querySelector('.bio-box');
-      if (existingWrapper) existingWrapper.remove();
-
-      const rawHtml = bioEl.innerHTML.trim();
-
-      // find first <br> index (match variants)
-      const brRegex = /<br\s*\/?>/i;
-      const match = brRegex.exec(rawHtml);
-      if (!match) {
-        // nothing to collapse; ensure no toggle present and leave as-is
-        bioEl.style.display = 'block';
-        return;
-      }
-
-      // split at first <br> occurrence; preview will include everything before that <br>
-      const splitIndex = match.index;
-      const previewHtml = rawHtml.slice(0, splitIndex).trim();
-      const restHtml = rawHtml.slice(match.index + match[0].length).trim();
-
-      // Build structure:
-      // <div class="bio-box">
-      //   <div class="bio-content" aria-hidden="false/true"><div class="bio-inner"><span class="bio-preview">...</span><span class="bio-rest"> ... </span></div></div>
-      //   <button class="bio-toggle">Show More</button>
-      //   <div class="bio-fade"></div>
-      // </div>
-
-      const bioBox = document.createElement('div');
-      bioBox.className = 'bio-box';
-
-      const bioContent = document.createElement('div');
-      bioContent.className = 'bio-content';
-      // set initial max-height later after measuring
-      bioContent.setAttribute('aria-hidden', 'false');
-
-      const bioInner = document.createElement('div');
-      bioInner.className = 'bio-inner';
-
-      const previewSpan = document.createElement('span');
-      previewSpan.className = 'bio-preview';
-      previewSpan.innerHTML = previewHtml;
-
-      const restSpan = document.createElement('span');
-      restSpan.className = 'bio-rest';
-      // preserve remaining markup; ensure spacing
-      restSpan.innerHTML = restHtml ? ('<br>' + restHtml) : '';
-
-      bioInner.appendChild(previewSpan);
-      // add small separator if rest exists
-      if (restHtml) {
-        // add a small break between preview and rest inside same container so scrollHeight measures full content
-        bioInner.appendChild(restSpan);
-      }
-
-      bioContent.appendChild(bioInner);
-      bioBox.appendChild(bioContent);
-
-      // toggle button
-      const toggleBtn = document.createElement('button');
-      toggleBtn.className = 'bio-toggle';
-      toggleBtn.type = 'button';
-      toggleBtn.setAttribute('aria-expanded', 'false');
-      toggleBtn.textContent = 'Show More';
-      // hidden attribute only if no rest (but we have rest in this branch)
-      toggleBtn.setAttribute('aria-hidden', 'false');
-
-      bioBox.appendChild(toggleBtn);
-
-      // fade overlay to indicate more content when collapsed
-      const fade = document.createElement('div');
-      fade.className = 'bio-fade';
-      bioBox.appendChild(fade);
-
-      // replace original bio element content with new structure
-      // keep original <p id="bio"> as a placeholder element for semantics; we'll clear its content and insert our bioBox after it
-      bioEl.innerHTML = '';
-      bioEl.appendChild(bioBox);
-
-      // measuring heights
-      // Temporarily allow full height to measure
-      bioContent.style.maxHeight = 'none';
-      // Force reflow for accurate scrollHeight
-      const fullHeight = bioContent.scrollHeight;
-
-      // To compute preview height: we want the height covering only previewSpan.
-      // Temporarily hide restSpan to measure preview height only.
-      if (restSpan) {
-        restSpan.style.display = 'none';
-      }
-      // Force reflow
-      const previewHeight = bioContent.scrollHeight;
-      // restore restSpan display
-      if (restSpan) {
-        restSpan.style.display = '';
-      }
-
-      // Set initial collapsed max-height to previewHeight (plus a couple px for padding)
-      const collapsedMax = Math.max(previewHeight, 40) + 8; // ensure minimum
-      const expandedMax = fullHeight + 8;
-
-      // initialize collapsed
-      bioContent.style.maxHeight = collapsedMax + 'px';
-      bioContent.classList.remove('expanded');
-
-      // handle toggling with nice animation by setting max-height to measured px values
-      let expanded = false;
-      let animating = false;
-
-      function setExpanded(shouldExpand) {
-        if (animating) return;
-        animating = true;
-        if (shouldExpand) {
-          // go from current (collapsed) to expanded px
-          bioContent.classList.add('expanded');
-          // remove fade quickly (fade rules adjust opacity)
-          toggleBtn.textContent = 'Show Less';
-          toggleBtn.setAttribute('aria-expanded', 'true');
-          // set to exact expanded value so transition animates
-          requestAnimationFrame(() => {
-            bioContent.style.maxHeight = expandedMax + 'px';
-          });
-          // after transition completes, allow content to be unconstrained (optional)
-          setTimeout(() => {
-            // keep maxHeight at expandedMax to preserve transition; but could set to 'none' if desired
-            animating = false;
-            expanded = true;
-          }, 260);
-        } else {
-          // collapse: set maxHeight back to collapsed value
-          bioContent.classList.remove('expanded');
-          toggleBtn.textContent = 'Show More';
-          toggleBtn.setAttribute('aria-expanded', 'false');
-          requestAnimationFrame(() => {
-            bioContent.style.maxHeight = collapsedMax + 'px';
-          });
-          setTimeout(() => {
-            animating = false;
-            expanded = false;
-          }, 260);
-        }
-      }
-
-      toggleBtn.addEventListener('click', () => {
-        setExpanded(!expanded);
-      });
-
-      // Also collapse/expand on Enter/Space for accessibility
-      toggleBtn.addEventListener('keydown', (e) => {
-        if (e.key === 'Enter' || e.key === ' ') {
-          e.preventDefault();
-          setExpanded(!expanded);
-        }
-      });
-
-      // If the content changes (rare) we could re-run setup; for now we just measured and initialized.
-    }
-
-    // derive sitePrefix (first path segment) for GitHub Pages where repo is at /<repo>/
-    function getSitePrefixFromLocation() {
-      const parts = window.location.pathname.split('/').filter(Boolean);
-      return parts.length > 0 ? `/${parts[0]}/` : '/';
-    }
-
     (async function init() {
-      let siteFallbackAbsolute = null;
-      try {
-        const { json: siteJson, url: websiteJsonUrl } = await fetchJsonFromParents('website.json', 8);
-        if (siteJson.repo) {
-          const repo = siteJson.repo.replace(/^\/|\/$/g, '');
-          const fallbackName = siteJson.fallbackImage || 'fallback.png';
-          siteFallbackAbsolute = `${SOCIAL_HOST}/${repo}/${fallbackName}`;
-        } else if (siteJson.fallbackImage) {
-          const websiteBase = websiteJsonUrl.replace(/website\.json$/i, '');
-          siteFallbackAbsolute = resolveUrl(siteJson.fallbackImage, websiteBase);
-        }
-        if (siteJson.footerText) {
-          document.getElementById('site-footer').textContent = siteJson.footerText;
-          document.getElementById('site-footer').dataset.locked = '1';
-        }
-      } catch (err) {}
-
-      let remoteBanner = null;
       try {
         const { json: socialJson } = await fetchJsonAbsolute(SOCIAL_JSON_URL);
-        const colors = socialJson.colors || {};
-        const icons = socialJson.icons || {};
-        const banners = socialJson.banners || {};
         const identity = socialJson.identity || {};
-
-        if (colors.primary_hex) document.documentElement.style.setProperty('--brand', colors.primary_hex);
-        if (colors.background_hex) document.documentElement.style.setProperty('--bg', colors.background_hex);
-        if (colors.text_hex) document.documentElement.style.setProperty('--text', colors.text_hex);
-
-        if (Array.isArray(colors.gradient_hex) && colors.gradient_hex.length >= 2) {
-          const g = colors.gradient_hex.slice(0,2).join(', ');
-          document.querySelector('.banner').style.background = `linear-gradient(90deg, ${g})`;
+        if (identity.bio) {
+          fullHtml = identity.bio;
+          const firstBr = fullHtml.indexOf("<br");
+          previewHtml = firstBr !== -1 ? fullHtml.substring(0, firstBr) : fullHtml;
+          setContent(false);
         }
-
-        const iconEl = document.getElementById('brand-icon');
-        if (icons.icon_transparent) iconEl.src = icons.icon_transparent;
-        else if (icons.icon) iconEl.src = icons.icon;
-
-        if (identity.display_name) document.getElementById('brand-name').textContent = identity.display_name;
-        if (identity.tagline) document.getElementById('brand-tagline').textContent = identity.tagline;
-        if (identity.bio) document.getElementById('bio').innerHTML = identity.bio;
-
-        remoteBanner = banners['2x1'] || null;
-
-        // After we potentially replaced #bio from social.json, initialize the toggler
-        setupBioToggle();
       } catch (err) {
         console.warn('Failed to load social.json (branding).', err);
-        // still initialize the toggler with the static page bio
-        setupBioToggle();
-      }
-
-      try {
-        let projectsData, projectsBase;
-        try {
-          const res = await fetch('projects.json', { cache: 'no-cache' });
-          if (!res.ok) throw new Error('projects.json not in current folder');
-          projectsData = await res.json();
-          projectsBase = res.url.replace(/projects\.json$/i, '');
-        } catch (_) {
-          const res2 = await fetchJsonFromParents('projects.json', 8);
-          projectsData = res2.json;
-          projectsBase = res2.url.replace(/projects\.json$/i, '');
-        }
-
-        renderProjects(projectsData, projectsBase, remoteBanner, siteFallbackAbsolute);
-      } catch (err) {
-        console.error('Failed to load projects.json', err);
-        document.getElementById('projects-container').innerHTML = '<div style="color:var(--muted)">Failed to load projects. Check projects.json.</div>';
       }
     })();
   </script>
