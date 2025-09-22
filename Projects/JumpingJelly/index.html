@@ -97,6 +97,26 @@
       background-image: var(--placeholder-grad);
     }
 
+.link-button {
+  display: inline-block;
+  padding: 10px 20px;
+  font-size: 14px;
+  font-weight: 700;
+  color: #fff;
+  background-color: var(--brand);
+  border: none;
+  border-radius: var(--radius);
+  cursor: pointer;
+  text-decoration: none;
+  transition: background-color var(--transition), transform var(--transition);
+  margin-top: 12px;
+}
+
+.link-button:hover {
+  background-color: #e23329; /* slightly darker shade */
+  transform: translateY(-2px);
+}
+    
     a.reset{color:var(--brand);text-decoration:none;}
     a.reset:hover{text-decoration:underline;}
 
@@ -140,6 +160,7 @@
     <section class="project-section">
       <h3>Overview</h3>
       <p id="overview-text">Empty</p>
+      <a class="link-button" href="https://periandevelopment.github.io/" target="_blank" rel="noopener noreferrer">Open Game</a>
     </section>
 
     <div class="divider"></div>
