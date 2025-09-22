@@ -53,6 +53,16 @@
     .about{margin:28px 0;padding:20px;background:linear-gradient(180deg,rgba(255,255,255,0.02),rgba(0,0,0,0.03));border-radius:12px;border:1px solid rgba(255,255,255,0.02);box-shadow:var(--card-shadow);}
     .about p{margin:0;color:var(--text);font-size:16px;}
 
+    /* New bio toggler styles */
+    .bio-box{position:relative;overflow:visible;margin-top:10px;}
+    .bio-content{overflow:hidden;border-radius:8px;transition:max-height var(--transition), box-shadow var(--transition);will-change:max-height;}
+    .bio-inner{padding:8px 10px;}
+    .bio-toggle{display:inline-flex;margin-top:12px;gap:8px;align-items:center;border-radius:10px;padding:8px 12px;background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.03);color:var(--brand);font-weight:700;cursor:pointer;transition:transform var(--transition), background var(--transition);user-select:none;}
+    .bio-toggle:hover{transform:translateY(-2px)}
+    .bio-toggle[aria-hidden="true"]{display:none;}
+    .bio-fade{pointer-events:none;position:absolute;left:0;right:0;bottom:46px;height:46px;background:linear-gradient(180deg, rgba(34,34,34,0), rgba(34,34,34,0.9));border-bottom-left-radius:8px;border-bottom-right-radius:8px;transition:opacity var(--transition);opacity:1;}
+    .bio-content.expanded + .bio-toggle + .bio-fade{opacity:0;pointer-events:none;}
+
     .divider{height:1px;background:linear-gradient(90deg,transparent,rgba(255,255,255,0.04),transparent);margin:18px 0 22px 0;border-radius:4px;}
 
     .projects-header{display:flex;flex-direction:column;align-items:flex-start;gap:12px;margin:0 0 8px 0;}
@@ -289,6 +299,179 @@
       });
     }
 
+    /**
+     * BIO TOGGLER
+     * - Shows only content up to first <br> (first occurrence of <br>, <br/> or <br />)
+     * - Adds "Show More" button if there's more content. Expands/collapses with animated max-height.
+     * - Works when the #bio innerHTML is replaced (e.g. from social.json)
+     */
+    function setupBioToggle() {
+      const bioEl = document.getElementById('bio');
+      if (!bioEl) return;
+
+      // Remove any previous toggler UI we inserted (idempotent)
+      const existingWrapper = bioEl.parentElement.querySelector('.bio-box');
+      if (existingWrapper) existingWrapper.remove();
+
+      const rawHtml = bioEl.innerHTML.trim();
+
+      // find first <br> index (match variants)
+      const brRegex = /<br\s*\/?>/i;
+      const match = brRegex.exec(rawHtml);
+      if (!match) {
+        // nothing to collapse; ensure no toggle present and leave as-is
+        bioEl.style.display = 'block';
+        return;
+      }
+
+      // split at first <br> occurrence; preview will include everything before that <br>
+      const splitIndex = match.index;
+      const previewHtml = rawHtml.slice(0, splitIndex).trim();
+      const restHtml = rawHtml.slice(match.index + match[0].length).trim();
+
+      // Build structure:
+      // <div class="bio-box">
+      //   <div class="bio-content" aria-hidden="false/true"><div class="bio-inner"><span class="bio-preview">...</span><span class="bio-rest"> ... </span></div></div>
+      //   <button class="bio-toggle">Show More</button>
+      //   <div class="bio-fade"></div>
+      // </div>
+
+      const bioBox = document.createElement('div');
+      bioBox.className = 'bio-box';
+
+      const bioContent = document.createElement('div');
+      bioContent.className = 'bio-content';
+      // set initial max-height later after measuring
+      bioContent.setAttribute('aria-hidden', 'false');
+
+      const bioInner = document.createElement('div');
+      bioInner.className = 'bio-inner';
+
+      const previewSpan = document.createElement('span');
+      previewSpan.className = 'bio-preview';
+      previewSpan.innerHTML = previewHtml;
+
+      const restSpan = document.createElement('span');
+      restSpan.className = 'bio-rest';
+      // preserve remaining markup; ensure spacing
+      restSpan.innerHTML = restHtml ? ('<br>' + restHtml) : '';
+
+      bioInner.appendChild(previewSpan);
+      // add small separator if rest exists
+      if (restHtml) {
+        // add a small break between preview and rest inside same container so scrollHeight measures full content
+        bioInner.appendChild(restSpan);
+      }
+
+      bioContent.appendChild(bioInner);
+      bioBox.appendChild(bioContent);
+
+      // toggle button
+      const toggleBtn = document.createElement('button');
+      toggleBtn.className = 'bio-toggle';
+      toggleBtn.type = 'button';
+      toggleBtn.setAttribute('aria-expanded', 'false');
+      toggleBtn.textContent = 'Show More';
+      // hidden attribute only if no rest (but we have rest in this branch)
+      toggleBtn.setAttribute('aria-hidden', 'false');
+
+      bioBox.appendChild(toggleBtn);
+
+      // fade overlay to indicate more content when collapsed
+      const fade = document.createElement('div');
+      fade.className = 'bio-fade';
+      bioBox.appendChild(fade);
+
+      // replace original bio element content with new structure
+      // keep original <p id="bio"> as a placeholder element for semantics; we'll clear its content and insert our bioBox after it
+      bioEl.innerHTML = '';
+      bioEl.appendChild(bioBox);
+
+      // measuring heights
+      // Temporarily allow full height to measure
+      bioContent.style.maxHeight = 'none';
+      // Force reflow for accurate scrollHeight
+      const fullHeight = bioContent.scrollHeight;
+
+      // To compute preview height: we want the height covering only previewSpan.
+      // Temporarily hide restSpan to measure preview height only.
+      if (restSpan) {
+        restSpan.style.display = 'none';
+      }
+      // Force reflow
+      const previewHeight = bioContent.scrollHeight;
+      // restore restSpan display
+      if (restSpan) {
+        restSpan.style.display = '';
+      }
+
+      // Set initial collapsed max-height to previewHeight (plus a couple px for padding)
+      const collapsedMax = Math.max(previewHeight, 40) + 8; // ensure minimum
+      const expandedMax = fullHeight + 8;
+
+      // initialize collapsed
+      bioContent.style.maxHeight = collapsedMax + 'px';
+      bioContent.classList.remove('expanded');
+
+      // handle toggling with nice animation by setting max-height to measured px values
+      let expanded = false;
+      let animating = false;
+
+      function setExpanded(shouldExpand) {
+        if (animating) return;
+        animating = true;
+        if (shouldExpand) {
+          // go from current (collapsed) to expanded px
+          bioContent.classList.add('expanded');
+          // remove fade quickly (fade rules adjust opacity)
+          toggleBtn.textContent = 'Show Less';
+          toggleBtn.setAttribute('aria-expanded', 'true');
+          // set to exact expanded value so transition animates
+          requestAnimationFrame(() => {
+            bioContent.style.maxHeight = expandedMax + 'px';
+          });
+          // after transition completes, allow content to be unconstrained (optional)
+          setTimeout(() => {
+            // keep maxHeight at expandedMax to preserve transition; but could set to 'none' if desired
+            animating = false;
+            expanded = true;
+          }, 260);
+        } else {
+          // collapse: set maxHeight back to collapsed value
+          bioContent.classList.remove('expanded');
+          toggleBtn.textContent = 'Show More';
+          toggleBtn.setAttribute('aria-expanded', 'false');
+          requestAnimationFrame(() => {
+            bioContent.style.maxHeight = collapsedMax + 'px';
+          });
+          setTimeout(() => {
+            animating = false;
+            expanded = false;
+          }, 260);
+        }
+      }
+
+      toggleBtn.addEventListener('click', () => {
+        setExpanded(!expanded);
+      });
+
+      // Also collapse/expand on Enter/Space for accessibility
+      toggleBtn.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          setExpanded(!expanded);
+        }
+      });
+
+      // If the content changes (rare) we could re-run setup; for now we just measured and initialized.
+    }
+
+    // derive sitePrefix (first path segment) for GitHub Pages where repo is at /<repo>/
+    function getSitePrefixFromLocation() {
+      const parts = window.location.pathname.split('/').filter(Boolean);
+      return parts.length > 0 ? `/${parts[0]}/` : '/';
+    }
+
     (async function init() {
       let siteFallbackAbsolute = null;
       try {
@@ -333,8 +516,13 @@
         if (identity.bio) document.getElementById('bio').innerHTML = identity.bio;
 
         remoteBanner = banners['2x1'] || null;
+
+        // After we potentially replaced #bio from social.json, initialize the toggler
+        setupBioToggle();
       } catch (err) {
         console.warn('Failed to load social.json (branding).', err);
+        // still initialize the toggler with the static page bio
+        setupBioToggle();
       }
 
       try {
