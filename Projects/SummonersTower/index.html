@@ -1,1 +1,344 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title id="page-title">Summoners Tower</title>
 
+  <link id="favicon-link" rel="icon" href="/icon.png" type="image/png">
+
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;700;900&display=swap" rel="stylesheet">
+
+  <style>
+    :root{
+      --bg: #222222;
+      --muted: #bdbdbd;
+      --text: #eaeaea;
+      --brand: #FF382E;
+      --card-shadow: 0 6px 18px rgba(0,0,0,0.6);
+      --radius: 12px;
+      --transition: 240ms cubic-bezier(.2,.9,.2,1);
+      --max-width: 1100px;
+
+      /* placeholder color */
+      --placeholder: #2b2b2b;
+      --placeholder-grad: linear-gradient(90deg, rgba(255,255,255,0.01), rgba(0,0,0,0.03));
+    }
+
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0;
+      min-height:100%;
+      background:var(--bg);
+      color:var(--text);
+      font-family: "Poppins", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+      -webkit-font-smoothing:antialiased;
+      -moz-osx-font-smoothing:grayscale;
+      line-height:1.45;
+    }
+
+    .container{max-width:var(--max-width);margin:32px auto;padding:24px;}
+
+    .divider{height:1px;background:linear-gradient(90deg,transparent,rgba(255,255,255,0.04),transparent);margin:18px 0;border-radius:4px;}
+
+    .portfolio-title{font-size:22px;font-weight:900;margin-bottom:12px;color:var(--text);}
+    .portfolio-title a{color:var(--text);text-decoration:none;transition:all var(--transition);}
+    .portfolio-title a:hover{text-decoration:underline;}
+
+    .game-links{display:flex;column-gap:32px;row-gap:16px;flex-wrap:wrap;align-items:center;margin-bottom:12px;}
+    .game-link{color:var(--text);font-weight:700;text-decoration:none;position:relative;padding:4px 2px;transition:color var(--transition), transform var(--transition);}
+    .game-link::after{content:"";position:absolute;left:0;right:0;bottom:0;height:2px;background:var(--brand);transform:scaleX(0);transform-origin:left center;transition:transform var(--transition);}
+    .game-link:hover{color:white;transform:translateY(-2px);}
+    .game-link:hover::after{transform:scaleX(1);}
+
+    .game-link.current{ color: var(--brand); cursor:default; pointer-events:none; }
+    .game-link.current::after { transform: scaleX(1); background: transparent; }
+
+    .game-info{display:flex;flex-direction:column;gap:16px;}
+    .game-info h2{margin:0;font-size:28px;font-weight:800;color:var(--text);}
+
+    .game-details{display:flex;gap:24px;align-items:flex-start;}
+    @media (max-width:880px){.game-details{flex-direction:column;}}
+
+    /* Reserve the cover space with aspect-ratio so layout won't shift */
+    .game-cover{flex:0 0 50%;}
+    .game-cover img{
+      width:100%;
+      aspect-ratio:4 / 3;
+      object-fit:cover;
+      border-radius:12px;
+      box-shadow:var(--card-shadow);
+      display:block;
+      background: var(--placeholder);
+      background-image: var(--placeholder-grad);
+    }
+
+    .game-meta{flex:1;display:flex;flex-direction:column;gap:12px;min-height:200px;}
+
+    .meta-item .label{display:block;color:var(--muted);font-weight:600;font-size:12px;}
+    .meta-item .value{color:var(--text);font-weight:500;margin-top:4px;font-size:14px;}
+
+    .project-section{margin:24px 0;}
+    .project-section h3{margin:0 0 12px;font-size:20px;font-weight:700;color:var(--text);}
+    .project-section p{margin:0 0 12px;color:var(--text);}
+    .project-section ul{margin:0;padding-left:20px;}
+    .project-section li{margin-bottom:6px;}
+
+    /* 2:1 banners reserve space, dark placeholder */
+    .project-section img {
+      width:100%;
+      aspect-ratio:2 / 1;
+      object-fit:cover;
+      border-radius:12px;
+      box-shadow:var(--card-shadow);
+      display:block;
+      background: var(--placeholder);
+      background-image: var(--placeholder-grad);
+    }
+
+    a.reset{color:var(--brand);text-decoration:none;}
+    a.reset:hover{text-decoration:underline;}
+
+    .foot{margin-top:28px;color:var(--muted);font-size:13px;text-align:center;}
+  </style>
+</head>
+<body>
+  <div class="container" role="main">
+
+    <div class="portfolio-title"><a id="repo-root-link" href="#">Portfolio</a></div>
+
+    <nav aria-label="Project quick links">
+      <div class="game-links" id="project-links"></div>
+    </nav>
+
+    <div class="divider"></div>
+
+    <!-- SKELETON: kept to avoid layout shift -->
+    <section class="game-info" id="game-info">
+      <h2 id="project-title">Loading…</h2>
+
+      <div class="game-details">
+        <div class="game-cover">
+          <!-- dark SVG placeholder (1x1) -->
+          <img id="cover-img" src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1 1'><rect width='1' height='1' fill='%232b2b2b'/></svg>" alt="project cover placeholder" />
+        </div>
+
+        <div class="game-meta">
+          <div class="meta-item"><span class="label">Year</span><span class="value" id="meta-year"></span></div>
+          <div class="meta-item"><span class="label">Studio</span><span class="value" id="meta-studio"></span></div>
+          <div class="meta-item"><span class="label">Team size</span><span class="value" id="meta-team"></span></div>
+          <div class="meta-item"><span class="label">My contribution</span><span class="value" id="meta-contrib"></span></div>
+          <div class="meta-item"><span class="label">Platform</span><span class="value" id="meta-platform"></span></div>
+          <div class="meta-item"><span class="label">Engine & Tools</span><span class="value" id="meta-engine"></span></div>
+        </div>
+      </div>
+    </section>
+
+    <div class="divider"></div>
+
+    <section class="project-section">
+      <h3>Overview</h3>
+      <p id="overview-text">Empty</p>
+    </section>
+
+    <div class="divider"></div>
+
+    <div class="foot" id="site-footer">Made with ♥ by PerianDev</div>
+  </div>
+
+  <script>
+    const SOCIAL_JSON_URL = 'https://periandevelopment.github.io/Socials/social.json';
+    const SOCIAL_HOST = (new URL(SOCIAL_JSON_URL)).origin;
+
+    async function fetchJsonFromParents(name, maxDepth = 8) {
+      const candidates = [];
+      for (let i = 0; i <= maxDepth; i++) candidates.push(i === 0 ? name : `${'../'.repeat(i)}${name}`);
+      candidates.push('/' + name);
+      for (const path of candidates) {
+        try {
+          const res = await fetch(path, { cache: 'no-cache' });
+          if (!res.ok) continue;
+          const json = await res.json();
+          return { json, url: res.url };
+        } catch (e) {}
+      }
+      throw new Error(`Could not fetch ${name}`);
+    }
+
+    async function fetchJsonAbsolute(url) {
+      const res = await fetch(url, { cache: 'no-cache' });
+      if (!res.ok) throw new Error(`Failed fetching ${url}: ${res.status}`);
+      return { json: await res.json(), url: res.url };
+    }
+
+    function resolveUrl(possibleUrl, base) {
+      if (!possibleUrl) return possibleUrl;
+      if (/^https?:\/\//i.test(possibleUrl) || possibleUrl.startsWith('/')) return possibleUrl;
+      if (!base.endsWith('/')) base = base + '/';
+      return base + possibleUrl;
+    }
+
+    function getSitePrefix() {
+      const parts = window.location.pathname.split('/').filter(Boolean);
+      return parts.length > 0 ? `/${parts[0]}/` : '/';
+    }
+
+    function slugify(s) {
+      return (s || '').toString().toLowerCase().replace(/[^a-z0-9]/g,'');
+    }
+
+    function getQueryParam(name) {
+      const params = new URLSearchParams(window.location.search);
+      return params.get(name);
+    }
+
+    function renderProjectLinks(projects, currentId) {
+      const linksContainer = document.getElementById('project-links');
+      linksContainer.innerHTML = '';
+      projects.forEach(p => {
+        const pid = p.id || slugify(p.title || '');
+        if (pid === currentId) {
+          const span = document.createElement('span');
+          span.className = 'game-link current';
+          span.textContent = p.title || p.name || p.id || 'Project';
+          linksContainer.appendChild(span);
+        } else {
+          const a = document.createElement('a');
+          a.className = 'game-link';
+          a.href = p.link || '#';
+          a.textContent = p.title || p.name || p.id || 'Project';
+          linksContainer.appendChild(a);
+        }
+      });
+    }
+
+    function fillProjectSkeleton(project, projectsBase, remoteBannerUrl, siteFallbackAbsolute) {
+      const titleEl = document.getElementById('project-title');
+      const coverImg = document.getElementById('cover-img');
+
+      const setMeta = (id, text) => {
+        const el = document.getElementById(id);
+        if (el) el.textContent = text || '';
+      };
+
+      titleEl.textContent = project.title || project.name || 'Project';
+
+      let coverUrl = project.cover || project.icon_url || null;
+      if (coverUrl && !/^https?:\/\//i.test(coverUrl) && !coverUrl.startsWith('/')) {
+        if (projectsBase) coverUrl = projectsBase + coverUrl;
+        else coverUrl = window.location.origin + getSitePrefix() + coverUrl;
+      }
+      if (!coverUrl && remoteBannerUrl) coverUrl = remoteBannerUrl;
+      if (!coverUrl && siteFallbackAbsolute) coverUrl = siteFallbackAbsolute;
+      if (!coverUrl) coverUrl = window.location.origin + getSitePrefix() + 'fallback.png';
+
+      coverImg.src = coverUrl;
+      coverImg.alt = (project.title || project.name || '') + ' cover';
+
+      setMeta('meta-year', project.year || '');
+      setMeta('meta-studio', project.studio || '');
+      setMeta('meta-team', project.teamSize || project.team_size || '');
+      setMeta('meta-contrib', project.contribution || '');
+      setMeta('meta-platform', project.platform || '');
+      setMeta('meta-engine', project.engineTools || project.engine_tools || '');
+
+      document.getElementById('overview-banner').src = coverUrl;
+      document.getElementById('contrib-banner').src = coverUrl;
+    }
+
+    (async function init() {
+      let siteFallbackAbsolute = null;
+      let repoRootUrl = null;
+      let repoNameFromWebsiteJson = null;
+      try {
+        const { json: siteJson, url: siteJsonUrl } = await fetchJsonFromParents('website.json', 8);
+        if (siteJson.repo) {
+          repoNameFromWebsiteJson = siteJson.repo.replace(/^\/|\/$/g, '');
+          const fallbackName = siteJson.fallbackImage || 'fallback.png';
+          siteFallbackAbsolute = `${SOCIAL_HOST}/${repoNameFromWebsiteJson}/${fallbackName}`;
+          repoRootUrl = `${SOCIAL_HOST}/${repoNameFromWebsiteJson}/`;
+        } else {
+          if (siteJson.fallbackImage) {
+            const siteBase = siteJsonUrl.replace(/website\.json$/i, '');
+            siteFallbackAbsolute = resolveUrl(siteJson.fallbackImage, siteBase);
+          }
+          repoRootUrl = window.location.origin + getSitePrefix();
+        }
+        if (siteJson.footerText) {
+          document.getElementById('site-footer').textContent = siteJson.footerText;
+          document.getElementById('site-footer').dataset.locked = '1';
+        }
+
+        const faviconEl = document.getElementById('favicon-link');
+        if (repoNameFromWebsiteJson) {
+          faviconEl.href = `${SOCIAL_HOST}/${repoNameFromWebsiteJson}/icon.png`;
+        } else {
+          const siteBase = siteJsonUrl.replace(/website\.json$/i, '');
+          faviconEl.href = resolveUrl('icon.png', siteBase);
+        }
+      } catch (err) {
+        const faviconEl = document.getElementById('favicon-link');
+        faviconEl.href = window.location.origin + getSitePrefix() + 'icon.png';
+        repoRootUrl = window.location.origin + getSitePrefix();
+      }
+
+      document.getElementById('repo-root-link').href = repoRootUrl || '#';
+
+      let remoteBannerUrl = null;
+      try {
+        const { json: socialJson } = await fetchJsonAbsolute(SOCIAL_JSON_URL);
+        const colors = socialJson.colors || {};
+        const banners = socialJson.banners || {};
+        const identity = socialJson.identity || {};
+
+        if (colors.primary_hex) document.documentElement.style.setProperty('--brand', colors.primary_hex);
+        if (colors.background_hex) document.documentElement.style.setProperty('--bg', colors.background_hex);
+        if (colors.text_hex) document.documentElement.style.setProperty('--text', colors.text_hex);
+
+        remoteBannerUrl = banners['2x1'] || null;
+      } catch (err) {}
+
+      try {
+        let projectsData, projectsBase;
+        try {
+          const res = await fetch('projects.json', {cache: 'no-cache'});
+          if (!res.ok) throw new Error('not found in current folder');
+          projectsData = await res.json();
+          projectsBase = res.url.replace(/projects\.json$/i, '');
+        } catch (_) {
+          const res2 = await fetchJsonFromParents('projects.json', 8);
+          projectsData = res2.json;
+          projectsBase = res2.url.replace(/projects\.json$/i, '');
+        }
+
+        let currentId = getQueryParam('id');
+        if (!currentId) {
+          const parts = window.location.pathname.split('/').filter(Boolean);
+          const projIdx = parts.findIndex(p => p.toLowerCase() === 'projects');
+          if (projIdx >= 0 && parts.length > projIdx + 1) {
+            const folderName = parts[projIdx + 1];
+            const folderSlug = slugify(folderName);
+            const matched = projectsData.find(p => {
+              const pid = slugify(p.id || '');
+              const ptitle = slugify(p.title || '');
+              return pid === folderSlug || ptitle === folderSlug;
+            });
+            if (matched) currentId = matched.id || slugify(matched.title || '');
+            else currentId = slugify(folderName);
+          }
+        } else {
+          currentId = slugify(currentId);
+        }
+
+        renderProjectLinks(projectsData.map(p => ({...p, id: p.id || slugify(p.title || '')})), currentId);
+
+        const selected = (projectsData.find(p => (p.id || slugify(p.title || '')) === currentId) || projectsData[0]);
+        if (selected) fillProjectSkeleton(selected, projectsBase, remoteBannerUrl, siteFallbackAbsolute);
+      } catch (err) {
+        console.error('Failed to load projects.json', err);
+      }
+    })();
+  </script>
+</body>
+</html>
