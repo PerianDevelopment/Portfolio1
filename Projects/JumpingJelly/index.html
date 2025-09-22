@@ -116,7 +116,18 @@
   background-color: #e23329; /* slightly darker shade */
   transform: translateY(-2px);
 }
-    .dot{width:10px;height:10px;background:var(--brand);border-radius:50%;box-shadow:0 6px 20px rgba(255,56,46,0.16);}
+    .dot::before {
+  content: '';
+  display: inline-block;          /* behaves like a character */
+  width: 10px;
+  height: 10px;
+  margin-right: 8px;              /* space between dot and text */
+  background: var(--brand);
+  border-radius: 50%;
+  box-shadow: 0 6px 20px rgba(255,56,46,0.16);
+  vertical-align: middle;         /* centers dot with text */
+}
+
     
     a.reset{color:var(--brand);text-decoration:none;}
     a.reset:hover{text-decoration:underline;}
