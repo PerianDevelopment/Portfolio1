@@ -349,7 +349,6 @@
         if (selected) fillProjectSkeleton(selected, projectsBase, remoteBannerUrl, siteFallbackAbsolute);
       } catch (err) {
         console.error('Failed to load projects.json', err);
-        document.getElementById('project-title').textContent = 'Failed to load projects';
       }
     })();
   </script>
