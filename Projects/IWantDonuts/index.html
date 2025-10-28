@@ -172,10 +172,99 @@
 
     <div class="divider"></div>
 
+    <div class="divider"></div>
+
+    <!-- BLOG CONTENT IMPLEMENTED HERE -->
     <section class="project-section">
       <h3 class="dot">Overview</h3>
-      <p id="overview-text">Empty</p>
+      <p>
+        <strong>Jumping Jelly</strong> is a 3D browser game featuring procedurally generated, seed-based levels.  
+        Your goal is simple — make it to the Donut Shop down the road… alive. Along the way, you’ll discover hidden collectibles, daily and monthly challenges, and plenty of secrets scattered throughout the neon city.
+      </p>
+
+      <h3 class="dot">Main Challenges</h3>
+      <p>
+        This was a <strong>solo project</strong>, meaning every aspect — design, code, art direction, and gameplay systems — was created by me.  
+        The world uses the <em>Synthy City</em> asset pack as a foundation, but all logic, systems, and visual polish were built from scratch.
+      </p>
+
+      <h4>Obstacle System</h4>
+      <p>
+        The game’s heart lies in its <strong>Obstacle System</strong>. Every obstacle has an interactive trigger that can kill the player on contact.  
+        Some obstacles alternate between safe and unsafe states — for example, a pipe may only be deadly when it’s emitting smoke.
+      </p>
+      <img src="obstacles_lineup.jpg" alt="Lineup of obstacles in the game" />
+      <p>
+        When an obstacle is triggered, the player briefly looks toward it before dying.  
+        Each obstacle features unique animations and custom death messages, creating over 35 obstacles across 5 types:
+      </p>
+      <ul>
+        <li><strong>Animation:</strong> Animates the obstacle to create movement or reaction.</li>
+        <li><strong>Explosion:</strong> Spawns an explosion effect on the obstacle.</li>
+        <li><strong>Gas:</strong> Causes a pipe to burst and release toxic fumes.</li>
+        <li><strong>Car:</strong> Spawns a speeding vehicle that hits the player — also used in red light scenarios.</li>
+      </ul>
+      <img src="traffic_light.gif" alt="Animated traffic light obstacle" />
+      <img src="electrical_explosion.gif" alt="Electrical box exploding" />
+      <img src="pipe_burst.gif" alt="Gas pipe bursting and spraying fumes" />
+      <img src="red_light_car.gif" alt="Car triggering during red light event" />
+
+      <h3 class="dot">Level Generation</h3>
+      <p>
+        One of the biggest design challenges was ensuring the procedurally generated world was <strong>always possible to complete</strong> — while still feeling fresh every time.  
+        The city is divided into five major <strong>Areas</strong>, each containing multiple <strong>Sections</strong> with unique obstacle layouts.
+      </p>
+      <p>
+        Each section contains 5–15 randomized obstacle configurations that always maintain at least one safe path.  
+        Because sections are modular and seamlessly connect, the level generator can freely mix and match them, guaranteeing a playable yet unpredictable experience.
+      </p>
+      <p>
+        In total, there are over <strong>1,000 unique layout combinations</strong>, meaning you’ll almost never encounter the same setup twice.
+      </p>
+
+      <h3 class="dot">Daily and Monthly Seeds</h3>
+      <p>
+        I wanted a system for <strong>Daily</strong> and <strong>Monthly</strong> seeds that would stay perfectly synchronized across all players — with <em>no backend servers or hosting costs</em>.  
+        The solution was elegant and entirely free:
+      </p>
+      <ul>
+        <li>GitHub Actions automatically randomizes and commits new seeds.</li>
+        <li><a href="https://cronjobs.org" target="_blank" rel="noopener noreferrer">cronjobs.org</a> triggers updates at precise intervals.</li>
+      </ul>
+      <p>
+        The game fetches these public seeds from a simple JSON file stored in the repo, ensuring that every player experiences the same daily and monthly variations.  
+        A history of all previously generated seeds is also archived automatically.
+      </p>
+
+      <h3 class="dot">Rainbow Donuts</h3>
+      <p>
+        The <strong>Rainbow Donuts</strong> are a special set of collectibles tied to the game’s secret ending.  
+        Players must find and collect all <strong>9 Rainbow Donuts</strong> hidden across the world to unlock it.
+      </p>
+      <img src="rainbow_donut.gif" alt="Animated rainbow donut collectible" />
+      <img src="hidden_donut.jpg" alt="Hidden rainbow donut location" />
+      <img src="complex_path_to_donut.mp4" alt="Player walking a complex path to reach rainbow donut" />
+      <p>
+        Some donuts are cleverly hidden, while others are visible yet require intricate navigation to reach.  
+        Every donut can always be collected — no matter the generated layout.
+      </p>
+      <p>
+        Making them visually appealing was a key goal. Each Rainbow Donut uses:
+      </p>
+      <ul>
+        <li>Bright, emissive materials</li>
+        <li>Rainbow outline shader</li>
+        <li>Custom rainbow particle effects</li>
+        <li>Dynamic rainbow lighting and sound design</li>
+      </ul>
+      <img src="rainbow_shader_box.mp4" alt="Rainbow shader and lighting effects demonstration" />
+
+      <p>
+        You can play the project directly in your browser:
+      </p>
+      <a class="link-button" href="https://periandevelopment.itch.io/jumping-jelly" target="_blank" rel="noopener noreferrer">Play on Itch.io</a>
     </section>
+    <!-- END BLOG CONTENT -->
 
     <div class="divider"></div>
 
